@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/09 15:42:52 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/23 17:19:28 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,52 @@ struct s_prompt
     t_prompt *next;
 };
 
-# define COMMAND 1
-# define ARGUMENT 2
-# define OPTIONS 3
-# define REDIRECTION 4
-# define PIPE 5
-# define SEMICOLON 6
+
+typedef enum e_token_type
+{
+    COMMAND,                // Commande principale
+    OPTION,                 // Option de commande (ex: -l)
+    ARGUMENT,               // Argument de commande
+    PIPE,                   // Pipe '|'
+    REDIRECTION_INPUT,      // Redirection d'entrée '<'
+    REDIRECTION_OUTPUT,     // Redirection de sortie '>'
+    REDIRECTION_APPEND,     // Redirection avec ajout '>>'
+    REDIRECTION_HEREDOC,    // Redirection avec heredoc '<<'
+}   t_token_type;
+
+// Structure pour un token
+typedef struct s_token
+{
+    char *value;            // Valeur du token
+    t_token_type type;      // Type du token
+    struct s_token *next;   // Token suivant
+} t_token;
+
+// Structure pour une redirection
+typedef struct s_redirection
+{
+    t_token_type type;              // Type de redirection
+    char *file;                     // Nom du fichier de redirection
+    struct s_redirection *next;     // Redirection suivante
+} t_redirection;
+
+// Structure pour une commande
+typedef struct s_command
+{
+    char **argv;                    // Arguments de la commande
+    t_redirection *redirections;    // Liste des redirections
+    struct s_command *next;         // Commande suivante (si pipe)
+} t_command;
+
+// # define COMMAND 1
+// # define ARGUMENT 2
+// # define OPTIONS 3
+// # define PIPE 4
+// # define REDIRECTION_APPEND 5
+// # define REDIRECTION_OWRITE 6
+// # define REDIR_TO_FILE 7
+
+
 
 # define PROMPT "🤖 → "
 

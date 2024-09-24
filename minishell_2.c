@@ -66,6 +66,7 @@ int define_type(char *str)
 
 void add_token(t_prompt *prompt, char *str)
 {
+    static int last_type = 0;
     t_prompt *next;
     t_prompt *new;
 
@@ -74,7 +75,14 @@ void add_token(t_prompt *prompt, char *str)
         next = next->next;
     new = malloc(sizeof(t_prompt));
     new->value = str;
-    new->type = define_type(str);
+    if (last_type == PIPE)
+    {
+        new->type = COMMAND;
+        last_type = 0;
+    }
+    else
+        new->type = define_type(str);
+    last_type = new->type;
     new->next = NULL;
     next->next = new;
 }
@@ -110,21 +118,55 @@ void ft_print_prompt(t_prompt *prompt)
 
 }
 
+t_prompt *get_prompt_at_index(t_prompt *prompt, int i)
+{
+    int count = 0;
+    t_prompt *current = prompt;
+
+    while (current != NULL && count < i)
+    {
+        current = current->next;
+        count++;
+    }
+
+    return current;
+}
+
+void print_split(char **args)
+{
+    int i = 0;
+    printf("args\n");
+    while (args[i])
+    {
+        printf("%s\n", args[i]);
+        i++;
+    }
+    printf("end args\n");
+}
+
 void pipe_in_str(char *str, t_prompt *prompt, int id)
 {
+    int i = 0;
+    char **args;
+    t_prompt *new;
     t_prompt *next;
-    t_prompt *first;
-    t_prompt *pipe;
-    t_prompt *command;
-    char **args = ft_split(str, '|');
-    int i;
 
-    i = 0;
-    while (prompt->next && i < id)
-        prompt = prompt->next;
- }
+    args = ft_split(str, '|');
+    while (args[i])
+    {
+        new = malloc(sizeof(t_prompt));
+        new->value = args[i];
+        new->type = define_type(args[i]);
+        new->next = NULL;
+        next = get_prompt_at_index(prompt, id);
+        while (next->next)
+            next = next->next;
+        next->next = new;
+        i++;
+    }
+}
 
-void pipe_parsing(t_prompt *prompt)
+t_prompt *pipe_parsing(t_prompt *prompt)
 {
     t_prompt *next;
     int       i;
@@ -138,6 +180,7 @@ void pipe_parsing(t_prompt *prompt)
         next = next->next;
         i++;
     }
+    return (prompt);
 }
 
 t_prompt *parser(char **args)
@@ -145,7 +188,7 @@ t_prompt *parser(char **args)
     t_prompt *prompt;
 
     prompt = first_parsing(args);
-    
+    prompt = pipe_parsing(prompt);
     return (prompt);
 }
 
