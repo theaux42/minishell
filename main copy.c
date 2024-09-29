@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 02:54:25 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/29 02:04:45 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,24 +128,62 @@ void ft_print_commands(t_command *command)
     }
 }
 
+char **split_args(const char *line)
+{
+    char **args = NULL;
+    int count = 0;
+    int i = 0;
+    int j = 0;
+    char quote = '\0';
+    char buffer[1024];
+
+    while (line[i])
+    {
+        j = 0;
+        // Sauter les espaces initiaux
+        while (line[i] == ' ')
+            i++;
+        if (line[i] == '\0')
+            break;
+        // Parcourir l'argument
+        while (line[i] && (quote || (line[i] != ' ')))
+        {
+            if ((line[i] == '\'' || line[i] == '"') && !quote)
+                quote = line[i++];
+            else if (line[i] == quote)
+            {
+                quote = '\0';
+                i++;
+            }
+            else
+                buffer[j++] = line[i++];
+        }
+        buffer[j] = '\0';
+        args = realloc(args, sizeof(char *) * (count + 2));
+        args[count++] = strdup(buffer);
+    }
+    if (args)
+        args[count] = NULL;
+    return args;
+}
+
 void get_cr_command(t_command *commands, char *current_command)
 {
     t_command *command;
     char **args;
-    // int i;
 
-    // i = 0;
     while (commands->next)
         commands = commands->next;
     command = malloc(sizeof(t_command));
+    if (!command)
+        return;
     args = ft_split(current_command, ' ');
-    commands->next = command;
     command->argv = args;
     command->next = NULL;
     command->redirections = NULL;
     command->pipes[0] = -1;
     command->pipes[1] = -1;
-    command->is_last = 0;
+    commands->next = command;
 }
 
 t_command *get_commands(char *line)
@@ -154,22 +192,26 @@ t_command *get_commands(char *line)
     char **commands;
     int i;
 
-    i = 0;
     if (line[0] == '\0')
         return (NULL);
     commands = ft_split(line, '|');
+    if (!commands)
+        return (NULL);
     head = malloc(sizeof(t_command));
-    head->argv = ft_split(commands[i], ' ');
+    if (!head)
+        return (NULL);
+    head->argv = ft_split(commands[0], ' ');
     head->next = NULL;
+    head->redirections = NULL;
     head->pipes[0] = -1;
     head->pipes[1] = -1;
-    head->is_last = 0;
-    while (commands[++i])
+    i = 1;
+    while (commands[i])
+    {
         get_cr_command(head, commands[i]);
-    while (head->next)
-        head = head->next;
-    head->is_last = 1;
-    ft_freesplit(commands);
+        i++;
+    }
+    // Libérer `commands` si nécessaire
     return (head);
 }
 
