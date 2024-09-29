@@ -6,14 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/24 16:33:43 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/29 00:09:30 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 t_token_type get_redirection_type(char *str);
-int command_length(t_prompt *prompt, int position);
 
 int ft_exit(char *line)
 {
@@ -89,6 +88,8 @@ t_token_type get_redirection_type(char *str)
         return (REDIRECTION_OUTPUT);
     if (strncmp(str, "<", 1) == 0)
         return (REDIRECTION_INPUT);
+    if (strncmp(str, "<<", 2) == 0)
+        return (REDIRECTION_HEREDOC);
     // Ajouter d'autres types de redirections si nécessaire
     return (ARGUMENT); // Par défaut
 }
@@ -108,21 +109,6 @@ void add_token(t_prompt *prompt, char *str)
     next->next = new;
 }
 
-void ft_print_prompt(t_prompt *prompt)
-{
-    t_prompt *next;
-    int i;
-
-    i = 0;
-    next = prompt;
-    while (next)
-    {
-        printf("[DEBUG] => %d - type = %d - value = %s\n", i++, next->type, next->value);
-        next = next->next;
-    }
-
-}
-
 void ft_print_commands(t_command *command)
 {
     t_command *next;
@@ -137,47 +123,9 @@ void ft_print_commands(t_command *command)
         printf("[DEBUG] => %d - argv = [", i++);
         while (next->argv[j])
             printf("%s, ", next->argv[j++]);
-        printf("]\n");
+        printf("] - LAST : %i\n", next->is_last);
         next = next->next;
     }
-}
-
-t_prompt *init_prompt(void)
-{
-    t_prompt *command;
-
-    command = malloc(sizeof(t_prompt));
-    command->value = "echo";
-    command->type = COMMAND;
-    command->next = NULL;
-    
-    add_token(command, "-n");
-    add_token(command, "Hello World");
-    add_token(command, "Hello World");
-    add_token(command, "Hello World");
-    add_token(command, "Hello World");
-    add_token(command, "|");
-    add_token(command, "grep");
-    add_token(command, "file.txt");
-    add_token(command, "|");
-    add_token(command, "cat");
-    add_token(command, "-e");
-    add_token(command, "-e");
-    add_token(command, "file.txt");
-    
-    return (command);
-}
-
-void ft_print_split(char **args, int oui)
-{
-    int i = 0;
-    printf("command n%i ->", oui);
-    while (args[i])
-    {
-        printf("%s ", args[i]);
-        i++;
-    }
-    printf("\n");
 }
 
 void get_cr_command(t_command *commands, char *current_command)
@@ -195,6 +143,9 @@ void get_cr_command(t_command *commands, char *current_command)
     command->argv = args;
     command->next = NULL;
     command->redirections = NULL;
+    command->pipes[0] = -1;
+    command->pipes[1] = -1;
+    command->is_last = 0;
 }
 
 t_command *get_commands(char *line)
@@ -204,14 +155,21 @@ t_command *get_commands(char *line)
     int i;
 
     i = 0;
+    if (line[0] == '\0')
+        return (NULL);
     commands = ft_split(line, '|');
     head = malloc(sizeof(t_command));
     head->argv = ft_split(commands[i], ' ');
     head->next = NULL;
+    head->pipes[0] = -1;
+    head->pipes[1] = -1;
+    head->is_last = 0;
     while (commands[++i])
-    {
         get_cr_command(head, commands[i]);
-    }
+    while (head->next)
+        head = head->next;
+    head->is_last = 1;
+    ft_freesplit(commands);
     return (head);
 }
 
@@ -222,10 +180,11 @@ int main(void)
     while (1)
     {
         line = readline(PROMPT);
-        if (ft_strncmp(line, "exit", 4) == 0)
-            return (ft_exit(line));
+        if (line)
+        {
         command = get_commands(line);
-        ft_print_commands(command);
+        execute_command(command);
+        }
     }
     return 0;
 }

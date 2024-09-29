@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/23 17:19:28 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/29 00:17:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include <string.h>
 # include <unistd.h>
 # include <sys/wait.h>
@@ -43,7 +44,6 @@ struct s_prompt
     int type;
     t_prompt *next;
 };
-
 
 typedef enum e_token_type
 {
@@ -78,19 +78,25 @@ typedef struct s_command
 {
     char **argv;                    // Arguments de la commande
     t_redirection *redirections;    // Liste des redirections
+    int pipes[2];                   // Descripteurs de pipe
+    int prev_pipe;                  // Descripteur de lecture du pipe précédent
+    int is_builtin;                 // Commande internes
+    int is_last;                    // Dernière commande
+    pid_t pid;                      // PID du processus
     struct s_command *next;         // Commande suivante (si pipe)
 } t_command;
 
-// # define COMMAND 1
-// # define ARGUMENT 2
-// # define OPTIONS 3
-// # define PIPE 4
-// # define REDIRECTION_APPEND 5
-// # define REDIRECTION_OWRITE 6
-// # define REDIR_TO_FILE 7
-
-
-
 # define PROMPT "🤖 → "
+
+// testings
+char *get_full_cmd(char *bin);
+// Fonctions de parsing
+t_token_type get_redirection_type(char *str);
+t_token_type define_type(char *str);
+// Fonction d'exécution
+void execute_command(t_command *command);
+
+// Fonction de utils
+void exit_error(char *msg);
 
 # endif

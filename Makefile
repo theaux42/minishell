@@ -4,7 +4,7 @@ NAME = execution
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g3 -I/opt/homebrew/opt/readline/include
 LDFLAGS = -L./libft -lft -L/opt/homebrew/opt/readline/lib -lreadline
-SRCS = main.c exec/execution.c
+SRCS = main.c exec/execution.c utils/utils.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
