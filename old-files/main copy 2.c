@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 17:29:22 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/29 14:57:32 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,21 +51,32 @@ int is_string(char *str)
 t_token_type define_type(char *str)
 {
     static t_token_type last_type = COMMAND;
+
+    // Si le dernier token était un PIPE, le suivant doit être une COMMAND
     if (last_type == PIPE)
     {
         last_type = COMMAND;
         return (COMMAND);
     }
-    if (is_option(str))
+
+    // Vérifier si le token est une option (ex: -l)
+    if (is_option(str)) // Assurez-vous que cette fonction est correctement implémentée
         return (OPTION);
+
+    // Vérifier si le token est un PIPE
     if (strcmp(str, "|") == 0)
     {
         last_type = PIPE;
         return (PIPE);
     }
+
+    // Vérifier si le token est une redirection
     t_token_type redir_type = get_redirection_type(str);
     if (redir_type != ARGUMENT)
         return (redir_type);
+
+    // Sinon, c'est un ARGUMENT ou une COMMAND
+    // Vous pouvez affiner cette logique selon vos besoins
     return (ARGUMENT);
 }
 
@@ -117,10 +128,50 @@ void ft_print_commands(t_command *command)
     }
 }
 
+char **split_args(const char *line)
+{
+    char **args = NULL;
+    int count = 0;
+    int i = 0;
+    int j = 0;
+    char quote = '\0';
+    char buffer[1024];
+
+    while (line[i])
+    {
+        j = 0;
+        // Sauter les espaces initiaux
+        while (line[i] == ' ')
+            i++;
+        if (line[i] == '\0')
+            break;
+        // Parcourir l'argument
+        while (line[i] && (quote || (line[i] != ' ')))
+        {
+            if ((line[i] == '\'' || line[i] == '"') && !quote)
+                quote = line[i++];
+            else if (line[i] == quote)
+            {
+                quote = '\0';
+                i++;
+            }
+            else
+                buffer[j++] = line[i++];
+        }
+        buffer[j] = '\0';
+        args = realloc(args, sizeof(char *) * (count + 2));
+        args[count++] = strdup(buffer);
+    }
+    if (args)
+        args[count] = NULL;
+    return args;
+}
+
 void get_cr_command(t_command *commands, char *current_command)
 {
     t_command *command;
     char **args;
+    int i;
 
     while (commands->next)
         commands = commands->next;
@@ -128,11 +179,21 @@ void get_cr_command(t_command *commands, char *current_command)
     if (!command)
         return;
     args = ft_split(current_command, ' ');
-    if (!args)
-        return;
-    set_default_values(command);
     command->argv = args;
+    command->next = NULL;
+    command->redirections = NULL;
+    command->pipes[0] = -1;
+    command->pipes[1] = -1;
     commands->next = command;
+
+    // **Ajout de printf pour déboguer**
+    printf("Nouvelle commande créée :\n");
+    i = 0;
+    while (args[i])
+    {
+        printf("Arg[%d]: %s\n", i, args[i]);
+        i++;
+    }
 }
 
 t_command *get_commands(char *line)
@@ -151,11 +212,26 @@ t_command *get_commands(char *line)
         return (NULL);
     head->argv = ft_split(commands[0], ' ');
     head->next = NULL;
+    head->redirections = NULL;
     head->pipes[0] = -1;
     head->pipes[1] = -1;
+
+    // **Ajout de printf pour déboguer**
+    printf("Commande initiale :\n");
+    i = 0;
+    while (head->argv[i])
+    {
+        printf("Arg[%d]: %s\n", i, head->argv[i]);
+        i++;
+    }
+
     i = 1;
     while (commands[i])
-        get_cr_command(head, commands[i++]);
+    {
+        get_cr_command(head, commands[i]);
+        i++;
+    }
+    // Libérer `commands` si nécessaire
     return (head);
 }
 

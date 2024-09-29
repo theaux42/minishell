@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 02:07:05 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/29 17:23:19 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ int exec_cmd(t_command *command, char **env)
     char *cmd;
     int pid;
 
-    cmd = get_full_cmd(command->argv[0]);
+    cmd = get_full_cmd(command);
     if (!cmd)
-         return (-1);
+         return (CMD_NOT_FOUND);
     pid = execution(cmd, command, env);
     free(cmd);
     return (pid);
@@ -90,7 +90,7 @@ void wait_for_children(t_command *commands)
 
 void execute_command(t_command *commands)
 {
-    extern char **environ;
+    char *envp[] = {"TERM=xterm-256color", NULL};
     t_command *current;
     int prev_fd = -1;
 
@@ -99,7 +99,9 @@ void execute_command(t_command *commands)
     while (current)
     {
         current->prev_pipe = prev_fd;
-        current->pid = exec_cmd(current, environ);
+        current->pid = exec_cmd(current, envp);
+        if (current->pid == CMD_NOT_FOUND)
+            printf("Command not found: %s\n", current->argv[0]);
         if (current->pid == -1)
             exit(EXIT_FAILURE);
         if (prev_fd != -1)
