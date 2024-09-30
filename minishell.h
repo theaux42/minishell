@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 17:24:37 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/29 22:44:09 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ typedef struct s_command
 // testings
 char *get_full_cmd(t_command *command);
 // Fonctions de parsing
+t_command *get_commands(char *line);
+void get_cr_command(t_command *commands, char *current_command);
 t_token_type get_redirection_type(char *str);
 t_token_type define_type(char *str);
 // Fonction d'exécution

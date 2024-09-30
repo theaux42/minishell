@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2024/07/21 20:09:28 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/30 03:32:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdint.h>
 # include <fcntl.h>
 # include <stdio.h>
+# include "colors.h"
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 4200
