@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/30 03:32:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/09/30 18:20:45 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int		ft_isalpha(int c);
 int		ft_isascii(int c);
 int		ft_isprint(int c);
 int		ft_isdigit(int c);
-int		ft_intlen(int nbr);
 int		ft_atoi(const char *str);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -66,6 +65,12 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 char	**ft_split(char const *s, char c);
 char	*ft_strtrim(char const *s1, char const *set);
+
+// New functions of the libft
+char	*ft_strcat(char *dest, char *src);
+char	*ft_strncpy(char *dest, char *src, unsigned int n);
+char	*ft_strncat(char *dest, const char *src, unsigned int nb);
+int		ft_strcmp(char *s1, char *s2);
 
 // Bonus functions of the libft
 typedef struct s_list
@@ -103,6 +108,19 @@ char	*get_next_line(int fd);
 // Other functions
 char	*ft_addchar(char *s1, char s2);
 void	ft_freesplit(char **split);
+
+// Math functions
+int		ft_pow(int nb, int power);
+int		ft_factorial(int nb);
+int		ft_fibonacci(int index);
+int		ft_sqrt(int nb);
+int		ft_is_prime(int nb);
+int		ft_intlen(int nbr);
+
+// String functions
+char	*ft_strlowcase(char *str);
+char	*ft_strupcase(char *str);
+char	*ft_strcap(char *str);
 
 // Colors
 

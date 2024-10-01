@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:45:36 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/30 03:54:55 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/01 14:02:07 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int inner_split(char **split, char *line)
             split[k] = malloc(i - j + 1);
             if (!split[k])
                 return -1;
-            strncpy(split[k], &line[j], i - j);
+            ft_strncpy(split[k], &line[j], i - j);
             split[k][i - j] = '\0';
             k++;
         }
@@ -110,8 +110,7 @@ char **ft_ms_split(char *line)
     result = inner_split(args, line);
     if (result == -1)
     {
-        free(args);
-        return NULL;
+        return(ft_freesplit(args), NULL);
     }
     if (result != 0)
     {
@@ -123,23 +122,85 @@ char **ft_ms_split(char *line)
     return args;
 }
 
-void ft_print_prompt(char **commands)
+char *type_to_str(t_token_type type)
 {
-    int i = 0;
-    while (commands[i])
-    {
-        printf("Token %d: %s\n", i, commands[i]);
-        i++;
-    }
+    if (type == COMMAND)
+        return "COMMAND";
+    if (type == PIPE)
+        return "PIPE";
+    if (type == REDIRECTION_INPUT)
+        return "REDIRECTION_INPUT";
+    if (type == REDIRECTION_OUTPUT)
+        return "REDIRECTION_OUTPUT";
+    if (type == REDIRECTION_APPEND)
+        return "REDIRECTION_APPEND";
+    if (type == REDIRECTION_HEREDOC)
+        return "REDIRECTION_HEREDOC";
+    if (type == ARGUMENT)
+        return "ARGUMENT";
+    return "UNKNOWN";
 }
 
-void parse_commands(char *line)
+t_token_type get_redirection_type(char *str)
 {
-    char **commands;
-    commands = ft_ms_split(line);
-    if (!commands)
-        return;
-    ft_print_prompt(commands);
+    if (strncmp(str, ">>", 2) == 0)
+        return (REDIRECTION_APPEND);
+    if (strncmp(str, ">", 1) == 0)
+        return (REDIRECTION_OUTPUT);
+    if (strncmp(str, "<", 1) == 0)
+        return (REDIRECTION_INPUT);
+    if (strncmp(str, "<<", 2) == 0)
+        return (REDIRECTION_HEREDOC);
+    // Ajouter d'autres types de redirections si nécessaire
+    return (ARGUMENT); // Par défaut
+}
+
+t_token_type define_oo_type(char *str, int pos)
+{
+    static t_token_type last_type = COMMAND;
+    if (pos == 0)
+        return (COMMAND);
+    if (last_type == PIPE)
+    {
+        last_type = COMMAND;
+        return (COMMAND);
+    }
+    if (strcmp(str, "|") == 0)
+    {
+        last_type = PIPE;
+        return (PIPE);
+    }
+    t_token_type redir_type = get_redirection_type(str);
+    if (redir_type != ARGUMENT)
+        return (redir_type);
+    return (ARGUMENT);
+}
+
+void make_tokens(t_token *tokens, char **args)
+{
+    int i = 0;
+    while (args[i])
+    {
+        tokens->value = args[i];
+        tokens->type = define_oo_type(args[i], i);
+        tokens->next = malloc(sizeof(t_token));
+        tokens = tokens->next;
+        i++;
+    }
+    tokens->next = NULL;
+}
+
+t_command *set_tokens_type(char **args)
+{
+    int i = 0;
+    t_command *command;
+
+    command = malloc(sizeof(t_command));
+    if (!command)
+        return NULL;
+    command->tokens = malloc(sizeof(t_token));
+    make_tokens(command->tokens, args);
+    return command;
 }
 
 int main(void)
@@ -152,7 +213,7 @@ int main(void)
             return (0);
         if (ft_strncmp(line, "exit", 4) == 0)
             exit(1);
-        parse_commands(line);
+        tokenize(line);
         free(line);
     }
     return (0);

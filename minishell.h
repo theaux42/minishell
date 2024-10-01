@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 22:44:09 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/01 14:09:12 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,23 +27,6 @@
 # include <fcntl.h>
 # include <signal.h>
 # include "libft/libft.h"
-
-typedef struct s_prompt t_prompt;
-
-typedef struct s_parser_state
-{
-    int in_double_str;
-    int in_single_str;
-    char *args;
-    t_prompt *next;
-} t_parser_state;
-
-struct s_prompt
-{
-    char *value;
-    int type;
-    t_prompt *next;
-};
 
 typedef enum e_token_type
 {
@@ -76,7 +59,7 @@ typedef struct s_redirection
 // Structure pour une commande
 typedef struct s_command
 {
-    char **argv;                    // Arguments de la commande
+    t_token *tokens;                // Liste des tokens
     t_redirection *redirections;    // Liste des redirections
     int pipes[2];                   // Descripteurs de pipe
     int prev_pipe;                  // Descripteur de lecture du pipe précédent
@@ -87,18 +70,31 @@ typedef struct s_command
     struct s_command *next;         // Commande suivante (si pipe)
 } t_command;
 
-# define PROMPT "🤖 → "
+# define PROMPT "ᓚᘏᗢ → "
 # define CMD_NOT_FOUND 127
 
 // testings
-char *get_full_cmd(t_command *command);
-// Fonctions de parsing
+char *get_full_cmd(char *bin);
+char *ft_token_value(char *value);
+// === PARSING ===
+// Functions of parsing/parser.c
 t_command *get_commands(char *line);
-void get_cr_command(t_command *commands, char *current_command);
+void get_cr_command(t_command **cmd_ptr, char **commands);
+// Functions of parsing/utils.c
 t_token_type get_redirection_type(char *str);
-t_token_type define_type(char *str);
+t_token_type get_tokens_type(char *str, int pos);
+t_token *set_tokens_type(char **args);
+// Functions of parsing/split.c
+char **ft_ms_split(char *line);
+int ft_prompt_length(char *line);
+
+// === EXECUTION ===
 // Fonction d'exécution
 void execute_command(t_command *command);
+
+// === BUILTINS ===
+
+// === UTILS ===
 // Fonction de utils
 void exit_error(char *msg);
 void set_default_values(t_command *command);

@@ -6,23 +6,23 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 17:29:41 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/01 14:00:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char *get_full_cmd(t_command *command)
+char *get_full_cmd(char *bin)
 {
     char *path;
     char **paths;
     int i;
     
     i = 0;
-    if (command->argv[0][0] == '/')
+    if (bin[0] == '/')
     {
-        if (access(command->argv[0], F_OK) == 0)
-            return (command->argv[0]);
+        if (access(bin, F_OK) == 0)
+            return (bin);
         return (NULL);
     }
     path = getenv("PATH");
@@ -30,7 +30,7 @@ char *get_full_cmd(t_command *command)
     while (paths[i++])
     {
         path = ft_strjoin(paths[i], "/");
-        paths[i] = ft_strjoin(path, command->argv[0]);
+        paths[i] = ft_strjoin(path, bin);
     }
     free(path);
     i = 0;
@@ -40,14 +40,8 @@ char *get_full_cmd(t_command *command)
     return (NULL);
 }
 
-void free_minishell(void)
-{
-    printf("free minishell\n");
-}
-
 void set_default_values(t_command *command)
 {
-    command->argv = NULL;
     command->next = NULL;
     command->redirections = NULL;
     command->is_last = 0;
@@ -62,6 +56,5 @@ void set_default_values(t_command *command)
 void exit_error(char *msg)
 {
     perror(msg);
-    free_minishell();
     exit(EXIT_FAILURE);
 }
