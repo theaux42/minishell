@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 22:51:18 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 23:11:33 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,31 @@ char	**get_paths(char *command)
 	return (paths);
 }
 
+// The getcwd() may be removed to be replaced by the path
+// Contained in the env variable PATH
+
+char	*get_cmd(char *command)
+{
+	char	*path;
+	char	*relative_path;
+
+	if (command[0] == '/')
+	{
+		if (access(command, F_OK) == 0)
+			return (command);
+	}
+	else
+	{
+	path = getcwd(NULL, 0);
+	relative_path = ft_strjoin(path, "/");
+	relative_path = ft_strjoin(relative_path, command);
+	free(path);
+	if (access(relative_path, F_OK) == 0)
+		return (relative_path);
+	}
+	return (NULL);
+}
+
 char	*get_full_cmd(char *bin)
 {
 	char	**paths;
@@ -37,12 +62,8 @@ char	*get_full_cmd(char *bin)
 	int		i;
 
 	i = 0;
-	if (bin[0] == '/')
-	{
-		if (access(bin, F_OK) == 0)
-			return (bin);
-		return (NULL);
-	}
+	if (bin[0] == '/' || bin[0] == '.')
+		return (get_cmd(bin));
 	paths = get_paths(bin);
 	while (paths[i++])
 	{
