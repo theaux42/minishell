@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 05:29:51 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 22:51:18 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char	**get_paths(char *command)
 char	*get_full_cmd(char *bin)
 {
 	char	**paths;
+	char	*full_cmd;
 	int		i;
 
 	i = 0;
@@ -47,8 +48,9 @@ char	*get_full_cmd(char *bin)
 	{
 		if (access(paths[i], F_OK) == 0)
 		{
+			full_cmd = ft_strdup(paths[i]);
 			ft_freesplit(paths);
-			return (ft_strdup(paths[i]));
+			return (full_cmd);
 		}
 	}
 	ft_freesplit(paths);
