@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g3 -I/opt/homebrew/opt/readline/include
 LDFLAGS = -L./libft -lft -L/opt/homebrew/opt/readline/lib -lreadline
 SRCS = main.c exec/exec.c utils/utils.c parsing/parser.c parsing/utils.c parsing/split.c \
-		exec/exec_utils.c parsing/split_utils.c
+		exec/exec_utils.c parsing/split_utils.c utils/free.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)

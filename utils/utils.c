@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 23:11:33 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 23:51:32 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 char	**get_paths(char *command)
 {
 	char	*path;
+	char	*temp;
 	char	**paths;
 	int		i;
 
@@ -23,8 +24,10 @@ char	**get_paths(char *command)
 	paths = ft_split(path, ':');
 	while (paths[i])
 	{
-		paths[i] = ft_strjoin(paths[i], "/");
-		paths[i] = ft_strjoin(paths[i], command);
+		temp = ft_strjoin(paths[i], "/");
+		free(paths[i]);
+		paths[i] = ft_strjoin(temp, command);
+		free(temp);
 		i++;
 	}
 	return (paths);
@@ -37,6 +40,7 @@ char	*get_cmd(char *command)
 {
 	char	*path;
 	char	*relative_path;
+	char	*temp;
 
 	if (command[0] == '/')
 	{
@@ -45,12 +49,13 @@ char	*get_cmd(char *command)
 	}
 	else
 	{
-	path = getcwd(NULL, 0);
-	relative_path = ft_strjoin(path, "/");
-	relative_path = ft_strjoin(relative_path, command);
-	free(path);
-	if (access(relative_path, F_OK) == 0)
-		return (relative_path);
+		path = getcwd(NULL, 0);
+		temp = ft_strjoin(path, "/");
+		relative_path = ft_strjoin(temp, command);
+		free(temp);
+		free(path);
+		if (access(relative_path, F_OK) == 0)
+			return (relative_path);
 	}
 	return (NULL);
 }

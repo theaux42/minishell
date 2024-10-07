@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 03:51:45 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 23:37:19 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,5 +109,7 @@ void			no_cmd_handler(t_command *current);
 // Fonction de utils
 void			exit_error(char *msg);
 void			set_default_values(t_command *command);
+// Fonction de free
+void			free_commands(t_command *commands);
 
 #endif

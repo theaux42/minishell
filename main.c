@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 22:58:51 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 23:37:53 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	main(void)
 				return (ft_exit(line));
 			command = get_commands(line);
 			execute_command(command);
+			free_commands(command);
 			free(line);
 		}
 	}
