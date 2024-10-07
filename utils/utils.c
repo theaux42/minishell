@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 05:14:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 05:29:51 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ char	**get_paths(char *command)
 char	*get_full_cmd(char *bin)
 {
 	char	**paths;
-	char	*cmd;
 	int		i;
 
 	i = 0;
