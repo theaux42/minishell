@@ -6,11 +6,11 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/12 22:30:22 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/30 18:15:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 03:20:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "libft.h"
+#include "libft.h"
 
 char	*ft_strcat(char *dest, char *src)
 {

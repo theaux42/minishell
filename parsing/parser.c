@@ -6,124 +6,99 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/01 14:10:56 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 05:12:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char *type_to_str(t_token_type type)
+int	make_tokens(t_token **tokens_ptr, char **args, int i)
 {
-    if (type == COMMAND)
-        return "COMMAND";
-    if (type == PIPE)
-        return "PIPE";
-    if (type == REDIRECTION_INPUT)
-        return "REDIRECTION_INPUT";
-    if (type == REDIRECTION_OUTPUT)
-        return "REDIRECTION_OUTPUT";
-    if (type == REDIRECTION_APPEND)
-        return "REDIRECTION_APPEND";
-    if (type == REDIRECTION_HEREDOC)
-        return "REDIRECTION_HEREDOC";
-    if (type == ARGUMENT)
-        return "ARGUMENT";
-    return "UNKNOWN";
+	t_token	*head;
+	t_token	*current;
+	t_token	*new_token;
+
+	head = NULL;
+	current = NULL;
+	while (args[i])
+	{
+		new_token = malloc(sizeof(t_token));
+		if (!new_token)
+			return (0);
+		new_token->value = ft_token_value(args[i]);
+		if (!new_token->value)
+			return (0);
+		new_token->type = get_tokens_type(args[i], i);
+		new_token->next = NULL;
+		if (!head)
+			head = new_token;
+		else
+			current->next = new_token;
+		current = new_token;
+		i++;
+	}
+	*tokens_ptr = head;
+	return (1);
 }
 
-void make_tokens(t_token **tokens_ptr, char **args)
+t_token	*set_tokens_type(char *command)
 {
-    t_token *head = NULL;
-    t_token *current = NULL;
-    int i = 0;
+	char	**args;
+	t_token	*tokens;
+	int		result;
 
-    while (args[i])
-    {
-        t_token *new_token = malloc(sizeof(t_token));
-        if (!new_token)
-            return;
-        new_token->value = ft_token_value(args[i]);
-        if (!new_token->value)
-            return;
-        new_token->type = get_tokens_type(args[i], i);
-        new_token->next = NULL;
-        if (!head)
-            head = new_token;
-        else
-            current->next = new_token;
-        current = new_token;
-        i++;
-    }
-    *tokens_ptr = head;
+	args = ft_ms_split(command);
+	if (!args)
+		return (NULL);
+	tokens = NULL;
+	result = make_tokens(&tokens, args, 0);
+	ft_freesplit(args);
+	if (!result)
+		return (NULL);
+	return (tokens);
 }
 
-t_token *set_tokens_type(char **args)
+void	get_cr_command(t_command **cmd_ptr, char **commands)
 {
-    t_token *tokens = NULL;
-    make_tokens(&tokens, args);
-    return tokens;
+	t_command	*head;
+	t_command	*current;
+	int			i;
+	t_command	*new_cmd;
+
+	head = NULL;
+	current = NULL;
+	i = 0;
+	while (commands[i])
+	{
+		new_cmd = malloc(sizeof(t_command));
+		if (!new_cmd)
+			return ;
+		new_cmd->tokens = set_tokens_type(commands[i]);
+		if (!new_cmd->tokens)
+			return ;
+		new_cmd->next = NULL;
+		if (!head)
+			head = new_cmd;
+		else
+			current->next = new_cmd;
+		current = new_cmd;
+		i++;
+	}
+	*cmd_ptr = head;
 }
 
-void get_cr_command(t_command **cmd_ptr, char **commands)
+t_command	*get_commands(char *line)
 {
-    t_command *head = NULL;
-    t_command *current = NULL;
-    int i = 0;
+	t_command	*head;
+	char		**commands;
 
-    while (commands[i])
-    {
-        char **args = ft_ms_split(commands[i]);
-        if (!args)
-            return;
-        t_command *new_cmd = malloc(sizeof(t_command));
-        if (!new_cmd)
-            return;
-        new_cmd->tokens = set_tokens_type(args);
-        new_cmd->next = NULL;
-        if (!head)
-            head = new_cmd;
-        else
-            current->next = new_cmd;
-        current = new_cmd;
-        ft_freesplit(args);
-        i++;
-    }
-    *cmd_ptr = head;
-}
-
-void ft_print_prompt(t_command *command)
-{
-    t_token *tokens;
-    int i;
-    int j = 0;
-
-    while (command)
-    {
-        tokens = command->tokens;
-        i = 0;
-        printf("Command %d:\n", j++);
-        while (tokens)
-        {
-            printf("Token %d: %s - %s\n", i++, tokens->value,
-            type_to_str(tokens->type));
-            tokens = tokens->next;
-        }
-        command = command->next;
-    }
-}
-
-t_command *get_commands(char *line)
-{
-    t_command *head = NULL;
-    char **commands;
-
-    if (line[0] == '\0')
-        return (NULL);
-    commands = ft_split(line, '|');
-    if (!commands)
-        return (NULL);
-    get_cr_command(&head, commands);
-    ft_freesplit(commands);
-    // ft_print_prompt(head);
-    return head;
+	head = NULL;
+	if (line[0] == '\0')
+		return (NULL);
+	commands = ft_split(line, '|');
+	if (!commands)
+		return (NULL);
+	get_cr_command(&head, commands);
+	ft_freesplit(commands);
+	return (head);
 }

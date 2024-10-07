@@ -6,19 +6,19 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 15:20:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 03:37:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int ft_pwd(char *line)
+int	ft_pwd(char *line)
 {
-    char *pwd;
+	char	*pwd;
 
-    pwd = getcwd(NULL, 0);
-    printf("%s\n", pwd);
-    free(pwd);
-    free(line);
-    return (1);
+	pwd = getcwd(NULL, 0);
+	printf("%s\n", pwd);
+	free(pwd);
+	free(line);
+	return (1);
 }

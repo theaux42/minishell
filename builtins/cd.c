@@ -6,23 +6,23 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2024/09/29 15:20:39 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/07 03:38:34 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int ft_cd(char *line)
+int	ft_cd(char *line)
 {
-    char *path;
+	char	*path;
 
-    path = ft_strtrim(line, " ");
-    if (chdir(path) == -1)
-    {
-        perror("cd");
-        free(path);
-        return (1);
-    }
-    free(path);
-    return (1);
+	path = ft_strtrim(line, " ");
+	if (chdir(path) == -1)
+	{
+		perror("cd");
+		free(path);
+		return (1);
+	}
+	free(path);
+	return (1);
 }
