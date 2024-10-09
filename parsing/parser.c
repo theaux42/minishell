@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 22:51:35 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/08 16:46:33 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,6 @@ t_command	*get_commands(char *line)
 		return (NULL);
 	get_cr_command(&head, commands);
 	ft_freesplit(commands);
+	print_commands(head);
 	return (head);
 }
