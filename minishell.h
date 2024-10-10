@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/08 16:45:26 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/10 19:01:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ typedef struct s_command
 	struct s_command	*next; // Commande suivante (si pipe)
 }				t_command;
 
-# define PROMPT "ᓚᘏᗢ → "
+# define PROMPT "ᓚᘏᗢ"
 # define CMD_NOT_FOUND 127
 
 // testings
@@ -83,7 +83,6 @@ void			get_cr_command(t_command **cmd_ptr, char **commands);
 // Functions of parsing/utils.c
 t_token_type	get_redirection_type(char *str);
 t_token_type	get_tokens_type(char *str, int pos);
-t_token			*set_tokens_type(char *command);
 // Functions of parsing/split_utils.c
 int				ft_ms_isspace(char c);
 int				quote_manager(char current, int is_in_arg);
@@ -116,5 +115,6 @@ void			free_commands(t_command *commands);
 // Fonction de debug
 void			print_commands(t_command *commands);
 void			print_tokens(t_token *tokens);
-
+void			print_tokens2(t_token *tokens, char separator);
+// Fonction de testing
 #endif

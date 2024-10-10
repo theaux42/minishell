@@ -18,6 +18,12 @@ if [ "$norm_errors" -ne 0 ]; then
     if [[ $show_errors =~ ^[Yy]$ ]]; then
         norminette | grep 'Error'
     fi
+    read -p "Voulez-vous sortir du script? (Y/n): " exit_script
+    exit_script=${exit_script:-Y}
+    if [[ $exit_script =~ ^[Yy]$ ]]; then
+        echo "Script annulé."
+        exit 1
+    fi
 else
     printf "[$green INFO $reset]: Aucune erreur de norminette.\n"
 fi

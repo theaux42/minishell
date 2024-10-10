@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/10 01:55:58 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/10 18:42:26 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,19 @@ void	print_tokens(t_token *tokens)
 		current = current->next;
 		i++;
 	}
+}
+
+void	print_tokens2(t_token *tokens, char separator)
+{
+	t_token	*current;
+
+	current = tokens;
+	while (current)
+	{
+		printf("%s%c", current->value, separator);
+		current = current->next;
+	}
+	printf("\n");
 }
 
 void	print_commands(t_command *commands)

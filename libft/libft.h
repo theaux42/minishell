@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/07 04:10:37 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/10 19:11:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,13 +102,13 @@ int		ft_putptr(unsigned long long ptr);
 
 // Functions of the get_next_line function
 int		isnewline(char *str);
-char	*ft_cleanup(char *str);
 char	*get_next_line(int fd);
 
 // Other functions
 char	*ft_addchar(char *s1, char s2);
 void	ft_freesplit(char **split);
 void	ft_print_split(char **split);
+int		ft_split_len(char **split);
 
 // Math functions
 int		ft_pow(int nb, int power);
