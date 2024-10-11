@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   dup_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/08 14:39:47 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:35:04 by tbabou           ###   ########.fr       */
+/*   Created: 2024/10/11 23:41:32 by tbabou            #+#    #+#             */
+/*   Updated: 2024/10/11 23:49:42 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+char	**dup_env(char **env)
 {
-	size_t	i;
+	int		env_len;
+	char	**result;
+	int		i;
 
-	if (!s1 || !s2)
-		return (-1);
+	env_len = ft_split_len(env);
+	result = malloc(sizeof(char *) * (env_len + 1));
+	if (!result)
+		return (NULL);
 	i = 0;
-	while (i < n && (s1[i] || s2[i]))
+	while (env[i])
 	{
-		if (s1[i] != s2[i])
-			return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
+		result[i] = ft_strdup(env[i]);
+		if (!result[i])
+			return (NULL);
 		i++;
 	}
-	return (0);
+	result[i] = NULL;
+	return (result);
 }

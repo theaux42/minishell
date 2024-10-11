@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/08 14:39:47 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:35:04 by tbabou           ###   ########.fr       */
+/*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
+/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+int	ft_cd(char *line)
 {
-	size_t	i;
+	char	*path;
 
-	if (!s1 || !s2)
-		return (-1);
-	i = 0;
-	while (i < n && (s1[i] || s2[i]))
+	path = ft_strtrim(line, " ");
+	if (chdir(path) == -1)
 	{
-		if (s1[i] != s2[i])
-			return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
-		i++;
+		perror("cd");
+		free(path);
+		return (1);
 	}
-	return (0);
+	free(path);
+	return (1);
 }

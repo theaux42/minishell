@@ -1,45 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:54:05 by tbabou           ###   ########.fr       */
+/*   Created: 2024/10/07 03:33:11 by tbabou            #+#    #+#             */
+/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_exit(char *line)
+int	ft_ms_isspace(char c)
 {
-	free(line);
-	printf("exit\n");
+	if (c == ' ' || c == '\t')
+		return (1);
 	return (0);
 }
 
-int	main(int ac, char **av, char **env)
+int	quote_manager(char current, int is_in_arg)
 {
-	t_command	*command;
-	char		*line;
-
-	(void)ac;
-	(void)av;
-	(void)env;
-	while (1)
+	if (current == '\'')
 	{
-		printf("%s%s%s ", VIOLET500, PROMPT, RESET);
-		line = readline("→ ");
-		if (line)
-		{
-			if (ft_strncmp(line, "exit", 4) == 0)
-				return (ft_exit(line));
-			command = get_commands(line);
-			execute_command(command);
-			free_commands(command);
-			free(line);
-		}
+		if (is_in_arg == 0)
+			is_in_arg = 1;
+		else if (is_in_arg == 1)
+			is_in_arg = 0;
 	}
-	return (0);
+	else if (current == '"')
+	{
+		if (is_in_arg == 0)
+			is_in_arg = 2;
+		else if (is_in_arg == 2)
+			is_in_arg = 0;
+	}
+	return (is_in_arg);
 }
