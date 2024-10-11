@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/10 19:01:39 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/10 19:24:30 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ char			*ft_token_value(char *value);
 // === PARSING ===
 // Functions of parsing/parser.c
 t_command		*get_commands(char *line);
-void			get_cr_command(t_command **cmd_ptr, char **commands);
 // Functions of parsing/utils.c
 t_token_type	get_redirection_type(char *str);
 t_token_type	get_tokens_type(char *str, int pos);

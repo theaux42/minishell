@@ -21,7 +21,8 @@ OTHER_FILES = ft_addchar.c ft_freesplit.c ft_print_split.c ft_split_len.c
 
 MATHS_FILES = ft_pow.c ft_sqrt.c ft_factorial.c ft_fibonacci.c ft_is_prime.c ft_intlen.c
 
-STRINGS_FILES = ft_strcap.c ft_strlowcase.c ft_strupcase.c
+STRINGS_FILES = ft_strcap.c ft_strlowcase.c ft_strupcase.c ft_strjoins.c \
+	ft_strjoin_double.c
 
 LIBC = $(addprefix basic/, $(LIBC_FILES))
 ADDITIONAL = $(addprefix additional/, $(ADDITIONAL_FILES))
@@ -30,8 +31,9 @@ BONUS = $(addprefix additional/, $(ADDITIONAL_FILES))
 GNL = $(addprefix gnl/, $(GNL_FILES))
 OTHER = $(addprefix other/, $(OTHER_FILES))
 MATHS = $(addprefix maths/, $(MATHS_FILES))
+STRINGS = $(addprefix strings/, $(STRINGS_FILES))
 
-SRCS = ${LIBC} ${ADDITIONAL} ${BONUS} ${PRINTF} ${GNL} ${OTHER} ${MATHS}
+SRCS = ${LIBC} ${ADDITIONAL} ${BONUS} ${PRINTF} ${GNL} ${OTHER} ${MATHS} ${STRINGS}
 
 OBJS = ${SRCS:.c=.o}
 

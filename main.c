@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/10 19:21:25 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/11 21:21:05 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 
 int	ft_exit(char *line)
 {
-	char	**args;
-
-	args = ft_split(line, ' ');
+	free(line);
 	printf("exit\n");
 	return (0);
 }
