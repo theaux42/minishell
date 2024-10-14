@@ -1,35 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dup_env.c                                          :+:      :+:    :+:   */
+/*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 23:41:32 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/12 05:43:47 by tbabou           ###   ########.fr       */
+/*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
+/*   Updated: 2024/10/12 06:55:19 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**dup_env(char **env)
+int	is_builtin(char *str)
 {
-	int		env_len;
-	char	**result;
-	int		i;
-
-	env_len = ft_split_len(env);
-	result = malloc(sizeof(char *) * (env_len + 1));
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (env[i])
-	{
-		result[i] = ft_strdup(env[i]);
-		if (!result[i])
-			return (NULL);
-		i++;
-	}
-	result[i] = NULL;
-	return (result);
+	if (ft_strncmp(str, "echo", 4) == 0)
+		return (1);
+	if (ft_strncmp(str, "cd", 2) == 0)
+		return (1);
+	if (ft_strncmp(str, "pwd", 3) == 0)
+		return (1);
+	if (ft_strncmp(str, "export", 6) == 0)
+		return (1);
+	if (ft_strncmp(str, "unset", 5) == 0)
+		return (1);
+	if (ft_strncmp(str, "env", 3) == 0)
+		return (1);
+	if (ft_strncmp(str, "exit", 4) == 0)
+		return (1);
+	return (0);
 }

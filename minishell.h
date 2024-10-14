@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/10 19:24:30 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/12 06:55:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,18 @@ typedef struct s_command
 	struct s_command	*next; // Commande suivante (si pipe)
 }				t_command;
 
+typedef struct s_minishell
+{
+	t_command	*commands;
+	char		**env;
+	int			status;
+}				t_minishell;
+
 # define PROMPT "ᓚᘏᗢ"
 # define CMD_NOT_FOUND 127
 
 // testings
-char			*get_full_cmd(char *bin);
+char			*get_full_cmd(char *bin, char **env);
 char			*ft_token_value(char *value);
 // === PARSING ===
 // Functions of parsing/parser.c
@@ -92,7 +99,7 @@ int				ft_prompt_length(char *line);
 
 // === EXECUTION ===
 // Fonction d'exécution
-void			execute_command(t_command *command);
+void			execute_command(t_minishell *minishell);
 
 // Fonction Utils
 void			init_pipes(t_command *commands);
@@ -101,14 +108,22 @@ int				count_arguments(t_command *command);
 int				fill_arguments(char **argv, t_command *command);
 void			no_cmd_handler(t_command *current);
 
-// === BUILTINS ===
+// Fonction env
+char			*get_env(char *name, char **env);
+void			del_env(char *key, char ***env);
+char			**dup_env(char **env);
+void			set_env(char *key, char *value, char ***env);
 
+// === BUILTINS ===
+int				is_builtin(char *str);
 // === UTILS ===
 // Fonction de utils
 void			exit_error(char *msg);
 void			set_default_values(t_command *command);
 // Fonction de free
 void			free_commands(t_command *commands);
+// Fonction d'initialisation
+t_minishell		*init_minishell(char **env);
 
 // === DEBUG ===
 // Fonction de debug

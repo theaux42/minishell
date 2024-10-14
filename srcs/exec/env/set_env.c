@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:42:39 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/12 05:39:50 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	**add_env_value(char *key, char *value, char **env)
 	return (result);
 }
 
-void	set_env_value(char *key, char *value, char ***env)
+void	set_env(char *key, char *value, char ***env)
 {
 	int		result;
 	char	**new_env;

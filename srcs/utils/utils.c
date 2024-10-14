@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/12 06:26:20 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**get_paths(char *command)
+char	**get_paths(char *command, char **env)
 {
 	char	*path;
 	char	*temp;
@@ -20,7 +20,7 @@ char	**get_paths(char *command)
 	int		i;
 
 	i = 0;
-	path = getenv("PATH");
+	path = get_env("PATH", env);
 	paths = ft_split(path, ':');
 	while (paths[i])
 	{
@@ -60,7 +60,7 @@ char	*get_cmd(char *command)
 	return (NULL);
 }
 
-char	*get_full_cmd(char *bin)
+char	*get_full_cmd(char *bin, char **env)
 {
 	char	**paths;
 	char	*full_cmd;
@@ -69,7 +69,7 @@ char	*get_full_cmd(char *bin)
 	i = 0;
 	if (bin[0] == '/' || bin[0] == '.')
 		return (get_cmd(bin));
-	paths = get_paths(bin);
+	paths = get_paths(bin, env);
 	while (paths[i++])
 	{
 		if (access(paths[i], F_OK) == 0)
@@ -81,19 +81,6 @@ char	*get_full_cmd(char *bin)
 	}
 	ft_freesplit(paths);
 	return (NULL);
-}
-
-void	set_default_values(t_command *command)
-{
-	command->next = NULL;
-	command->redirections = NULL;
-	command->is_last = 0;
-	command->is_builtin = 0;
-	command->is_absolute = 0;
-	command->pipes[0] = -1;
-	command->pipes[1] = -1;
-	command->prev_pipe = -1;
-	command->pid = -1;
 }
 
 void	exit_error(char *msg)

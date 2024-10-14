@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:54:05 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/12 06:22:18 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,24 @@ int	ft_exit(char *line)
 
 int	main(int ac, char **av, char **env)
 {
-	t_command	*command;
+	t_minishell	*minishell;
 	char		*line;
 
 	(void)ac;
 	(void)av;
-	(void)env;
+	minishell = init_minishell(env);
 	while (1)
 	{
-		printf("%s%s%s ", VIOLET500, PROMPT, RESET);
+		printf("%s%s%s@%s%s%s ", AMBER500, get_env("USER", minishell->env),
+			RESET, VIOLET500, PROMPT, RESET);
 		line = readline("→ ");
 		if (line)
 		{
 			if (ft_strncmp(line, "exit", 4) == 0)
 				return (ft_exit(line));
-			command = get_commands(line);
-			execute_command(command);
-			free_commands(command);
+			minishell->commands = get_commands(line);
+			execute_command(minishell);
+			free_commands(minishell->commands);
 			free(line);
 		}
 	}

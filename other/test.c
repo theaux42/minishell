@@ -1,35 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dup_env.c                                          :+:      :+:    :+:   */
+/*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 23:41:32 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/12 05:43:47 by tbabou           ###   ########.fr       */
+/*   Created: 2024/10/14 02:43:13 by tbabou            #+#    #+#             */
+/*   Updated: 2024/10/14 02:43:15 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <ncurses.h>
+#include <stdio.h>
+#include <stdlib.h>    // pour getenv
+#include <sys/ioctl.h> // pour ioctl
+#include <termios.h>   // pour les fonctions tcgetattr, tcsetattr
+#include <unistd.h>    // pour isatty, ttyname
 
-char	**dup_env(char **env)
+int	main(void)
 {
-	int		env_len;
-	char	**result;
-	int		i;
-
-	env_len = ft_split_len(env);
-	result = malloc(sizeof(char *) * (env_len + 1));
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (env[i])
-	{
-		result[i] = ft_strdup(env[i]);
-		if (!result[i])
-			return (NULL);
-		i++;
-	}
-	result[i] = NULL;
-	return (result);
+	printf("%s\n", ttyname(0));
+	printf("%s\n", ttyname(1));
+	printf("%s\n", ttyname(2));
+	printf("%i\n", isatty(0));
+	printf("%i\n", ttyslot());
 }

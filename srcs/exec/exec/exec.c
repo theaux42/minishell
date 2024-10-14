@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/12 06:23:44 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	exec_cmd(t_command *command, char **env)
 		tokens = tokens->next;
 	if (!tokens)
 		return (CMD_NOT_FOUND);
-	cmd = get_full_cmd(tokens->value);
+	cmd = get_full_cmd(tokens->value, env);
 	if (!cmd)
 		return (CMD_NOT_FOUND);
 	pid = execution(cmd, command, env);
@@ -83,19 +83,18 @@ void	close_fds(int *prev_fd, t_command *current)
 	*prev_fd = current->pipes[0];
 }
 
-void	execute_command(t_command *commands)
+void	execute_command(t_minishell *minishell)
 {
-	extern char	**environ;
 	t_command	*current;
 	int			prev_fd;
 
 	prev_fd = -1;
-	init_pipes(commands);
-	current = commands;
+	init_pipes(minishell->commands);
+	current = minishell->commands;
 	while (current)
 	{
 		current->prev_pipe = prev_fd;
-		current->pid = exec_cmd(current, environ);
+		current->pid = exec_cmd(current, minishell->env);
 		if (current->pid == CMD_NOT_FOUND)
 			no_cmd_handler(current);
 		if (current->pid == -1)
@@ -105,5 +104,5 @@ void	execute_command(t_command *commands)
 	}
 	if (prev_fd != -1)
 		close(prev_fd);
-	wait_for_children(commands);
+	wait_for_children(minishell->commands);
 }
