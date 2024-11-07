@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
+/*   Created: 2024/10/16 15:56:05 by tbabou            #+#    #+#             */
+/*   Updated: 2024/11/07 17:31:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_cd(char *line)
+int	ft_env(char **env)
 {
-	char	*path;
+	int	i;
 
-	path = ft_strtrim(line, " ");
-	if (chdir(path) == -1)
+	i = 0;
+	if (!env)
 	{
-		perror("cd");
-		free(path);
+		fprintf(stderr, "env: No environment variables found\n");
 		return (1);
 	}
-	free(path);
-	return (1);
+	printf("[DEBUG] ft_env: Listing environment variables\n");
+	while (env[i])
+	{
+		printf("[DEBUG] env[%d]: %s\n", i, env[i]);
+		i++;
+	}
+	return (0);
 }

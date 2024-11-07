@@ -18,12 +18,13 @@ UTILS_SRCS = srcs/utils/free.c srcs/utils/split.c srcs/utils/parser.c \
 
 EXEC_SRCS = srcs/exec/exec/exec.c srcs/exec/exec/exec_utils.c
 
-BUILTINS_SRCS = srcs/builtins/cd.c srcs/builtins/pwd.c \
-		srcs/builtins/builtins.c
-
+BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
+		srcs/builtins/builtins.c srcs/builtins/ft_echo.c srcs/builtins/ft_env.c \
+		srcs/builtins/ft_export.c
+		
 REDIRECTION_SRCS = srcs/exec/redirection/redirection.c
 
-SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) $(BUILTINS_SRCS) $(REDIRECTION_SRCS)
+SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) $(BUILTINS_SRCS) $(REDIRECTION_SRCS) srcs/debug/debug.c
 
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)

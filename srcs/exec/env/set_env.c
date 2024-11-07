@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:42:39 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/12 05:39:50 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 17:33:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,23 @@
 
 int	edit_env_value(char *key, char *value, char **env)
 {
-	char	**args;
 	char	*new_env;
+	int		key_len;
 	int		i;
 
+	key_len = ft_strlen(key);
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], key, ft_strlen(key) - 1) == 0)
+		if (ft_strncmp(env[i], key, key_len) == 0 && env[i][key_len] == '=')
 		{
-			args = ft_split(env[i], '=');
-			if (!args)
-				return (0);
 			new_env = ft_strjoin_double(key, "=", value);
 			if (!new_env)
-				return (ft_freesplit(args), 0);
+				return (0);
 			free(env[i]);
 			env[i] = new_env;
-			return (ft_freesplit(args), 1);
+			printf("[ENV] Edited %s to %s\n", key, value);
+			return (1);
 		}
 		i++;
 	}
@@ -41,42 +40,44 @@ int	edit_env_value(char *key, char *value, char **env)
 char	**add_env_value(char *key, char *value, char **env)
 {
 	int		env_len;
-	char	**result;
-	char	*line;
+	char	**new_env;
 	int		i;
 
-	env_len = ft_split_len(env);
-	result = malloc(sizeof(char *) * (env_len + 2));
-	if (!result)
-		return (NULL);
 	i = 0;
-	while (env[i])
+	env_len = ft_split_len(env);
+	new_env = malloc(sizeof(char *) * (env_len + 2));
+	if (!new_env)
+		return (NULL);
+	while (env[i] && i < env_len)
 	{
-		result[i] = ft_strdup(env[i]);
-		if (!result[i])
-			return (ft_freesplit(result), NULL);
+		new_env[i] = ft_strdup(env[i]);
 		i++;
 	}
-	line = ft_strjoin_double(key, "=", value);
-	if (!line)
-		return (ft_freesplit(result), NULL);
-	result[i] = line;
-	result[++i] = NULL;
-	return (result);
+	new_env[env_len] = ft_strjoin_double(key, "=", value);
+	new_env[env_len + 1] = NULL;
+	printf("[ENV] Added new variable %s with value %s\n", key, value);
+	return (new_env);
 }
 
 void	set_env(char *key, char *value, char ***env)
 {
-	int		result;
 	char	**new_env;
 
-	result = edit_env_value(key, value, *env);
-	if (!result)
+	printf("[DEBUG] Attempting to set %s to %s\n", key, value);
+	if (edit_env_value(key, value, *env))
+	{
+		printf("[ENV] Updated %s to %s\n", key, value);
+	}
+	else
 	{
 		new_env = add_env_value(key, value, *env);
 		if (!new_env)
+		{
+			fprintf(stderr, "[ENV] Error adding %s\n", key);
 			return ;
+		}
 		ft_freesplit(*env);
 		*env = new_env;
+		printf("[ENV] Added %s with value %s\n", key, value);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/12 06:55:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 18:00:24 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int				ft_prompt_length(char *line);
 
 // === EXECUTION ===
 // Fonction d'exécution
-void			execute_command(t_minishell *minishell);
+void			execute_commands(t_minishell *minishell);
 
 // Fonction Utils
 void			init_pipes(t_command *commands);
@@ -109,13 +109,23 @@ int				fill_arguments(char **argv, t_command *command);
 void			no_cmd_handler(t_command *current);
 
 // Fonction env
-char			*get_env(char *name, char **env);
+char			*get_env(char *key, char **env);
 void			del_env(char *key, char ***env);
-char			**dup_env(char **env);
+void			dup_env(char ***dest_env, char **src_env);
 void			set_env(char *key, char *value, char ***env);
 
 // === BUILTINS ===
 int				is_builtin(char *str);
+int				exec_builtins(t_command *command, char ***env);
+
+// Les builtins
+int				ft_echo(t_token *tokens, char **env);
+int				ft_pwd(char **env);
+int				ft_cd(char *line, char ***env);
+int				ft_env(char **env);
+// int				ft_export(t_token *tokens, char **env);
+int				ft_export(t_token *tokens, char ***env);
+
 // === UTILS ===
 // Fonction de utils
 void			exit_error(char *msg);
@@ -130,5 +140,6 @@ t_minishell		*init_minishell(char **env);
 void			print_commands(t_command *commands);
 void			print_tokens(t_token *tokens);
 void			print_tokens2(t_token *tokens, char separator);
+void			print_env(char **env);
 // Fonction de testing
 #endif

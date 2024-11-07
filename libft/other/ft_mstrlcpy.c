@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_mstrlcpy.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/29 15:20:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
+/*   Created: 2024/10/14 23:23:57 by tbabou            #+#    #+#             */
+/*   Updated: 2024/10/14 23:24:42 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_pwd(char *line)
+char	*ft_mstrlcpy(const char *src, int len)
 {
-	char	*pwd;
+	char	*dst;
+	int		i;
 
-	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
-	free(pwd);
-	free(line);
-	return (1);
+	dst = malloc(sizeof(char) * (len + 1));
+	if (!dst)
+		return (NULL);
+	i = 0;
+	while (src[i] && i < len)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = 0;
+	return (dst);
 }

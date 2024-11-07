@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 17:31:08 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,24 @@ void	print_commands(t_command *commands)
 		printf("Command n%i:\n", i);
 		print_tokens(current->tokens);
 		current = current->next;
+		i++;
+	}
+}
+
+void	print_env(char **env)
+{
+	int	i;
+
+	i = 0;
+	if (!env)
+	{
+		fprintf(stderr, "env: No environment variables found\n");
+		return ;
+	}
+	printf("[DEBUG] ft_env: Listing environment variables\n");
+	while (env[i])
+	{
+		printf("[DEBUG] env[%d]: %s\n", i, env[i]);
 		i++;
 	}
 }

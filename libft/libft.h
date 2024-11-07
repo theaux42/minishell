@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 21:12:50 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/14 23:25:30 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ char	*ft_addchar(char *s1, char s2);
 void	ft_freesplit(char **split);
 void	ft_print_split(char **split);
 int		ft_split_len(char **split);
+char	*ft_mstrlcpy(const char *src, int len);
 
 // Math functions
 int		ft_pow(int nb, int power);

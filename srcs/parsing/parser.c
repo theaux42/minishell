@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/12 06:57:36 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/10/14 16:06:44 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_command	*init_new_command(void)
+t_command	*init_new_command(char *token)
 {
 	t_command	*new_command;
 
@@ -24,7 +24,7 @@ t_command	*init_new_command(void)
 	new_command->pipes[0] = -1;
 	new_command->pipes[1] = -1;
 	new_command->prev_pipe = -1;
-	new_command->is_builtin = 0;
+	new_command->is_builtin = is_builtin(token);
 	new_command->is_absolute = 0;
 	new_command->is_last = 0;
 	new_command->pid = 0;
@@ -76,14 +76,14 @@ void	parse_commands(t_command **head, char **commands)
 
 	i = 0;
 	j = 0;
-	*head = init_new_command();
+	*head = init_new_command(commands[i]);
 	current = *head;
 	while (commands[i])
 	{
 		if (ft_strcmp(commands[i], "|") == 0)
 		{
 			j = -1;
-			new_cmd = init_new_command();
+			new_cmd = init_new_command(commands[i + 1]);
 			current->next = new_cmd;
 			current = new_cmd;
 		}

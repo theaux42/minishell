@@ -6,30 +6,32 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:41:32 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/12 05:43:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 12:02:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**dup_env(char **env)
+void	dup_env(char ***dest_env, char **src_env)
 {
-	int		env_len;
-	char	**result;
-	int		i;
+	int	env_len;
+	int	i;
 
-	env_len = ft_split_len(env);
-	result = malloc(sizeof(char *) * (env_len + 1));
-	if (!result)
-		return (NULL);
+	env_len = ft_split_len(src_env);
+	*dest_env = malloc(sizeof(char *) * (env_len + 1));
+	if (!*dest_env)
+		return ;
 	i = 0;
-	while (env[i])
+	while (src_env[i])
 	{
-		result[i] = ft_strdup(env[i]);
-		if (!result[i])
-			return (NULL);
+		(*dest_env)[i] = ft_strdup(src_env[i]);
+		if (!(*dest_env)[i])
+		{
+			ft_freesplit(*dest_env);
+			*dest_env = NULL;
+			return ;
+		}
 		i++;
 	}
-	result[i] = NULL;
-	return (result);
+	(*dest_env)[i] = NULL;
 }

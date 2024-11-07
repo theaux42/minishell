@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 02:43:13 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/14 02:43:15 by tbabou           ###   ########.fr       */
+/*   Created: 2024/10/16 16:10:48 by tbabou            #+#    #+#             */
+/*   Updated: 2024/11/07 17:30:45 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ncurses.h>
-#include <stdio.h>
-#include <stdlib.h>    // pour getenv
-#include <sys/ioctl.h> // pour ioctl
-#include <termios.h>   // pour les fonctions tcgetattr, tcsetattr
-#include <unistd.h>    // pour isatty, ttyname
+#include "minishell.h"
 
-int	main(void)
+int	ft_export(t_token *tokens, char ***env)
 {
-	printf("%s\n", ttyname(0));
-	printf("%s\n", ttyname(1));
-	printf("%s\n", ttyname(2));
-	printf("%i\n", isatty(0));
-	printf("%i\n", ttyslot());
+	char	**split;
+
+	split = ft_split(tokens->value, '=');
+	if (!split || !split[0] || !split[1])
+	{
+		fprintf(stderr, "Error: Invalid syntax\n");
+		return (1);
+	}
+	set_env(split[0], split[1], env);
+	printf("Exported %s with value %s\n", split[0], split[1]);
+	printf("Now getting %s\n", get_env(split[0], *env));
+	return (0);
 }

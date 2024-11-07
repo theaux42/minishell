@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/12 06:23:44 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 17:45:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_child(char *cmd, t_command *command, char **env, char **argv)
+void	execute_child(char *cmd, t_command *command, char ***env, char **argv)
 {
 	if (command->prev_pipe != -1)
 	{
@@ -28,11 +28,16 @@ void	execute_child(char *cmd, t_command *command, char **env, char **argv)
 	}
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
-	execve(cmd, argv, env);
-	exit_error("Execve");
+	if (command->is_builtin)
+		exit(exec_builtins(command, env));
+	else
+	{
+		execve(cmd, argv, *env);
+		exit_error("Execve");
+	}
 }
 
-int	execution(char *cmd, t_command *command, char **env)
+int	execution(char *cmd, t_command *command, char ***env)
 {
 	pid_t	pid;
 	char	**argv;
@@ -55,22 +60,69 @@ int	execution(char *cmd, t_command *command, char **env)
 	return (pid);
 }
 
-int	exec_cmd(t_command *command, char **env)
+int	needs_parent_execution(char *cmd_name)
+{
+	return (ft_strcmp(cmd_name, "cd") == 0 || ft_strcmp(cmd_name, "export") == 0
+		|| ft_strcmp(cmd_name, "unset") == 0 || ft_strcmp(cmd_name,
+			"exit") == 0);
+}
+
+int	execute_external_command(t_minishell *minishell, t_command *command,
+		t_token *tokens)
 {
 	char	*cmd;
 	int		pid;
+
+	cmd = get_full_cmd(tokens->value, minishell->env);
+	if (!cmd)
+		return (CMD_NOT_FOUND);
+	pid = execution(cmd, command, &minishell->env);
+	free(cmd);
+	return (pid);
+}
+
+int	execute_builtin_command(t_minishell *minishell, t_command *command,
+		t_token *tokens)
+{
+	char	*cmd;
+	int		pid;
+	int		status;
+
+	if (needs_parent_execution(tokens->value))
+	{
+		status = exec_builtins(command, &minishell->env);
+		minishell->status = status;
+		return (0);
+	}
+	else
+	{
+		cmd = ft_strdup(tokens->value);
+		if (!cmd)
+			return (CMD_NOT_FOUND);
+		pid = execution(cmd, command, &minishell->env);
+		free(cmd);
+		return (pid);
+	}
+}
+
+int	exec_cmd(t_minishell *minishell, t_command *command)
+{
 	t_token	*tokens;
+	int		pid;
 
 	tokens = command->tokens;
 	while (tokens && tokens->type != COMMAND)
 		tokens = tokens->next;
 	if (!tokens)
 		return (CMD_NOT_FOUND);
-	cmd = get_full_cmd(tokens->value, env);
-	if (!cmd)
-		return (CMD_NOT_FOUND);
-	pid = execution(cmd, command, env);
-	free(cmd);
+	if (!command->is_builtin)
+	{
+		pid = execute_external_command(minishell, command, tokens);
+	}
+	else
+	{
+		pid = execute_builtin_command(minishell, command, tokens);
+	}
 	return (pid);
 }
 
@@ -83,7 +135,30 @@ void	close_fds(int *prev_fd, t_command *current)
 	*prev_fd = current->pipes[0];
 }
 
-void	execute_command(t_minishell *minishell)
+void	execute_single_command(t_minishell *minishell, t_command *current,
+		int *prev_fd)
+{
+	int	status;
+
+	current->prev_pipe = *prev_fd;
+	if (current->is_builtin && needs_parent_execution(current->tokens->value))
+	{
+		status = exec_builtins(current, &minishell->env);
+		minishell->status = status;
+		current->pid = 0;
+	}
+	else
+	{
+		current->pid = exec_cmd(minishell, current);
+		if (current->pid == CMD_NOT_FOUND)
+			no_cmd_handler(current);
+		if (current->pid == -1)
+			exit(EXIT_FAILURE);
+	}
+	close_fds(prev_fd, current);
+}
+
+void	execute_commands(t_minishell *minishell)
 {
 	t_command	*current;
 	int			prev_fd;
@@ -93,13 +168,7 @@ void	execute_command(t_minishell *minishell)
 	current = minishell->commands;
 	while (current)
 	{
-		current->prev_pipe = prev_fd;
-		current->pid = exec_cmd(current, minishell->env);
-		if (current->pid == CMD_NOT_FOUND)
-			no_cmd_handler(current);
-		if (current->pid == -1)
-			exit(EXIT_FAILURE);
-		close_fds(&prev_fd, current);
+		execute_single_command(minishell, current, &prev_fd);
 		current = current->next;
 	}
 	if (prev_fd != -1)
