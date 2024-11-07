@@ -20,7 +20,7 @@ EXEC_SRCS = srcs/exec/exec/exec.c srcs/exec/exec/exec_utils.c
 
 BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
 		srcs/builtins/builtins.c srcs/builtins/ft_echo.c srcs/builtins/ft_env.c \
-		srcs/builtins/ft_export.c
+		srcs/builtins/ft_export.c srcs/builtins/ft_unset.c 
 		
 REDIRECTION_SRCS = srcs/exec/redirection/redirection.c
 

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 18:01:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 20:20:11 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	main(int ac, char **av, char **env)
 		line = readline("→ ");
 		if (line)
 		{
-			if (ft_strncmp(line, "exit", 4) == 0)
+			if (ft_strncmp(line, "exit ", 4) == 0)
 				return (ft_exit(line, minishell));
 			minishell->commands = get_commands(line);
 			execute_commands(minishell);

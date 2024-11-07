@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 18:00:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 20:13:38 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int				ft_cd(char *line, char ***env);
 int				ft_env(char **env);
 // int				ft_export(t_token *tokens, char **env);
 int				ft_export(t_token *tokens, char ***env);
+int				ft_unset(t_token *tokens, char ***env);
 
 // === UTILS ===
 // Fonction de utils
