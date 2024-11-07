@@ -52,7 +52,6 @@ int	ft_cd(char *path, char ***env)
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 	{
 		set_env("PWD", cwd, env);
-		v
 		return (0);
 	}
 	perror("getcwd");
