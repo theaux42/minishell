@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:29:32 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 18:18:10 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,20 @@ int	ft_cd(char *path, char ***env)
 {
 	char	cwd[1024];
 	char	*oldpwd;
+	char 	*new_path;
 
 	oldpwd = get_env("PWD", *env);
 	if (oldpwd)
 		set_env("OLDPWD", oldpwd, env);
+	new_path = get_cd_path(path, *env);
+	if (!new_path)
+		
 	if (chdir(path) != 0)
-	{
-		perror("cd");
-		return (1);
-	}
+		return (perror("cd"), 1);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 	{
 		set_env("PWD", cwd, env);
+		v
 		return (0);
 	}
 	perror("getcwd");

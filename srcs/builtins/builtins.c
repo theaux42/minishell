@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:44:46 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/07 18:13:53 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,10 @@ int	exec_builtins(t_command *command, char ***env)
 	if (ft_strncmp(command->tokens->value, "echo", 4) == 0)
 		ret = ft_echo(command->tokens->next, *env);
 	else if (ft_strncmp(command->tokens->value, "cd", 2) == 0)
-		ret = ft_cd(command->tokens->next->value, env);
+		if (command->tokens->next)
+			ret = ft_cd(command->tokens->next->value, env);
+		else
+			ret = ft_cd(NULL, env);
 	else if (ft_strncmp(command->tokens->value, "pwd", 3) == 0)
 		ret = ft_pwd(*env);
 	else if (ft_strncmp(command->tokens->value, "export", 6) == 0)
