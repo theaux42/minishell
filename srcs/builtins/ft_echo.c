@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:15:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 13:22:15 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/25 09:58:26 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	display_env(char *searched, char c, char **env)
 	else
 		printf("%c", c);
 }
-
+	
 int	parse_env(char *line, char **env)
 {
 	int		i;

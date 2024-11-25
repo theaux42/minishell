@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:42:39 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:33:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/24 23:55:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	edit_env_value(char *key, char *value, char **env)
 				return (0);
 			free(env[i]);
 			env[i] = new_env;
-			printf("[ENV] Edited %s to %s\n", key, value);
 			return (1);
 		}
 		i++;
@@ -55,7 +54,6 @@ char	**add_env_value(char *key, char *value, char **env)
 	}
 	new_env[env_len] = ft_strjoin_double(key, "=", value);
 	new_env[env_len + 1] = NULL;
-	printf("[ENV] Added new variable %s with value %s\n", key, value);
 	return (new_env);
 }
 
@@ -63,21 +61,12 @@ void	set_env(char *key, char *value, char ***env)
 {
 	char	**new_env;
 
-	printf("[DEBUG] Attempting to set %s to %s\n", key, value);
-	if (edit_env_value(key, value, *env))
-	{
-		printf("[ENV] Updated %s to %s\n", key, value);
-	}
-	else
+	if (!edit_env_value(key, value, *env))
 	{
 		new_env = add_env_value(key, value, *env);
 		if (!new_env)
-		{
-			fprintf(stderr, "[ENV] Error adding %s\n", key);
 			return ;
-		}
 		ft_freesplit(*env);
 		*env = new_env;
-		printf("[ENV] Added %s with value %s\n", key, value);
 	}
 }

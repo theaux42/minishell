@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 05:31:06 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:32:00 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/25 09:52:37 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	init_env(char ***env)
 	*env = malloc(sizeof(char *));
 	if (!*env)
 		exit_error("malloc error");
+	printf("Initialising the env\n");
 	(*env)[0] = NULL;
 	set_env("PATH", "/bin:/usr/bin:/usr/local/bin", env);
 	set_env("USER", "whoareu", env);
