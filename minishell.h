@@ -121,7 +121,7 @@ int				exec_builtins(t_command *command, char ***env);
 // Les builtins
 int				ft_echo(t_token *tokens, char **env);
 int				ft_pwd(char **env);
-int				ft_cd(char *line, char ***env);
+int				ft_cd(t_token *token, char ***env);
 int				ft_env(char **env);
 // int				ft_export(t_token *tokens, char **env);
 int				ft_export(t_token *tokens, char ***env);

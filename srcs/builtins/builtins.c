@@ -42,12 +42,7 @@ int	exec_builtins(t_command *command, char ***env)
 	if (ft_strncmp(command->tokens->value, "echo", 4) == 0)
 		ret = ft_echo(command->tokens->next, *env);
 	else if (ft_strncmp(command->tokens->value, "cd", 2) == 0)
-	{
-		if (command->tokens->next)
-			ret = ft_cd(command->tokens->next->value, env);
-		else
-			ret = ft_cd(NULL, env);
-	}
+		ret = ft_cd(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "pwd", 3) == 0)
 		ret = ft_pwd(*env);
 	else if (ft_strncmp(command->tokens->value, "export", 6) == 0)
@@ -56,7 +51,5 @@ int	exec_builtins(t_command *command, char ***env)
 		ft_unset(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "env", 3) == 0)
 		ft_env(*env);
-	// else if (ft_strncmp(command->tokens->value, "exit", 4) == 0)
-	// 	ft_exit(command->tokens->next, env);
 	return (ret);
 }

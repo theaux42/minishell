@@ -41,12 +41,16 @@ char	*get_cd_path(char *path, char **env)
 	return (ft_strdup(path));
 }
 
-int	ft_cd(char *path, char ***env)
+int	ft_cd(t_token *token, char ***env)
 {
 	char	cwd[1024];
+	char	*path;
 	char	*oldpwd;
 	char	*new_path;
 
+	path = NULL;
+	if (token)
+		path = token->value;
 	oldpwd = get_env("PWD", *env);
 	if (oldpwd)
 		set_env("OLDPWD", oldpwd, env);
@@ -58,13 +62,9 @@ int	ft_cd(char *path, char ***env)
 		free(new_path);
 		return (perror("cd"), 1);
 	}
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-	{
-		free(new_path);
-		set_env("PWD", cwd, env);
-		return (0);
-	}
 	free(new_path);
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		return (set_env("PWD", cwd, env), 0);
 	perror("getcwd");
 	return (1);
 }
