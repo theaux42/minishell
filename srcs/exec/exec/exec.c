@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:45:31 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/27 16:00:49 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_child(char *cmd, t_command *command, char ***env, char **argv)
+void	execute_child(char *cmd, t_command *command, char **argv, t_minishell *minishell)
 {
 	if (command->prev_pipe != -1)
 	{
@@ -29,15 +29,15 @@ void	execute_child(char *cmd, t_command *command, char ***env, char **argv)
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
 	if (command->is_builtin)
-		exit(exec_builtins(command, env));
+		exit(exec_builtins(command, &minishell->env, minishell->history));
 	else
 	{
-		execve(cmd, argv, *env);
+		execve(cmd, argv, minishell->env);
 		exit_error("Execve");
 	}
 }
 
-int	execution(char *cmd, t_command *command, char ***env)
+int	execution(char *cmd, t_command *command, t_minishell *minishell)
 {
 	pid_t	pid;
 	char	**argv;
@@ -55,7 +55,7 @@ int	execution(char *cmd, t_command *command, char ***env)
 		return (-1);
 	}
 	else if (pid == 0)
-		execute_child(cmd, command, env, argv);
+		execute_child(cmd, command, argv, minishell);
 	free(argv);
 	return (pid);
 }
@@ -76,7 +76,7 @@ int	execute_external_command(t_minishell *minishell, t_command *command,
 	cmd = get_full_cmd(tokens->value, minishell->env);
 	if (!cmd)
 		return (CMD_NOT_FOUND);
-	pid = execution(cmd, command, &minishell->env);
+	pid = execution(cmd, command, minishell);
 	free(cmd);
 	return (pid);
 }
@@ -90,7 +90,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 
 	if (needs_parent_execution(tokens->value))
 	{
-		status = exec_builtins(command, &minishell->env);
+		status = exec_builtins(command, &minishell->env, minishell->history);
 		minishell->status = status;
 		return (0);
 	}
@@ -99,7 +99,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 		cmd = ft_strdup(tokens->value);
 		if (!cmd)
 			return (CMD_NOT_FOUND);
-		pid = execution(cmd, command, &minishell->env);
+		pid = execution(cmd, command, minishell);
 		free(cmd);
 		return (pid);
 	}
@@ -139,7 +139,7 @@ void	execute_single_command(t_minishell *minishell, t_command *current,
 	current->prev_pipe = *prev_fd;
 	if (current->is_builtin && needs_parent_execution(current->tokens->value))
 	{
-		status = exec_builtins(current, &minishell->env);
+		status = exec_builtins(current, &minishell->env, minishell->history);
 		minishell->status = status;
 		current->pid = 0;
 	}

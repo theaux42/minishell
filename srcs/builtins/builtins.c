@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/25 15:32:40 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/27 16:01:24 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,12 @@ int	is_builtin(char *str)
 		result = 1;
 	else if (ft_strncmp(str, "exit", 4) == 0)
 		result = 1;
+	else if (ft_strncmp(str, "history", 7) == 0)
+		result = 1;
 	return (result);
 }
 
-int	exec_builtins(t_command *command, char ***env)
+int	exec_builtins(t_command *command, char ***env, t_history *histo)
 {
 	int	ret;
 
@@ -56,6 +58,8 @@ int	exec_builtins(t_command *command, char ***env)
 		ft_unset(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "env", 3) == 0)
 		ft_env(*env);
+	else if (ft_strncmp(command->tokens->value, "history", 7) == 0)
+		ft_history(histo);
 	// else if (ft_strncmp(command->tokens->value, "exit", 4) == 0)
 	// 	ft_exit(command->tokens->next, env);
 	return (ret);

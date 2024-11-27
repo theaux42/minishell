@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 20:13:38 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/27 16:42:37 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,19 @@ typedef struct s_command
 	struct s_command	*next; // Commande suivante (si pipe)
 }				t_command;
 
+typedef struct	s_history
+{
+	char	*command;
+	struct	s_history *next;
+}			t_history;
+
 typedef struct s_minishell
 {
 	t_command	*commands;
 	char		**env;
 	int			status;
+	t_history *history; 
+
 }				t_minishell;
 
 # define PROMPT "ᓚᘏᗢ"
@@ -114,9 +122,14 @@ void			del_env(char *key, char ***env);
 void			dup_env(char ***dest_env, char **src_env);
 void			set_env(char *key, char *value, char ***env);
 
+// History
+
+void load_history(void);
+void save_history(void);
+
 // === BUILTINS ===
 int				is_builtin(char *str);
-int				exec_builtins(t_command *command, char ***env);
+int				exec_builtins(t_command *command, char ***env, t_history *histo);
 
 // Les builtins
 int				ft_echo(t_token *tokens, char **env);
@@ -143,4 +156,14 @@ void			print_tokens(t_token *tokens);
 void			print_tokens2(t_token *tokens, char separator);
 void			print_env(char **env);
 // Fonction de testing
+
+
+// Fonction de history
+
+void add_to_history(t_history **history, char *command);
+void print_history(t_history *history);
+void free_history(t_history *history);
+int				ft_history(t_history *history);
+char    *clean_readline(void);
+
 #endif
