@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/27 16:47:17 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:55:27 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	main(int ac, char **av, char **env)
 		printf("%s%s%s@%s%s%s ", AMBER500, uname,
 			RESET, VIOLET500, PROMPT, RESET);
 		line = clean_readline();
-		if (line)
+		if (line && *line)
 		{
 			if (ft_strncmp(line, "exit ", 4) == 0)
 				return (ft_exit(line, minishell));
