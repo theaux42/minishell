@@ -22,7 +22,7 @@ void	display_env(char *searched, char c, char **env)
 	else
 		printf("%c", c);
 }
-	
+
 int	parse_env(char *line, char **env)
 {
 	int		i;

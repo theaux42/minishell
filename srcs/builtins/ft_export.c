@@ -23,8 +23,6 @@ int	ft_export(t_token *tokens, char ***env)
 		return (1);
 	}
 	set_env(split[0], split[1], env);
-	printf("Exported %s with value %s\n", split[0], split[1]);
-	printf("Now getting %s\n", get_env(split[0], *env));
 	ft_freesplit(split);
 	return (0);
 }

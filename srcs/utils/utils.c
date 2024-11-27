@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/25 10:09:27 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/11/25 16:08:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*get_full_cmd(char *bin, char **env)
 
 	i = 0;
 	if (bin[0] == '/' || bin[0] == '.')
-		return (get_cmd(bin));
+		return (ft_strdup(get_cmd(bin)));
 	paths = get_paths(bin, env);
 	while (paths[i])
 	{

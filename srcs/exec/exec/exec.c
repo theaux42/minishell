@@ -116,13 +116,9 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 	if (!tokens)
 		return (CMD_NOT_FOUND);
 	if (!command->is_builtin)
-	{
 		pid = execute_external_command(minishell, command, tokens);
-	}
 	else
-	{
 		pid = execute_builtin_command(minishell, command, tokens);
-	}
 	return (pid);
 }
 
