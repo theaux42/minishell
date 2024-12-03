@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/27 16:42:37 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/03 16:50:00 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,5 +165,15 @@ void print_history(t_history *history);
 void free_history(t_history *history);
 int				ft_history(t_history *history);
 char    *clean_readline(void);
+
+// Fonctions de signals
+
+void    handle_sigint(int sig);
+void    setup_signals(void);
+
+// Prompt
+
+char	*prompt_handler(t_minishell *minishell);
+char	*ft_strjoin_multi(int count, char **strings);
 
 #endif

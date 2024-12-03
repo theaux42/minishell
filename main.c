@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/27 16:55:27 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/03 17:14:36 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char    *clean_readline(void)
     char    *line;
 
     line = readline("→ ");
-    if (line)
+    if (line && *line)
     {
         cleared = ft_strtrim(line, "     ");
         if (cleared)
@@ -44,21 +44,56 @@ char    *clean_readline(void)
     return (NULL);
 }
 
+char	*prompt_handler(t_minishell *minishell)
+{
+	char	*uname;
+	char	*strings[9];
+	char	*prompt;
+
+	uname = get_env("USER", minishell->env);
+	if (!uname)
+		uname = ft_strdup("unknown");
+	else
+		uname = ft_strdup(uname);
+	strings[0] = AMBER500;
+	strings[1] = uname;
+	strings[2] = RESET;
+	strings[3] = "@";
+	strings[4] = VIOLET500;
+	strings[5] = PROMPT;
+	strings[6] = RESET;
+	strings[7] = " ";
+	strings[8] = "→ ";
+
+	prompt = ft_strjoin_multi(9, strings);
+	free(uname);
+
+	return (prompt);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_minishell	*minishell;
 	char		*line;
-	char		*uname;
+	char		*prompt;
 
 	(void)ac;
 	(void)av;
 	minishell = init_minishell(env);
+	setup_signals(); 
 	while (1)
 	{
-		uname = get_env("USER", minishell->env);
-		printf("%s%s%s@%s%s%s ", AMBER500, uname,
-			RESET, VIOLET500, PROMPT, RESET);
-		line = clean_readline();
+		prompt = prompt_handler(minishell);
+		line = readline(prompt);
+		free(prompt);
+		if (!line)
+		{
+			printf("exit\n");
+			free_history(minishell->history);
+			ft_freesplit(minishell->env);
+			free(minishell);
+			exit(0);
+		}
 		if (line && *line)
 		{
 			if (ft_strncmp(line, "exit ", 4) == 0)
@@ -68,8 +103,8 @@ int	main(int ac, char **av, char **env)
 			minishell->commands = get_commands(line);
 			execute_commands(minishell);
 			free_commands(minishell->commands);
-			free(line);
 		}
+		free(line);
 	}
 	free_history(minishell->history);
 	return (0);

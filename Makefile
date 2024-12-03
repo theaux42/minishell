@@ -26,7 +26,9 @@ REDIRECTION_SRCS = srcs/exec/redirection/redirection.c
 
 HISTORY_SRCS = srcs/history/history.c srcs/builtins/ft_history.c
 
-SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) $(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(HISTORY_SRCS) srcs/debug/debug.c
+SIGNALS_SRCS = srcs/signals/signals.c
+
+SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) $(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(HISTORY_SRCS) $(SIGNALS_SRCS) srcs/debug/debug.c
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
 

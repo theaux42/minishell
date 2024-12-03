@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/25 16:08:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/03 16:57:01 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,34 @@ void	exit_error(char *msg)
 {
 	perror(msg);
 	exit(EXIT_FAILURE);
+}
+
+char	*ft_strjoin_multi(int count, char **strings)
+{
+	char	*res;
+	size_t	len;
+	size_t	i;
+
+	len = 1;
+	i = 0;
+	if (count <= 0 || !strings)
+		return (NULL);
+	while (i < (size_t)count)
+	{
+		if (strings[i])
+			len += ft_strlen(strings[i]);
+		i++;
+	}
+	res = (char *)malloc(len * sizeof(char));
+	if (!res)
+		return (NULL);
+	res[0] = '\0';
+	i = 0;
+	while (i < (size_t)count)
+	{
+		if (strings[i])
+			ft_strcat(res, strings[i]);
+		i++;
+	}
+	return (res);
 }
