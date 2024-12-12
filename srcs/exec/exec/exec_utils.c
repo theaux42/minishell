@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/12 17:14:43 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void	init_pipes(t_command *commands)
 	}
 }
 
+#include <signal.h> // for SIGINT
+
 void	wait_for_children(t_command *commands)
 {
 	t_command	*current;
@@ -41,7 +43,19 @@ void	wait_for_children(t_command *commands)
 	current = commands;
 	while (current)
 	{
-		waitpid(current->pid, &status, 0);
+		if (waitpid(current->pid, &status, 0) == -1)
+			perror("waitpid");
+		else if (WIFEXITED(status))
+			ft_printf("[%d][%s] exited with code %d\n", current->pid, current->tokens->value, WEXITSTATUS(status));
+		else if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				ft_printf("[%d][%s] Core dumped (Ctrl + C)\n", current->pid, current->tokens->value);
+			else
+				ft_printf("[%d][%s] terminated by signal %d\n", current->pid, current->tokens->value, WTERMSIG(status));
+		}
+		else
+			ft_printf("[%d][%s] did not exit normally\n", current->pid, current->tokens->value);
 		current = current->next;
 	}
 }

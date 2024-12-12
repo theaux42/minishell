@@ -33,7 +33,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@echo "🔨 Building libft..."
-	@cd libft && make
+	@cd libft && make --no-print-directory
 	@echo "🚀 Linking objects..."
 	@$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
 	@echo "✅ Build complete!"
@@ -44,13 +44,13 @@ $(NAME): $(OBJS)
 
 clean:
 	@echo "🧹 Cleaning object files..."
-	@cd libft && make clean
+	@cd libft && make clean --no-print-directory
 	@rm -f $(OBJS)
 	@echo "🧼 Clean complete!"
 
 fclean: clean
 	@echo "🧹 Cleaning executable..."
-	@cd libft && make fclean
+	@cd libft && make fclean --no-print-directory
 	@rm -f $(NAME)
 	@echo "🧼 Full clean complete!"
 
