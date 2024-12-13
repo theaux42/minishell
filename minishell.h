@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/03 16:50:00 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/13 18:19:47 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,10 @@ typedef struct s_minishell
 # define PROMPT "ᓚᘏᗢ"
 # define CMD_NOT_FOUND 127
 
+
+// Heredoc
+
+int	handle_heredoc(char	*del);
 // testings
 char			*get_full_cmd(char *bin, char **env);
 char			*ft_token_value(char *value);

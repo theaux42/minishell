@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:50:15 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/13 18:35:01 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,90 @@
 // Need to check if the redirection is well formed.
 // There can't be two file redirections in a row.
 
-// t_redirection	*get_redirections(t_command *command, char *line)
-// {
-// 	t_redirection	*head;
-// 	t_redirection	*current;
+static char	*ft_strndup(const char *s, size_t n)
+{
+	char			*res;
+	unsigned int	i;
 
-// 	head = NULL;
-// }
+	i = 0;
+	res = malloc(sizeof(char) * (n + 1));
+	if (res == NULL)
+		return (NULL);
+	while (i < n)
+	{
+		res[i] = s[i];
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
+}
+
+char	*get_next_token(char **line)
+{
+	char	*start;
+	char	*token;
+	int		in_quotes = 0;
+
+	while (ft_ms_isspace(**line))
+		(*line)++;
+	if (**line == '\0')
+		return (NULL);
+	start = *line;
+	while(**line && (in_quotes || !ft_ms_isspace(**line)))
+	{
+		if (**line == '\'' || **line == '"')
+		{
+			in_quotes = quote_manager(**line, in_quotes);
+			(*line)++;
+			continue;
+		}
+		(*line)++;
+	}
+	token = ft_strndup(start, *line - start);
+	while (ft_ms_isspace(**line))
+		(*line)++;
+	return (token);
+}
+
+t_redirection	*get_redirection(t_command *command, char *line)
+{
+	t_redirection	*head;
+	t_redirection	*current;
+	char			*delimeter;
+	char			*token;
+
+	head = NULL;
+	current = NULL;
+	(void)command;
+	while ((token = get_next_token(&line)))
+	{
+		if (get_redirection_type(token) == ARGUMENT)
+		{
+			free(token);
+			break;
+		}
+		if (!head)
+		{
+			head = malloc(sizeof(t_redirection));
+			current = head;
+		}
+		else
+		{
+			current->next = malloc(sizeof(t_redirection));
+			current = current->next;
+		}
+		current->type = get_redirection_type(token);
+		if (current->type == REDIRECTION_HEREDOC)
+		{
+			delimeter = get_next_token(&line);
+			current->file = ft_strdup(delimeter);
+			free(delimeter);
+		}
+		else
+		{
+			current->file = get_next_token(&line);
+		}
+		free(token);
+	}
+	return (head);
+}

@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/27 16:00:49 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:21:53 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,29 @@ void	execute_single_command(t_minishell *minishell, t_command *current,
 		int *prev_fd)
 {
 	int	status;
+	int	heredoc_fd;
+	t_redirection	*redir;
+
+	redir = current->redirections;
+
+	heredoc_fd = -1;
+	while (redir)
+	{
+		if (redir->type == REDIRECTION_HEREDOC)
+		{
+			heredoc_fd = handle_heredoc(redir->file);
+			if (heredoc_fd == -1)
+				return ;
+			if (dup2(heredoc_fd, STDIN_FILENO) == -1)
+			{
+				perror("dup2");
+				close(heredoc_fd);
+				return ;
+			}
+			close(heredoc_fd);
+		}
+		redir = redir->next;
+	}
 
 	current->prev_pipe = *prev_fd;
 	if (current->is_builtin && needs_parent_execution(current->tokens->value))

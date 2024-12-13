@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:40:40 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/13 17:22:28 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,29 @@ char	*ft_token_value(char *value)
 	if (value[0] == '\'' && value[len - 1] == '\'')
 		return (ft_strtrim(value, "'"));
 	return (ft_strdup(value));
+}
+
+int	handle_heredoc(char	*del)
+{
+	char	*line;
+	int		fd[2];
+
+	if (pipe(fd) == -1)
+		perror("pipe");
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			break;
+		if (ft_strcmp(line, del) == 0)
+		{
+			free(line);
+			break;
+		}
+		write(fd[1], line, ft_strlen(line));
+		write(fd[1], "\n", 1);
+		free(line);
+	}
+	close(fd[1]);
+	return (fd[0]);
 }
