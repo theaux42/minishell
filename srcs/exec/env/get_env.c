@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:44:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:32:31 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/13 17:09:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ char	*get_env(char *key, char **env)
 
 	i = 0;
 	if (!env || !key)
-	{
 		return (NULL);
-	}
 	key_len = ft_strlen(key);
 	while (env[i])
 	{

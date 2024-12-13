@@ -23,7 +23,7 @@ OTHER_FILES = ft_addchar.c ft_freesplit.c ft_print_split.c ft_split_len.c \
 MATHS_FILES = ft_pow.c ft_sqrt.c ft_factorial.c ft_fibonacci.c ft_is_prime.c ft_intlen.c
 
 STRINGS_FILES = ft_strcap.c ft_strlowcase.c ft_strupcase.c ft_strjoins.c \
-	ft_strjoin_double.c
+	ft_strjoin_double.c ft_strcpy.c
 
 LIBC = $(addprefix basic/, $(LIBC_FILES))
 ADDITIONAL = $(addprefix additional/, $(ADDITIONAL_FILES))
@@ -44,10 +44,18 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra -I ./ -g3
 
+TOTAL_FILES := $(words $(SRCS))
+COMPILED_COUNT := 0
+
+define progress_message
+	$(eval COMPILED_COUNT=$(shell echo $$(($(COMPILED_COUNT)+1))))
+	@printf "\033[K⚙️ Compiling %-30s [%0*d/%d]...\r" "$<" $(shell echo $${#TOTAL_FILES}) ${COMPILED_COUNT} ${TOTAL_FILES}
+endef
+
 .c.o:
-	@printf "\033[K⚙️ Compiling $<... \r"
+	$(call progress_message)
 	@${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
-	@printf "\033[K🚀 Compiled $< successfully!\r"
+	@printf "\033[K🚀 Compiled %-30s [%0*d/%d]\n" "$<" $(shell echo $${#TOTAL_FILES}) ${COMPILED_COUNT} ${TOTAL_FILES}
 
 ${LIB}:	${OBJS}
 	@printf "\nCreating library...\r"

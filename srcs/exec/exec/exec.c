@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:45:31 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/12 18:15:08 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,5 +169,5 @@ void	execute_commands(t_minishell *minishell)
 	}
 	if (prev_fd != -1)
 		close(prev_fd);
-	wait_for_children(minishell->commands);
+	wait_for_children(minishell);
 }

@@ -11,7 +11,8 @@ LDFLAGS = -L./libft -lft -L/opt/homebrew/opt/readline/lib -lreadline
 ENV_SRCS =  srcs/exec/env/del_env.c srcs/exec/env/dup_env.c \
        srcs/exec/env/get_env.c srcs/exec/env/set_env.c \
 
-PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c
+PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c \
+	   srcs/parsing/expand.c
 
 UTILS_SRCS = srcs/utils/free.c srcs/utils/split.c srcs/utils/parser.c \
 	   srcs/utils/utils.c srcs/utils/init.c

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 20:13:38 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/12 18:29:51 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,10 @@ typedef struct s_minishell
 char			*get_full_cmd(char *bin, char **env);
 char			*ft_token_value(char *value);
 // === PARSING ===
+// Functions of parsing/expand.c
+char			*expand_commands(t_command *commands, t_minishell *minishell);
 // Functions of parsing/parser.c
-t_command		*get_commands(char *line);
+t_command		*get_commands(char *line, t_minishell *minishell);
 // Functions of parsing/utils.c
 t_token_type	get_redirection_type(char *str);
 t_token_type	get_tokens_type(char *str, int pos);
@@ -103,7 +105,7 @@ void			execute_commands(t_minishell *minishell);
 
 // Fonction Utils
 void			init_pipes(t_command *commands);
-void			wait_for_children(t_command *commands);
+void			wait_for_children(t_minishell *minishell);
 int				count_arguments(t_command *command);
 int				fill_arguments(char **argv, t_command *command);
 void			no_cmd_handler(t_command *current);
