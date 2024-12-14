@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 05:16:50 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:11:11 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,9 @@ char	*clean_readline(void)
 	if (line)
 	{
 		cleared = ft_strtrim(line, " 	");
+		free(line);
 		if (cleared)
-		{
-			free(line);
 			return (cleared);
-		}
-		else
-		{
-			free(line);
-			return (NULL);
-		}
 	}
 	return (NULL);
 }
