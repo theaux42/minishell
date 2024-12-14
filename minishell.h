@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:14:43 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 07:18:05 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ char			*process_quote(char *line);
 bool			need_expansion(char *value);
 char			*get_env_var(char *key, t_minishell *minishell);
 char			*get_current_key(char *line, int *i);
+bool			is_valid_key(char *key);
 
 // Functions of parsing/parser.c
 t_command		*get_commands(char *line, t_minishell *minishell);

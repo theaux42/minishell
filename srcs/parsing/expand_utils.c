@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 00:14:52 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:16:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 07:20:10 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,30 @@ char	*get_current_key(char *line, int *i)
 	len = *i - start;
 	current_key = ft_substr(line, start, len);
 	return (current_key);
+}
+
+bool	is_valid_key(char *key)
+{
+	int	i;
+
+	i = 0;
+	if (!key)
+		return (false);
+	if (ft_isdigit(key[i]))
+		return (false);
+	if (key[i] == '_' || ft_isalpha(key[i]))
+	{
+		i++;
+		while (key[i])
+		{
+			if (key[i] == '_' || ft_isalnum(key[i]))
+				i++;
+			else
+				return (false);
+		}
+		return (true);
+	}
+	return (false);
 }
 
 bool	need_expansion(char *value)
