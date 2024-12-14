@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/12 18:29:51 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 05:19:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,17 @@ char			*get_full_cmd(char *bin, char **env);
 char			*ft_token_value(char *value);
 // === PARSING ===
 // Functions of parsing/expand.c
-char			*expand_commands(t_command *commands, t_minishell *minishell);
+bool			expand_commands(t_command *commands, t_minishell *minishell);
+void			expand_tokens(t_token *tokens, t_minishell *minishell);
+
+// Functions of parsing/quotes.c
+int				check_missused_quotes(const char *str);
+size_t			ft_strlen_quote(const char *str, char quote);
+char			*process_quote(char *line);
+
+// Functions of parsing/expand_utils.c
+bool			need_expansion(char *value);
+
 // Functions of parsing/parser.c
 t_command		*get_commands(char *line, t_minishell *minishell);
 // Functions of parsing/utils.c
@@ -125,7 +135,6 @@ int				ft_echo(t_token *tokens, char **env);
 int				ft_pwd(char **env);
 int				ft_cd(t_token *token, char ***env);
 int				ft_env(char **env);
-// int				ft_export(t_token *tokens, char **env);
 int				ft_export(t_token *tokens, char ***env);
 int				ft_unset(t_token *tokens, char ***env);
 

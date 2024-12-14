@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/13 03:35:14 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 05:16:50 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ int	main(int ac, char **av, char **env)
 			if (ft_strncmp(line, "exit ", 4) == 0)
 				return (ft_exit(line, minishell));
 			minishell->commands = get_commands(line, minishell);
-			execute_commands(minishell);
+			if (expand_commands(minishell->commands, minishell))
+				execute_commands(minishell);
 			free_commands(minishell->commands);
 			free(line);
 		}
