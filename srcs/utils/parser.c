@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:40:40 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/13 17:22:28 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/14 16:30:11 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,20 @@ char	*ft_token_value(char *value)
 	return (ft_strdup(value));
 }
 
-int	handle_heredoc(char	*del)
+int	handle_heredoc(const char *del)
 {
-	char	*line;
 	int		fd[2];
+	char	*line;
 
 	if (pipe(fd) == -1)
+	{
 		perror("pipe");
+		return (-1);
+	}
 	while (1)
 	{
-		line = readline("> ");
+		write(STDOUT_FILENO, "heredoc> ", 9);
+		line = readline("");
 		if (!line)
 			break;
 		if (ft_strcmp(line, del) == 0)

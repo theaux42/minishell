@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/13 18:35:01 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:26:07 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,21 @@ static char	*ft_strndup(const char *s, size_t n)
 	return (res);
 }
 
+static void	free_redirection(t_redirection *redirection)
+{
+	t_redirection	*tmp;
+
+	while (redirection)
+	{
+		tmp = redirection;
+		redirection = redirection->next;
+		free(tmp->file);
+		if (tmp->fd != 0)
+			close(tmp->fd);
+		free(tmp);
+	}
+}
+
 char	*get_next_token(char **line)
 {
 	char	*start;
@@ -50,6 +65,7 @@ char	*get_next_token(char **line)
 		(*line)++;
 	if (**line == '\0')
 		return (NULL);
+	printf("line: %s\n", *line);
 	start = *line;
 	while(**line && (in_quotes || !ft_ms_isspace(**line)))
 	{
@@ -71,6 +87,7 @@ t_redirection	*get_redirection(t_command *command, char *line)
 {
 	t_redirection	*head;
 	t_redirection	*current;
+	t_redirection	*new_redir;
 	char			*delimeter;
 	char			*token;
 
@@ -84,28 +101,49 @@ t_redirection	*get_redirection(t_command *command, char *line)
 			free(token);
 			break;
 		}
-		if (!head)
+		new_redir = malloc(sizeof(t_redirection));
+		if (!new_redir)
 		{
-			head = malloc(sizeof(t_redirection));
-			current = head;
+			free(token);
+			free_redirection(head);
+			return (NULL);
 		}
-		else
-		{
-			current->next = malloc(sizeof(t_redirection));
-			current = current->next;
-		}
-		current->type = get_redirection_type(token);
-		if (current->type == REDIRECTION_HEREDOC)
+		new_redir->next = NULL;
+		new_redir->type = get_redirection_type(token);
+		new_redir->fd = -1;
+		if (new_redir->type == REDIRECTION_HEREDOC)
 		{
 			delimeter = get_next_token(&line);
-			current->file = ft_strdup(delimeter);
+			printf("delimeter: %s\n", delimeter);
+			if (!delimeter || *delimeter == '\0')
+			{
+				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+				free(new_redir);
+				free_redirection(head);
+				return (NULL);
+			}
+			new_redir->file = ft_strdup(delimeter);
+			new_redir->fd = handle_heredoc(delimeter);
+			if (new_redir->fd == -1)
+			{
+				free(new_redir->file);
+				free(new_redir);
+				free_redirection(head);
+				return (NULL);
+			}
 			free(delimeter);
 		}
 		else
 		{
-			current->file = get_next_token(&line);
+			new_redir->file = get_next_token(&line);
+			new_redir->fd = -1;
 		}
 		free(token);
+		if (!head)
+			head = new_redir;
+		else
+			current->next = new_redir;
+		current = new_redir;
 	}
 	return (head);
 }

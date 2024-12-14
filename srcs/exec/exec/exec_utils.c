@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 16:58:49 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,14 @@ int	count_arguments(t_command *command)
 	token = command->tokens;
 	while (token)
 	{
+		if (token->type == REDIRECTION_APPEND || token->type == REDIRECTION_HEREDOC
+			|| token->type == REDIRECTION_INPUT || token->type == REDIRECTION_OUTPUT)
+		{
+			token = token->next;
+			if (token)
+				token = token->next;
+			continue;
+		}
 		if (token->type == COMMAND || token->type == ARGUMENT)
 			argc++;
 		token = token->next;
@@ -71,6 +79,14 @@ int	fill_arguments(char **argv, t_command *command)
 	i = 0;
 	while (token)
 	{
+		if (token->type == REDIRECTION_APPEND || token->type == REDIRECTION_HEREDOC
+			|| token->type == REDIRECTION_INPUT || token->type == REDIRECTION_OUTPUT)
+		{
+			token = token->next;
+			if (token)
+				token = token->next;
+			continue;
+		}
 		if (token->type == COMMAND || token->type == ARGUMENT)
 		{
 			argv[i] = token->value;

@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/13 18:19:47 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/14 16:40:29 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_redirection
 {
 	t_token_type			type; // Type de redirection
 	char					*file; // Nom du fichier de redirection
+	int						fd; // Descripteur de fichier
 	struct s_redirection	*next; // Redirection suivante
 }				t_redirection;
 
@@ -91,7 +92,7 @@ typedef struct s_minishell
 
 // Heredoc
 
-int	handle_heredoc(char	*del);
+int	handle_heredoc(const char	*del);
 // testings
 char			*get_full_cmd(char *bin, char **env);
 char			*ft_token_value(char *value);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/14 23:25:30 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 16:42:21 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_strcat(char *dest, char *src);
 char	*ft_strncpy(char *dest, char *src, unsigned int n);
 char	*ft_strncat(char *dest, const char *src, unsigned int nb);
-int		ft_strcmp(char *s1, char *s2);
+int		ft_strcmp(char *s1, const char *s2);
 
 // Bonus functions of the libft
 typedef struct s_list
