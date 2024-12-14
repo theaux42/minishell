@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:08:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:14:43 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ int				is_builtin(char *str);
 int				exec_builtins(t_command *command, char ***env);
 
 // Les builtins
-int				ft_echo(t_token *tokens, char **env);
+int				ft_echo(t_token *tokens);
 int				ft_pwd(char **env);
 int				ft_cd(t_token *token, char ***env);
 int				ft_env(char **env);

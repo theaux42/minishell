@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 00:14:52 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:04:45 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:16:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ char	*get_env_var(char *key, t_minishell *minishell)
 		if (!temp)
 			return (NULL);
 		value = ft_strdup(temp);
-		printf("len of value: %zu\n", ft_strlen(value));
 		free(temp);
 	}
 	else
