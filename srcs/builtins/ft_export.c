@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 16:10:48 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/11 06:36:32 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:05:29 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *expand_var(char *expanded, char *line, int *i, char **env)
+char	*expand_var(char *expanded, char *line, int *i, char **env)
 {
 	int		start;
 	int		len;
@@ -38,7 +38,7 @@ char *expand_var(char *expanded, char *line, int *i, char **env)
 	return (tmp);
 }
 
-char *expand_line(char *line, char **env)
+char	*expand_line(char *line, char **env)
 {
 	int		i;
 	char	*expanded;
@@ -67,7 +67,7 @@ char *expand_line(char *line, char **env)
 	return (expanded);
 }
 
-static char *expand_quotes(char *value, char **env, char q)
+static char	*expand_quotes(char *value, char **env, char q)
 {
 	char	quote[2];
 	char	*trim;
@@ -86,7 +86,7 @@ static char *expand_quotes(char *value, char **env, char q)
 	return (expanded);
 }
 
-char *expand_value(char *value, char **env)
+char	*expand_value(char *value, char **env)
 {
 	size_t	len;
 	char	*expanded;

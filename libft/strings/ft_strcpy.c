@@ -6,22 +6,22 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 01:28:08 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/13 01:28:58 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:03:50 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char    *ft_strcpy(char *s1, char *s2)
+char	*ft_strcpy(char *s1, char *s2)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (s2[i])
-    {
-        s1[i] = s2[i];
-        i++;
-    }
-    s1[i] = s2[i];
-    return (s1);
+	i = 0;
+	while (s2[i])
+	{
+		s1[i] = s2[i];
+		i++;
+	}
+	s1[i] = s2[i];
+	return (s1);
 }

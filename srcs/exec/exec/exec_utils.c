@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/12 18:20:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:05:20 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ void	wait_for_children(t_minishell *minishell)
 				minishell->status = WTERMSIG(status);
 		}
 		else
-			ft_printf("[%d][%s] did not exit normally\n", current->pid, current->tokens->value);
+			ft_printf("[%d][%s] did not exit normally\n", current->pid,
+				current->tokens->value);
 		current = current->next;
 	}
 }

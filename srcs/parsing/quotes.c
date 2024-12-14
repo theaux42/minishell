@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 03:27:47 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 05:31:59 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:01:13 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,57 +34,57 @@ int	check_missused_quotes(const char *str)
 	return (in_s || in_d);
 }
 
-size_t ft_strlen_quote(const char *str, char quote)
+size_t	ft_strlen_quote(const char *str, char quote)
 {
-    int     i;
-    size_t  len;
+	int		i;
+	size_t	len;
 
-    i = 0;
-    len = 0;
-    if (!str)
-        return (0);
-    while (str[i])
-    {
-        if (str[i] != quote)
-            len++;
-        i++;
-    }
-    return (len);
+	i = 0;
+	len = 0;
+	if (!str)
+		return (0);
+	while (str[i])
+	{
+		if (str[i] != quote)
+			len++;
+		i++;
+	}
+	return (len);
 }
 
-char define_quote(char *line)
+char	define_quote(char *line)
 {
-    if (line[0] == '\'' && line[ft_strlen(line) - 1] == '\'')
-        return ('\'');
-    else if (line[0] == '"' && line[ft_strlen(line) - 1] == '"')
-        return ('"');
-    return ('\0');
+	if (line[0] == '\'' && line[ft_strlen(line) - 1] == '\'')
+		return ('\'');
+	else if (line[0] == '"' && line[ft_strlen(line) - 1] == '"')
+		return ('"');
+	return ('\0');
 }
 
-char *process_quote(char *line)
+char	*process_quote(char *line)
 {
-    char    quote_type;
-    char    *new_line;
-    char    *new_line_ptr;
-    char    *line_ptr;
+	char	quote_type;
+	char	*new_line;
+	char	*new_line_ptr;
+	char	*line_ptr;
 
-    quote_type = define_quote(line);
-    if (quote_type == '\0')
-        return (line);
-    new_line = ft_calloc(ft_strlen_quote(line, quote_type) + 1, sizeof(char));
-    if (!new_line)
-        return (NULL);
-    new_line_ptr = new_line;
-    line_ptr = line;
-    while (*line++)
-    {
-        if (*line != quote_type)
-        {
-            *new_line_ptr = *line;
-            new_line_ptr++;
-        }
-    }
-    *new_line_ptr = '\0';
-    free(line_ptr);
-    return (new_line);  
+	quote_type = define_quote(line);
+	if (quote_type == '\0')
+		return (line);
+	new_line = ft_calloc(ft_strlen_quote(line, quote_type) + 1, sizeof(char));
+	if (!new_line)
+		return (NULL);
+	new_line_ptr = new_line;
+	line_ptr = line;
+	while (*line++)
+	{
+		if (*line != quote_type)
+		{
+			*new_line_ptr = *line;
+			new_line_ptr++;
+		}
+	}
+	*new_line_ptr = '\0';
+	free(line_ptr);
+	return (new_line);
 }

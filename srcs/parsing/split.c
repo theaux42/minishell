@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 05:36:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:05:08 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ char	**ft_ms_split(char *line)
 	if (result != 0)
 	{
 		ft_freesplit(args);
-		printf("[%sERROR%s] Invalid prompt\n%s(Quote issue)%s\n"
-			, RED500, RESET, GRAY500, RESET);
+		printf("[%sERROR%s] Invalid prompt\n%s(Quote issue)%s\n", RED500, RESET,
+			GRAY500, RESET);
 		return (NULL);
 	}
 	args[ft_prompt_length(line)] = NULL;
