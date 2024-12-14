@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:05:08 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 07:10:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ int	inner_split(char **split, char *line)
 	i = 0;
 	k = 0;
 	is_in_arg = 0;
+	if (check_missused_quotes(line))
+		return (1);
 	while (line[i])
 	{
 		while (line[i] && ft_ms_isspace(line[i]))
@@ -97,12 +99,15 @@ char	**ft_ms_split(char *line)
 	result = inner_split(args, line);
 	if (result == -1)
 		return (ft_freesplit(args), NULL);
+	if (result == 1)
+		return (printf("[%sERROR%s] Invalid prompt %s(Quote issue)%s\n", RED500,
+				RESET, GRAY500, RESET), NULL);
 	if (result != 0)
 	{
+		ft_print_split(args);
 		ft_freesplit(args);
-		printf("[%sERROR%s] Invalid prompt\n%s(Quote issue)%s\n", RED500, RESET,
-			GRAY500, RESET);
-		return (NULL);
+		return (printf("[%sERROR%s] Invalid prompt %s(Quote issue)%s\n", RED500,
+				RESET, GRAY500, RESET), NULL);
 	}
 	args[ft_prompt_length(line)] = NULL;
 	return (args);
