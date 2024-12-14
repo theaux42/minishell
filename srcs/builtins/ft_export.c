@@ -6,13 +6,11 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 16:10:48 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 07:25:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 07:30:41 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 int	ft_export(t_token *tokens, char ***env)
 {
