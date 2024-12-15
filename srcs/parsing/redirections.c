@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:09:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 21:12:53 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_token	*remove_redirection_tokens(t_token *current, t_token **prev,
 	return (current);
 }
 
-void	parse_redirections(t_command *command)
+void	parse_cmd_redirections(t_command *command)
 {
 	t_token			*prev;
 	t_token			*current;
@@ -78,4 +78,16 @@ void	parse_redirections(t_command *command)
 		}
 	}
 	command->redirections = redirections;
+}
+
+void	parse_redirections(t_command *commands)
+{
+	t_command	*current_command;
+
+	current_command = commands;
+	while (current_command)
+	{
+		parse_cmd_redirections(current_command);
+		current_command = current_command->next;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:05:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 21:14:13 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ int	fill_arguments(char **argv, t_command *command)
 	while (token)
 	{
 		if (token->type == COMMAND || token->type == ARGUMENT)
-		{
-			argv[i] = token->value;
-			i++;
-		}
+			argv[i++] = token->value;
+		if (token->type == REDIR_APPEND || token->type == REDIR_INPUT
+			|| token->type == REDIR_OUTPUT)
+			break ;
 		token = token->next;
 	}
 	argv[i] = NULL;

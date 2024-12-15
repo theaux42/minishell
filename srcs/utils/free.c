@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 04:26:18 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 07:21:18 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	free_commands(t_command *commands)
 	while (current)
 	{
 		next = current->next;
-		if (current->tokens)
+		if (current->tokens && current->is_builtin == 0)
 			free_tokens(current->tokens);
 		if (current->redirections)
 			free_redirections(current->redirections);

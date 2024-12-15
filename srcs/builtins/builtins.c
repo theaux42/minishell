@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:14:46 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 21:13:34 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,10 @@ int	exec_builtins(t_command *command, char ***env)
 		ft_unset(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "env", 3) == 0)
 		ft_env(*env);
+	if (!needs_parent_execution(command->tokens->value))
+	{
+		ft_freesplit(*env);
+		free_commands(command);
+	}
 	return (ret);
 }

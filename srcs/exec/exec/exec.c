@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:20:45 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 21:13:10 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	execution(char *cmd, t_command *command, char ***env)
 	pid = fork();
 	if (pid < 0)
 	{
-		free(argv);
+		ft_freesplit(argv);
 		return (-1);
 	}
 	else if (pid == 0)
