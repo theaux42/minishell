@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 16:10:48 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 07:30:41 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 00:02:28 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ int	ft_export(t_token *tokens, char ***env)
 	split = ft_split(tokens->value, '=');
 	if (!split || !split[0] || !split[1])
 	{
-		fprintf(stderr, "export: Invalid syntax\n");
 		ft_freesplit(split);
-		return (1);
+		return (fprintf(stderr, "export: Invalid syntax\n"), 1);
 	}
 	split[1] = process_quote(split[1]);
 	if (is_valid_key(split[0]))

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/12 16:42:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 03:24:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,6 @@ char	**get_paths(char *command, char **env)
 	}
 	return (paths);
 }
-
-// The getcwd() may be removed to be replaced by the path
-// Contained in the env variable PATH
 
 char	*get_cmd(char *command)
 {

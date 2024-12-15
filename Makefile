@@ -12,12 +12,15 @@ ENV_SRCS =  srcs/exec/env/del_env.c srcs/exec/env/dup_env.c \
        srcs/exec/env/get_env.c srcs/exec/env/set_env.c \
 
 PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c \
-	   srcs/parsing/expand.c srcs/parsing/expand_utils.c srcs/parsing/quotes.c
+	   srcs/parsing/expand.c srcs/parsing/expand_utils.c srcs/parsing/quotes.c \
+	   srcs/parsing/redirections.c
 
 UTILS_SRCS = srcs/utils/free.c srcs/utils/split.c srcs/utils/parser.c \
-	   srcs/utils/utils.c srcs/utils/init.c
+	   srcs/utils/utils.c srcs/utils/init.c srcs/utils/prompt.c \
+	   srcs/utils/prompt_utils.c\
 
-EXEC_SRCS = srcs/exec/exec/exec.c srcs/exec/exec/exec_utils.c
+EXEC_SRCS = srcs/exec/exec/exec.c srcs/exec/exec/exec_utils.c \
+	    srcs/exec/exec/exec_2.c
 
 BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
 		srcs/builtins/builtins.c srcs/builtins/ft_echo.c srcs/builtins/ft_env.c \
