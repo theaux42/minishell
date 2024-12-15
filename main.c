@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/13 18:54:29 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:48:23 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,11 @@ int	main(int ac, char **av, char **env)
             if (ft_strncmp(line, "history", 7) != 0)
                 add_to_history(&minishell->history, line);
 			minishell->commands = get_commands(line);
-			execute_commands(minishell);
-			free_commands(minishell->commands);
+			if (minishell->commands)
+			{
+				execute_commands(minishell);
+				free_commands(minishell->commands);
+			}
 			add_history(line);
 
 		}

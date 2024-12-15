@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/13 17:21:53 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:37:30 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 void	execute_child(char *cmd, t_command *command, char **argv, t_minishell *minishell)
 {
+	t_redirection *redir;
+	int fd;
+
 	if (command->prev_pipe != -1)
 	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
 			exit_error("dup2 input_fd");
-		close(command->prev_pipe);
+			close(command->prev_pipe);
 	}
 	if (command->pipes[1] != -1)
 	{
@@ -28,12 +31,77 @@ void	execute_child(char *cmd, t_command *command, char **argv, t_minishell *mini
 	}
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
+
+	redir = command->redirections;
+	while (redir)
+	{
+		if (redir->type == REDIRECTION_INPUT)
+		{
+			fd = open(redir->file, O_RDONLY);
+			if (fd == -1)
+			{
+				perror(redir->file);
+				exit(1);
+			}
+			if (dup2(fd, STDIN_FILENO) == -1)
+			{
+				perror("dup2");
+				close(fd);
+				exit(1);
+			}
+			close(fd);
+		}
+		else if (redir->type == REDIRECTION_OUTPUT)
+		{
+			fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd == -1)
+			{
+				perror(redir->file);
+				exit(1);
+			}
+			if (dup2(fd, STDOUT_FILENO) == -1)
+			{
+				perror("dup2");
+				close(fd);
+				exit(1);
+			}
+			close(fd);
+		}
+		else if (redir->type == REDIRECTION_APPEND)
+		{
+			fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (fd == -1)
+			{
+				perror(redir->file);
+				exit(1);
+			}
+			if (dup2(fd, STDOUT_FILENO) == -1)
+			{
+				perror("dup2");
+				close(fd);
+				exit(1);
+			}
+			close(fd);
+		}
+		else if (redir->type == REDIRECTION_HEREDOC)
+		{
+			if (dup2(redir->fd, STDIN_FILENO) == -1)
+			{
+				perror("dup2");
+				close(redir->fd);
+				exit(1);
+			}
+			close(redir->fd);
+		}
+		redir = redir->next;
+	}
+
 	if (command->is_builtin)
 		exit(exec_builtins(command, &minishell->env, minishell->history));
 	else
 	{
-		execve(cmd, argv, minishell->env);
-		exit_error("Execve");
+			execve(cmd, argv, minishell->env);
+			exit_error("Execve");
 	}
 }
 
@@ -131,49 +199,44 @@ void	close_fds(int *prev_fd, t_command *current)
 	*prev_fd = current->pipes[0];
 }
 
-void	execute_single_command(t_minishell *minishell, t_command *current,
-		int *prev_fd)
+void	execute_single_command(t_minishell *minishell, t_command *current, int *prev_fd)
 {
-	int	status;
-	int	heredoc_fd;
-	t_redirection	*redir;
+	t_redirection *redir;
 
+	// Handle all redirections first
 	redir = current->redirections;
-
-	heredoc_fd = -1;
 	while (redir)
 	{
 		if (redir->type == REDIRECTION_HEREDOC)
 		{
-			heredoc_fd = handle_heredoc(redir->file);
-			if (heredoc_fd == -1)
-				return ;
-			if (dup2(heredoc_fd, STDIN_FILENO) == -1)
+			if (handle_heredoc_redirection(redir) == -1)
 			{
-				perror("dup2");
-				close(heredoc_fd);
-				return ;
+				minishell->status = 1;
+				return;
 			}
-			close(heredoc_fd);
 		}
 		redir = redir->next;
 	}
 
+	// Rest of command execution
 	current->prev_pipe = *prev_fd;
-	if (current->is_builtin && needs_parent_execution(current->tokens->value))
+	current->pid = exec_cmd(minishell, current);
+	if (current->pid == CMD_NOT_FOUND)
+		no_cmd_handler(current);
+	if (current->pid == -1)
+		exit(EXIT_FAILURE);
+
+	// Close heredoc fds in the parent
+	redir = current->redirections;
+	while (redir)
 	{
-		status = exec_builtins(current, &minishell->env, minishell->history);
-		minishell->status = status;
-		current->pid = 0;
+		if (redir->type == REDIRECTION_HEREDOC)
+		{
+			close(redir->fd);
+		}
+		redir = redir->next;
 	}
-	else
-	{
-		current->pid = exec_cmd(minishell, current);
-		if (current->pid == CMD_NOT_FOUND)
-			no_cmd_handler(current);
-		if (current->pid == -1)
-			exit(EXIT_FAILURE);
-	}
+
 	close_fds(prev_fd, current);
 }
 

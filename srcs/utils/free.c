@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/25 16:06:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 13:40:00 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	free_commands(t_command *commands)
 	{
 		next = current->next;
 		free_tokens(current->tokens);
+		free_redirections(current->redirections);
 		free(current);
 		current = next;
 	}
@@ -53,6 +54,10 @@ void	free_redirections(t_redirection *redirections)
 	while (current)
 	{
 		next = current->next;
+		if (current->file)
+			free(current->file);
+		if (current->fd > 2)
+			close(current->fd);
 		free(current);
 		current = next;
 	}

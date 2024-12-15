@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:32:47 by ededemog          #+#    #+#             */
-/*   Updated: 2024/12/03 17:48:59 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:41:08 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,21 @@ void	setup_signals(void)
 
 	sa.sa_handler = sigquit_handler;
 	sigaction(SIGQUIT, &sa, NULL);
+}
+
+void	setup_heredoc_signals(void)
+{
+    struct sigaction sa;
+    
+    sa.sa_handler = SIG_DFL;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+    signal(SIGQUIT, SIG_IGN);
+}
+
+void	restore_signals(void)
+{
+    signal(SIGINT, sigint_handler);
+    signal(SIGQUIT, SIG_IGN);
 }

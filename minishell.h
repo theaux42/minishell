@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 16:40:29 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:41:13 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef enum e_token_type
 	REDIRECTION_OUTPUT, // Redirection de sortie '>'
 	REDIRECTION_APPEND, // Redirection avec ajout '>>'
 	REDIRECTION_HEREDOC, // Redirection avec heredoc '<<'
+	HEREDOC_DELIMITER, // Délimiteur pour heredoc
 }				t_token_type;
 
 // Structure pour un token
@@ -93,6 +94,12 @@ typedef struct s_minishell
 // Heredoc
 
 int	handle_heredoc(const char	*del);
+int handle_heredoc_redirection(t_redirection *redir);
+t_redirection    *get_redirection(char *line);
+void    free_redirections(t_redirection *redirections);
+void    free_commands(t_command *commands);
+void	setup_heredoc_signals(void);
+void	restore_signals(void);
 // testings
 char			*get_full_cmd(char *bin, char **env);
 char			*ft_token_value(char *value);

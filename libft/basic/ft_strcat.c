@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/12 22:30:22 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/03 16:58:44 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:07:59 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,22 @@
 	return (dest);
 }**/
 
-char	*ft_strcat(char *dest, char	*src)
+char *ft_strcat(char *dest, const char *src)
 {
-	char	*d;
+    size_t i;
+    size_t j;
 
-	d = dest;
-	while (*d)
-		d++;
-	while ((*d = *src))
-	{
-		d++;
-		src++;
-	}
-	return (dest);
+    i = 0;
+    j = 0;
+    if (!dest || !src)
+        return (NULL);
+    while (dest[i])
+        i++;
+    while (src[j])
+    {
+        dest[i + j] = src[j];
+        j++;
+    }
+    dest[i + j] = '\0';
+    return dest;
 }

@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 16:42:21 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:07:11 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ char	**ft_split(char const *s, char c);
 char	*ft_strtrim(char const *s1, char const *set);
 
 // New functions of the libft
-char	*ft_strcat(char *dest, char *src);
+char	*ft_strcat(char *dest, const char *src);
+char	*ft_strcpy(char *s1, const char *s2);
 char	*ft_strncpy(char *dest, char *src, unsigned int n);
 char	*ft_strncat(char *dest, const char *src, unsigned int nb);
 int		ft_strcmp(char *s1, const char *s2);

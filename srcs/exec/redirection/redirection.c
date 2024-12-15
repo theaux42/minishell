@@ -6,7 +6,7 @@
 /*   By: ededemog <ededemog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 00:39:34 by ededemog         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:35:09 by ededemog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ char	*get_next_token(char **line)
 		(*line)++;
 	if (**line == '\0')
 		return (NULL);
-	printf("line: %s\n", *line);
+
 	start = *line;
-	while(**line && (in_quotes || !ft_ms_isspace(**line)))
+	while (**line && (in_quotes || !ft_ms_isspace(**line)))
 	{
 		if (**line == '\'' || **line == '"')
 		{
@@ -77,26 +77,30 @@ char	*get_next_token(char **line)
 		}
 		(*line)++;
 	}
+
 	token = ft_strndup(start, *line - start);
+
+	// Advance past any additional whitespace
 	while (ft_ms_isspace(**line))
 		(*line)++;
+
 	return (token);
 }
 
-t_redirection	*get_redirection(t_command *command, char *line)
+t_redirection	*get_redirection(char *line)
 {
 	t_redirection	*head;
 	t_redirection	*current;
 	t_redirection	*new_redir;
-	char			*delimeter;
 	char			*token;
+	int				redir_type;
 
 	head = NULL;
 	current = NULL;
-	(void)command;
 	while ((token = get_next_token(&line)))
 	{
-		if (get_redirection_type(token) == ARGUMENT)
+		redir_type = get_redirection_type(token);
+		if (redir_type == ARGUMENT)
 		{
 			free(token);
 			break;
@@ -108,36 +112,22 @@ t_redirection	*get_redirection(t_command *command, char *line)
 			free_redirection(head);
 			return (NULL);
 		}
+		new_redir->type = redir_type;
 		new_redir->next = NULL;
-		new_redir->type = get_redirection_type(token);
 		new_redir->fd = -1;
-		if (new_redir->type == REDIRECTION_HEREDOC)
+
+		// Get the next token as the filename or delimiter
+		char *filename = get_next_token(&line);
+		if (!filename)
 		{
-			delimeter = get_next_token(&line);
-			printf("delimeter: %s\n", delimeter);
-			if (!delimeter || *delimeter == '\0')
-			{
-				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-				free(new_redir);
-				free_redirection(head);
-				return (NULL);
-			}
-			new_redir->file = ft_strdup(delimeter);
-			new_redir->fd = handle_heredoc(delimeter);
-			if (new_redir->fd == -1)
-			{
-				free(new_redir->file);
-				free(new_redir);
-				free_redirection(head);
-				return (NULL);
-			}
-			free(delimeter);
+			fprintf(stderr, "minishell: syntax error: redirection requires a filename\n");
+			free(token);
+			free(new_redir);
+			free_redirection(head);
+			return (NULL);
 		}
-		else
-		{
-			new_redir->file = get_next_token(&line);
-			new_redir->fd = -1;
-		}
+		new_redir->file = filename;
+
 		free(token);
 		if (!head)
 			head = new_redir;
@@ -145,5 +135,17 @@ t_redirection	*get_redirection(t_command *command, char *line)
 			current->next = new_redir;
 		current = new_redir;
 	}
-	return (head);
+	return head;
+}
+
+int handle_heredoc_redirection(t_redirection *redir)
+{
+    int heredoc_fd;
+
+    heredoc_fd = handle_heredoc(redir->file);
+    if (heredoc_fd == -1)
+        return -1;
+
+    redir->fd = heredoc_fd;
+    return 0;
 }
