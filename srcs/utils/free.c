@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 04:26:18 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,25 @@ void	free_tokens(t_token *tokens)
 	while (current)
 	{
 		next = current->next;
-		free(current->value);
+		if (current->value)
+			free(current->value);
+		if (current)
+			free(current);
+		current = next;
+	}
+}
+
+void	free_redirections(t_redirection *redirections)
+{
+	t_redirection	*current;
+	t_redirection	*next;
+
+	current = redirections;
+	while (current)
+	{
+		if (current->file && *current->file)
+			free(current->file);
+		next = current->next;
 		free(current);
 		current = next;
 	}
@@ -36,7 +54,10 @@ void	free_commands(t_command *commands)
 	while (current)
 	{
 		next = current->next;
-		free_tokens(current->tokens);
+		if (current->tokens)
+			free_tokens(current->tokens);
+		if (current->redirections)
+			free_redirections(current->redirections);
 		free(current);
 		current = next;
 	}

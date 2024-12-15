@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 17:31:08 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 03:09:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ char	*type_str(t_token_type type)
 		return ("ARGUMENT");
 	if (type == PIPE)
 		return ("PIPE");
-	if (type == REDIRECTION_INPUT)
-		return ("REDIRECTION_INPUT");
-	if (type == REDIRECTION_OUTPUT)
-		return ("REDIRECTION_OUTPUT");
-	if (type == REDIRECTION_APPEND)
-		return ("REDIRECTION_APPEND");
-	if (type == REDIRECTION_HEREDOC)
-		return ("REDIRECTION_HEREDOC");
+	if (type == REDIR_INPUT)
+		return ("REDIR_INPUT");
+	if (type == REDIR_OUTPUT)
+		return ("REDIR_OUTPUT");
+	if (type == REDIR_APPEND)
+		return ("REDIR_APPEND");
+	if (type == REDIR_HEREDOC)
+		return ("REDIR_HEREDOC");
 	return ("UNKNOWN");
 }
 
@@ -88,10 +88,6 @@ void	print_env(char **env)
 		fprintf(stderr, "env: No environment variables found\n");
 		return ;
 	}
-	printf("[DEBUG] ft_env: Listing environment variables\n");
 	while (env[i])
-	{
-		printf("[DEBUG] env[%d]: %s\n", i, env[i]);
 		i++;
-	}
 }

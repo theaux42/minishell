@@ -6,26 +6,33 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:50:15 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 03:14:54 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Redirections:
-// Since they are attached to the command, we create a new structure for them.
-// This structure will contain the type of the redirection, the target file
-// and a pointer to the next redirection.
-// The parsing of it will be done in the get_redirections function.
-// The function will create the structure and attach it to the command.
-// and remove the redirection from the tokens list.
-// Need to check if the redirection is well formed.
-// There can't be two file redirections in a row.
+void	apply_redirections(t_redirection *redirections)
+{
+	int	fd;
 
-// t_redirection	*get_redirections(t_command *command, char *line)
-// {
-// 	t_redirection	*head;
-// 	t_redirection	*current;
-
-// 	head = NULL;
-// }
+	while (redirections)
+	{
+		if (redirections->type == REDIR_INPUT)
+			fd = open(redirections->file, O_RDONLY);
+		else if (redirections->type == REDIR_OUTPUT)
+			fd = open(redirections->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (redirections->type == REDIR_APPEND)
+			fd = open(redirections->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else if (redirections->type == REDIR_HEREDOC)
+			fd = open(redirections->file, O_RDONLY);
+		if (fd == -1)
+			exit_error("Error opening file");
+		if (redirections->type == REDIR_INPUT)
+			dup2(fd, STDIN_FILENO);
+		else
+			dup2(fd, STDOUT_FILENO);
+		close(fd);
+		redirections = redirections->next;
+	}
+}

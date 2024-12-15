@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 13:22:22 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 03:24:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ char	**get_paths(char *command, char **env)
 
 	i = 0;
 	path = get_env("PATH", env);
+	if (!path || !*path)
+		return (NULL);
 	paths = ft_split(path, ':');
 	while (paths[i])
 	{
@@ -32,9 +34,6 @@ char	**get_paths(char *command, char **env)
 	}
 	return (paths);
 }
-
-// The getcwd() may be removed to be replaced by the path
-// Contained in the env variable PATH
 
 char	*get_cmd(char *command)
 {
@@ -68,9 +67,11 @@ char	*get_full_cmd(char *bin, char **env)
 
 	i = 0;
 	if (bin[0] == '/' || bin[0] == '.')
-		return (get_cmd(bin));
+		return (ft_strdup(get_cmd(bin)));
 	paths = get_paths(bin, env);
-	while (paths[i++])
+	if (!paths)
+		return (NULL);
+	while (paths[i])
 	{
 		if (access(paths[i], F_OK) == 0)
 		{
@@ -78,6 +79,7 @@ char	*get_full_cmd(char *bin, char **env)
 			ft_freesplit(paths);
 			return (full_cmd);
 		}
+		i++;
 	}
 	ft_freesplit(paths);
 	return (NULL);

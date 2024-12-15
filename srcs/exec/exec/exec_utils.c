@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/14 06:05:20 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,31 @@ void	init_pipes(t_command *commands)
 	}
 }
 
-void	wait_for_children(t_command *commands)
+void	wait_for_children(t_minishell *minishell)
 {
 	t_command	*current;
 	int			status;
 
-	current = commands;
+	current = minishell->commands;
 	while (current)
 	{
-		waitpid(current->pid, &status, 0);
+		if (waitpid(current->pid, &status, 0) == -1)
+			;
+		else if (WIFEXITED(status))
+			minishell->status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+			{
+				ft_printf("Core dumped (Ctrl + C)\n");
+				minishell->status = WTERMSIG(status);
+			}
+			else
+				minishell->status = WTERMSIG(status);
+		}
+		else
+			ft_printf("[%d][%s] did not exit normally\n", current->pid,
+				current->tokens->value);
 		current = current->next;
 	}
 }

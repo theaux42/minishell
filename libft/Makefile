@@ -3,7 +3,7 @@ LIBC_FILES = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
 	ft_memcmp.c ft_memcpy.c ft_memmove.c ft_memset.c ft_strchr.c \
 	ft_strdup.c ft_strlcat.c ft_strlcpy.c ft_strlen.c ft_strncmp.c \
 	ft_strnstr.c ft_strrchr.c ft_tolower.c ft_toupper.c ft_strncmp.c \
-	ft_strncpy.c ft_strcmp.c ft_strcat.c
+	ft_strncpy.c ft_strcmp.c ft_strcat.c ft_strncat.c
 
 ADDITIONAL_FILES = ft_itoa.c ft_putchar_fd.c ft_putendl_fd.c ft_putnbr_fd.c ft_putstr_fd.c \
 	ft_split.c ft_strjoin.c ft_strmapi.c ft_strtrim.c ft_substr.c ft_striteri.c \
@@ -23,12 +23,12 @@ OTHER_FILES = ft_addchar.c ft_freesplit.c ft_print_split.c ft_split_len.c \
 MATHS_FILES = ft_pow.c ft_sqrt.c ft_factorial.c ft_fibonacci.c ft_is_prime.c ft_intlen.c
 
 STRINGS_FILES = ft_strcap.c ft_strlowcase.c ft_strupcase.c ft_strjoins.c \
-	ft_strjoin_double.c
+	ft_strjoin_double.c ft_strcpy.c
 
 LIBC = $(addprefix basic/, $(LIBC_FILES))
 ADDITIONAL = $(addprefix additional/, $(ADDITIONAL_FILES))
 PRINTF = $(addprefix printf/, $(PRINTF_FILES))
-BONUS = $(addprefix additional/, $(ADDITIONAL_FILES))
+BONUS = $(addprefix bonus/, $(BONUS_FILES))
 GNL = $(addprefix gnl/, $(GNL_FILES))
 OTHER = $(addprefix other/, $(OTHER_FILES))
 MATHS = $(addprefix maths/, $(MATHS_FILES))
@@ -44,10 +44,18 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra -I ./ -g3
 
+TOTAL_FILES := $(words $(SRCS))
+COMPILED_COUNT := 0
+
+define progress_message
+	$(eval COMPILED_COUNT=$(shell echo $$(($(COMPILED_COUNT)+1))))
+	@printf "\033[K⚙️ Compiling %-30s [%0*d/%d]...\r" "$<" $(shell echo $${#TOTAL_FILES}) ${COMPILED_COUNT} ${TOTAL_FILES}
+endef
+
 .c.o:
-	@printf "\033[K Compiling $<... \r"
+	$(call progress_message)
 	@${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
-	@printf "\033[K🚀 Compiled $< successfully!\r"
+	@printf "\033[K🚀 Compiled %-30s [%0*d/%d]\n" "$<" $(shell echo $${#TOTAL_FILES}) ${COMPILED_COUNT} ${TOTAL_FILES}
 
 ${LIB}:	${OBJS}
 	@printf "\nCreating library...\r"

@@ -6,34 +6,31 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 21:11:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 21:12:06 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 06:01:49 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoins(char **strings, char *separator)
+char	*ft_strjoins(char **strings, int count)
 {
 	char	*result;
 	char	*temp;
 	int		i;
 
-	i = 1;
-	if (!strings)
+	if (!strings || count <= 0)
 		return (NULL);
 	result = ft_strdup(strings[0]);
-	while (strings[i])
+	if (!result)
+		return (NULL);
+	i = 1;
+	while (i < count && strings[i])
 	{
-		temp = ft_strjoin(result, separator);
-		if (!temp)
-			return (NULL);
+		temp = result;
 		result = ft_strjoin(temp, strings[i]);
+		free(temp);
 		if (!result)
-		{
-			free(temp);
 			return (NULL);
-		}
-		free(result);
 		i++;
 	}
 	return (result);
