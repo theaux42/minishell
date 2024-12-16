@@ -6,17 +6,17 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 06:15:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 21:35:29 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_exit(char *line, t_minishell *minishell)
+int	ft_exit(t_minishell *minishell)
 {
 	ft_freesplit(minishell->env);
+	free(minishell->line);
 	free(minishell);
-	free(line);
 	printf("exit\n");
 	return (0);
 }
@@ -46,22 +46,21 @@ char	*clean_readline(char *prompt)
 int	main(int ac, char **av, char **env)
 {
 	t_minishell	*minishell;
-	char		*line;
 
 	(void)ac;
 	(void)av;
 	minishell = init_minishell(env);
 	while (1)
 	{
-		line = clean_readline(nice_prompt(minishell->env));
-		if (line && *line)
+		minishell->line = clean_readline(nice_prompt(minishell->env));
+		if (minishell->line && *minishell->line)
 		{
-			if (ft_strncmp(line, "exit ", 4) == 0)
-				return (ft_exit(line, minishell));
-			minishell->commands = get_commands(line, minishell);
+			if (ft_strncmp(minishell->line, "exit ", 4) == 0)
+				return (ft_exit(minishell));
+			minishell->commands = get_commands(minishell->line, minishell);
 			execute_commands(minishell);
 			free_commands(minishell->commands);
-			free(line);
+			free(minishell->line);
 		}
 	}
 	return (0);

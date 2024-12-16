@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 04:18:16 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/15 21:30:59 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_minishell
 {
 	t_command	*commands;
 	char		**env;
+	char		*line;
 	int			status;
 }				t_minishell;
 
