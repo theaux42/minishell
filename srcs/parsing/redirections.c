@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 21:12:53 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/18 09:49:45 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ t_redirection	*add_redirection(t_redirection *head, t_token_type type,
 	t_redirection	*new;
 	t_redirection	*current;
 
+	if (!file)
+		return (head);
 	new = malloc(sizeof(t_redirection));
 	if (!new)
 		exit_error("malloc error");
@@ -34,24 +36,58 @@ t_redirection	*add_redirection(t_redirection *head, t_token_type type,
 }
 
 t_token	*remove_redirection_tokens(t_token *current, t_token **prev,
-		t_command *command)
+		t_command *command, bool remove_next)
 {
 	t_token	*to_free;
 
-	to_free = current->next;
-	if (*prev)
-		(*prev)->next = current->next->next;
+	if (remove_next && current->next)
+	{
+		to_free = current->next;
+		if (*prev)
+			(*prev)->next = current->next->next;
+		else
+			command->tokens = current->next->next;
+		free_token(current);
+		current = to_free->next;
+		free_token(to_free);
+	}
 	else
-		command->tokens = current->next->next;
-	free(current->value);
-	free(current);
-	current = to_free->next;
-	free(to_free->value);
-	free(to_free);
+	{
+		if (*prev)
+			(*prev)->next = current->next;
+		else
+			command->tokens = current->next;
+		to_free = current->next;
+		free_token(current);
+		current = to_free;
+	}
 	return (current);
 }
 
-void	parse_cmd_redirections(t_command *command)
+bool	handle_redirection(t_token **current, t_token **prev,
+		t_command *command, t_redirection **redirections)
+{
+	if ((*current)->type != REDIR_HEREDOC && (!(*current)->next
+			|| (*current)->next->type != ARGUMENT))
+		return (false);
+	if ((*current)->type == REDIR_HEREDOC)
+	{
+		if (!validate_heredoc_delimiter((*current)->value + 2))
+			return (false);
+		*redirections = add_redirection(*redirections, (*current)->type,
+				(*current)->value + 2);
+		*current = remove_redirection_tokens(*current, prev, command, false);
+	}
+	else
+	{
+		*redirections = add_redirection(*redirections, (*current)->type,
+				(*current)->next->value);
+		*current = remove_redirection_tokens(*current, prev, command, true);
+	}
+	return (true);
+}
+
+bool	parse_cmd_redirections(t_command *command)
 {
 	t_token			*prev;
 	t_token			*current;
@@ -65,11 +101,8 @@ void	parse_cmd_redirections(t_command *command)
 		if (current->type == REDIR_INPUT || current->type == REDIR_OUTPUT
 			|| current->type == REDIR_APPEND || current->type == REDIR_HEREDOC)
 		{
-			if (!current->next || current->next->type != ARGUMENT)
-				exit_error("Syntax error: invalid redirection");
-			redirections = add_redirection(redirections, current->type,
-					current->next->value);
-			current = remove_redirection_tokens(current, &prev, command);
+			if (!handle_redirection(&current, &prev, command, &redirections))
+				return (false);
 		}
 		else
 		{
@@ -78,16 +111,19 @@ void	parse_cmd_redirections(t_command *command)
 		}
 	}
 	command->redirections = redirections;
+	return (true);
 }
 
-void	parse_redirections(t_command *commands)
+bool	parse_redirections(t_command *commands)
 {
 	t_command	*current_command;
 
 	current_command = commands;
 	while (current_command)
 	{
-		parse_cmd_redirections(current_command);
+		if (!parse_cmd_redirections(current_command))
+			return (false);
 		current_command = current_command->next;
 	}
+	return (true);
 }

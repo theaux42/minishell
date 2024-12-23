@@ -6,16 +6,17 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 21:13:10 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/23 06:41:15 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_child(char *cmd, t_command *command, char ***env, char **argv)
+void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
+		char **argv)
 {
 	if (command->redirections)
-		apply_redirections(command->redirections);
+		apply_redirections(command->redirections, minishell);
 	if (command->prev_pipe != -1)
 	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
@@ -31,15 +32,15 @@ void	execute_child(char *cmd, t_command *command, char ***env, char **argv)
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
 	if (command->is_builtin)
-		exit(exec_builtins(command, env));
+		exit(exec_builtins(command, &minishell->env));
 	else
 	{
-		execve(cmd, argv, *env);
+		execve(cmd, argv, minishell->env);
 		exit_error("Execve");
 	}
 }
 
-int	execution(char *cmd, t_command *command, char ***env)
+int	execution(char *cmd, t_command *command, t_minishell *minishell)
 {
 	pid_t	pid;
 	char	**argv;
@@ -57,8 +58,8 @@ int	execution(char *cmd, t_command *command, char ***env)
 		return (-1);
 	}
 	else if (pid == 0)
-		execute_child(cmd, command, env, argv);
-	free(argv);
+		execute_child(cmd, command, minishell, argv);
+	ft_freesplit(argv);
 	return (pid);
 }
 
@@ -92,6 +93,8 @@ void	execute_single_command(t_minishell *minishell, t_command *current,
 			exit(EXIT_FAILURE);
 	}
 	close_fds(prev_fd, current);
+	if (g_signal == SIGQUIT)
+		ft_printf("Quit (core dumped)\n");
 }
 
 void	execute_commands(t_minishell *minishell)

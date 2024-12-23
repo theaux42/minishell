@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 04:21:37 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/18 19:38:19 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,12 @@ t_command	*get_commands(char *line, t_minishell *minishell)
 		return (NULL);
 	parse_commands(&head, commands);
 	expand_commands(head, minishell);
-	parse_redirections(head);
 	ft_freesplit(commands);
+	if (!parse_redirections(head))
+	{
+		printf("error: badly formated redirections.\n");
+		free_commands(head);
+		return (NULL);
+	}
 	return (head);
 }

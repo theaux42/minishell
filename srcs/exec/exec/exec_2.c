@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:23:12 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/18 19:26:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	execute_external_command(t_minishell *minishell, t_command *command,
 	cmd = get_full_cmd(tokens->value, minishell->env);
 	if (!cmd)
 		return (CMD_NOT_FOUND);
-	pid = execution(cmd, command, &minishell->env);
+	pid = execution(cmd, command, minishell);
 	free(cmd);
 	return (pid);
 }
@@ -51,7 +51,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 		cmd = ft_strdup(tokens->value);
 		if (!cmd)
 			return (CMD_NOT_FOUND);
-		pid = execution(cmd, command, &minishell->env);
+		pid = execution(cmd, command, minishell);
 		free(cmd);
 		return (pid);
 	}

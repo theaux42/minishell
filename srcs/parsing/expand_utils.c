@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 00:14:52 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 07:20:10 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/18 23:34:50 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ char	*get_current_key(char *line, int *i)
 		(*i)++;
 	len = *i - start;
 	current_key = ft_substr(line, start, len);
+	if (!current_key || !is_valid_key(current_key))
+		return (NULL);
 	return (current_key);
 }
 

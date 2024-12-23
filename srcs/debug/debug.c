@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:09:17 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/18 08:40:43 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ char	*type_str(t_token_type type)
 		return ("REDIR_APPEND");
 	if (type == REDIR_HEREDOC)
 		return ("REDIR_HEREDOC");
+	if (type == HEREDOC_DELIMITER)
+		return ("HEREDOC_DELIMITER");
 	return ("UNKNOWN");
 }
 
@@ -49,17 +51,20 @@ void	print_tokens(t_token *tokens)
 	}
 }
 
-void	print_tokens2(t_token *tokens, char separator)
+void	print_redirections(t_redirection *redirections)
 {
-	t_token	*current;
+	t_redirection	*current;
+	int				i;
 
-	current = tokens;
+	current = redirections;
+	i = 0;
 	while (current)
 	{
-		printf("%s%c", current->value, separator);
+		printf("Redirection n%i: %s - %s\n", i, current->file,
+			type_str(current->type));
 		current = current->next;
+		i++;
 	}
-	printf("\n");
 }
 
 void	print_commands(t_command *commands)
@@ -73,6 +78,8 @@ void	print_commands(t_command *commands)
 	{
 		printf("Command n%i:\n", i);
 		print_tokens(current->tokens);
+		if (current->redirections)
+			print_redirections(current->redirections);
 		current = current->next;
 		i++;
 	}

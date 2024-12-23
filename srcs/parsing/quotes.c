@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 03:27:47 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:01:13 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/23 06:45:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ size_t	ft_strlen_quote(const char *str, char quote)
 
 char	define_quote(char *line)
 {
-	if (line[0] == '\'' && line[ft_strlen(line) - 1] == '\'')
+	if (ft_edgecmp(line, '\''))
 		return ('\'');
-	else if (line[0] == '"' && line[ft_strlen(line) - 1] == '"')
+	else if (ft_edgecmp(line, '"'))
 		return ('"');
 	return ('\0');
 }

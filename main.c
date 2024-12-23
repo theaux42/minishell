@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 21:35:29 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/23 06:38:27 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	ft_exit(t_minishell *minishell)
 	free(minishell->line);
 	free(minishell);
 	printf("exit\n");
-	return (0);
+	exit (0);
 }
 
 char	*clean_readline(char *prompt)
@@ -26,6 +26,7 @@ char	*clean_readline(char *prompt)
 	char	*cleared;
 	char	*line;
 
+	rl_catch_signals = 0;
 	if (!prompt)
 		line = readline("no_prompt :( → ");
 	else
@@ -43,25 +44,49 @@ char	*clean_readline(char *prompt)
 	return (NULL);
 }
 
+void	main_loop(t_minishell *minishell)
+{
+	setup_signals();
+	while (1)
+	{
+		minishell->line = clean_readline(nice_prompt(minishell->env));
+		if (!minishell->line)
+			break ;
+		if (minishell->line && *minishell->line)
+		{
+			if (ft_strncmp(minishell->line, "exit ", 4) == 0)
+				ft_exit(minishell);
+			if (ft_strncmp(minishell->line, "history", 7) != 0)
+				add_to_history(&minishell->history, minishell->line);
+			minishell->commands = get_commands(minishell->line, minishell);
+			execute_commands(minishell);
+			free_commands(minishell->commands);
+			add_history(minishell->line);
+			free(minishell->line);
+		}
+	}
+	free_history(minishell->history);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_minishell	*minishell;
 
-	(void)ac;
-	(void)av;
+	if (!isatty(STDIN_FILENO))
+		return (printf("This is not a tty!\n"), 1);
+	if (ac != 1 && ac != 3)
+		return (printf("usage: ./minishell [-c command]\n"), 1);
 	minishell = init_minishell(env);
-	while (1)
+	if (!minishell)
+		return (1);
+	if (ac == 1)
+		main_loop(minishell);
+	else if (ac == 3 && ft_strcmp(av[1], "-c") == 0)
 	{
-		minishell->line = clean_readline(nice_prompt(minishell->env));
-		if (minishell->line && *minishell->line)
-		{
-			if (ft_strncmp(minishell->line, "exit ", 4) == 0)
-				return (ft_exit(minishell));
-			minishell->commands = get_commands(minishell->line, minishell);
-			execute_commands(minishell);
-			free_commands(minishell->commands);
-			free(minishell->line);
-		}
+		minishell->commands = get_commands(av[2], minishell);
+		execute_commands(minishell);
+		free_commands(minishell->commands);
+		return (minishell->status);
 	}
 	return (0);
 }

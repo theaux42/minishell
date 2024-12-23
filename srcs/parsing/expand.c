@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:03:05 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/18 23:30:49 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ char	*expand_env_var(char *line, int *i, char *new_line,
 	if (current_key)
 	{
 		value = get_env_var(current_key, minishell);
+		if (!value)
+			return (NULL);
 		temp = ft_strjoin(new_line, value);
 		free(new_line);
 		new_line = temp;
@@ -35,7 +37,7 @@ char	*expand_env_var(char *line, int *i, char *new_line,
 	return (new_line);
 }
 
-char	*expand_line_2(char *line, t_minishell *minishell)
+char	*expand_line(char *line, t_minishell *minishell)
 {
 	char	*new_line;
 	int		i;
@@ -82,10 +84,10 @@ void	expand_tokens(t_token *tokens, t_minishell *minishell)
 			exit_error("remove_quotes");
 		if (need_expand)
 		{
-			current_token->value = expand_line_2(current_token->value,
+			current_token->value = expand_line(current_token->value,
 					minishell);
 			if (!current_token->value)
-				exit_error("expand_line_2");
+				exit_error("expand_line");
 		}
 		current_token = current_token->next;
 	}

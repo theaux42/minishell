@@ -6,11 +6,18 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 07:21:18 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/23 06:45:29 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_token(t_token *token)
+{
+	if (token->value)
+		free(token->value);
+	free(token);
+}
 
 void	free_tokens(t_token *tokens)
 {
@@ -21,10 +28,7 @@ void	free_tokens(t_token *tokens)
 	while (current)
 	{
 		next = current->next;
-		if (current->value)
-			free(current->value);
-		if (current)
-			free(current);
+		free_token(current);
 		current = next;
 	}
 }
@@ -61,4 +65,12 @@ void	free_commands(t_command *commands)
 		free(current);
 		current = next;
 	}
+}
+
+void	free_in_builtins(t_minishell *minishell)
+{
+	free(minishell->line);
+	free_commands(minishell->commands);
+	ft_freesplit(minishell->env);
+	free(minishell);
 }

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 21:14:13 by tbabou           ###   ########.fr       */
+/*   Updated: 2024/12/23 06:51:57 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,18 @@ void	wait_for_children(t_minishell *minishell)
 		{
 			if (WTERMSIG(status) == SIGINT)
 			{
-				ft_printf("Core dumped (Ctrl + C)\n");
+				ft_printf("\n");
 				minishell->status = WTERMSIG(status);
 			}
-			else
+			else if (WTERMSIG(status) == SIGQUIT)
+			{
+				ft_printf("Quit (core dumped)\n");
 				minishell->status = WTERMSIG(status);
+			}
 		}
-		else
-			ft_printf("[%d][%s] did not exit normally\n", current->pid,
-				current->tokens->value);
 		current = current->next;
 	}
+	g_signal = 0;
 }
 
 int	count_arguments(t_command *command)
@@ -71,6 +72,14 @@ int	count_arguments(t_command *command)
 	token = command->tokens;
 	while (token)
 	{
+		if (token->type == REDIR_APPEND || token->type == REDIR_HEREDOC
+			|| token->type == REDIR_INPUT || token->type == REDIR_OUTPUT)
+		{
+			token = token->next;
+			if (token)
+				token = token->next;
+			continue ;
+		}
 		if (token->type == COMMAND || token->type == ARGUMENT)
 			argc++;
 		token = token->next;
