@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:56:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/25 15:34:06 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 07:48:34 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_env(char **env)
 	i = 0;
 	if (!env)
 	{
-		fprintf(stderr, "env: No environment variables found\n");
+		printf("env: No environment variables found\n");
 		return (1);
 	}
 	while (env[i])

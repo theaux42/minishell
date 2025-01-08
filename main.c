@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/23 06:38:27 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 08:29:43 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	ft_exit(t_minishell *minishell)
 {
 	ft_freesplit(minishell->env);
+	free_history(minishell->history);
 	free(minishell->line);
 	free(minishell);
 	printf("exit\n");
@@ -28,7 +29,7 @@ char	*clean_readline(char *prompt)
 
 	rl_catch_signals = 0;
 	if (!prompt)
-		line = readline("no_prompt :( → ");
+		line = readline(DEFAULT_PROMPT);
 	else
 	{
 		line = readline(prompt);
@@ -60,7 +61,7 @@ void	main_loop(t_minishell *minishell)
 				add_to_history(&minishell->history, minishell->line);
 			minishell->commands = get_commands(minishell->line, minishell);
 			execute_commands(minishell);
-			free_commands(minishell->commands);
+			// free_commands(minishell->commands);
 			add_history(minishell->line);
 			free(minishell->line);
 		}

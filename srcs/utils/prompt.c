@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 04:13:50 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/20 02:10:13 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/03 03:23:36 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,10 @@ char	*nice_prompt(char **env)
 
 	new_pwd = nice_pwd(env);
 	if (!new_pwd)
-		return (ft_strdup("Error building prompt"));
+		return (ft_strdup(DEFAULT_PROMPT));
 	final_prompt = build_prompt(env, new_pwd);
 	free(new_pwd);
 	if (!final_prompt)
-		return (ft_strdup("Error building prompt"));
+		return (ft_strdup(DEFAULT_PROMPT));
 	return (final_prompt);
 }

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/23 06:54:53 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:26:43 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,15 @@ typedef struct s_minishell
 	int			status;
 }				t_minishell;
 
-# define PROMPT "ᓚᘏᗢ"
+# define DEFAULT_PROMPT "ᓚᘏᗢ $ "
 # define CMD_NOT_FOUND 127
+
+# define ERR_CMD_NOT_FOUND "minishell: %s: command not found\n"
+# define ERR_EMPTY_CMD "minishell: parse error near `|'\n"
+# define ERR_UNCLOSED_QUOTES "minishell: unclosed quotes\n"
+# define ERR_MALLOC "minishell: a malloc failed\n"
+# define ERR_BAD_REDIRECTION "minishell: badly formated redirections.\n"
+# define ERR_PIPE_FAIL "minishell: pipe failed\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -147,7 +154,7 @@ int								exec_cmd(t_minishell *minishell,
 									t_command *command);
 
 // Fonction Utils
-void							init_pipes(t_command *commands);
+void							init_pipes(t_command *commands, t_minishell *minishell);
 void							wait_for_children(t_minishell *minishell);
 int								count_arguments(t_command *command);
 int								fill_arguments(char **argv, t_command *command);
@@ -172,7 +179,10 @@ void							set_env(char *key, char *value, char ***env);
 
 // === BUILTINS ===
 int								is_builtin(char *str);
-int								exec_builtins(t_command *command, char ***env);
+int								exec_builtins(t_command *command,
+									t_minishell *minishell);
+int								exec_builtins_2(char **argv, char *cmd,
+									t_command *command, t_minishell *minishell);
 
 // Les builtins
 int								ft_echo(t_token *tokens);
@@ -196,10 +206,16 @@ int								ft_history(t_history *history);
 // === UTILS ===
 // Fonction de utils
 void							exit_error(char *msg);
+void							exit_error_parent(char *msg, t_minishell *minishell);
+void							exit_error_child(char *msg, t_minishell *minishell, char *cmd, char **argv);
 void							set_default_values(t_command *command);
 // Fonction de free
+void							free_command(t_command *command);
 void							free_commands(t_command *commands);
 void							free_token(t_token *token);
+void							free_tokens(t_token *tokens);
+void							ft_free_builtins(t_minishell *minishell,
+									bool is_parent);
 // Fonction d'initialisation
 t_minishell						*init_minishell(char **env);
 

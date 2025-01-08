@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/23 06:51:57 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:28:09 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_pipes(t_command *commands)
+void	init_pipes(t_command *commands, t_minishell *minishell)
 {
 	t_command	*current;
 
@@ -22,7 +22,7 @@ void	init_pipes(t_command *commands)
 		if (current->next)
 		{
 			if (pipe(current->pipes) == -1)
-				exit_error("pipe");
+				exit_error_parent(ERR_PIPE_FAIL, minishell);
 		}
 		else
 		{
@@ -115,7 +115,7 @@ void	no_cmd_handler(t_command *current)
 	while (tok && tok->type != COMMAND)
 		tok = tok->next;
 	if (tok)
-		printf("Command not found: %s\n", tok->value);
+		printf(ERR_CMD_NOT_FOUND, tok->value);
 	else
-		printf("Command not found\n");
+		printf(ERR_EMPTY_CMD);
 }

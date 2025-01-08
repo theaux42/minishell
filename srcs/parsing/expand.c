@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/18 23:30:49 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:34:42 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ bool	expand_commands(t_command *commands, t_minishell *minishell)
 	current = commands;
 	if (!check_commands(commands))
 	{
-		printf("[%sError%s]: missused quotes\n", RED500, RESET);
+		printf(ERR_UNCLOSED_QUOTES);
 		return (false);
 	}
 	while (current)

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/23 06:41:15 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:23:46 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,23 +20,23 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 	if (command->prev_pipe != -1)
 	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
-			exit_error("dup2 input_fd");
+			exit_error_child("dup2_input_fd", minishell, cmd, argv);
 		close(command->prev_pipe);
 	}
 	if (command->pipes[1] != -1)
 	{
 		if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
-			exit_error("dup2 output_fd");
+			exit_error_child("dup2_output_fd", minishell, cmd, argv);
 		close(command->pipes[1]);
 	}
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
 	if (command->is_builtin)
-		exit(exec_builtins(command, &minishell->env));
+		exit(exec_builtins_2(argv, cmd, command, minishell));
 	else
 	{
 		execve(cmd, argv, minishell->env);
-		exit_error("Execve");
+		exit_error_child("execve", minishell, cmd, argv);
 	}
 }
 
@@ -59,7 +59,7 @@ int	execution(char *cmd, t_command *command, t_minishell *minishell)
 	}
 	else if (pid == 0)
 		execute_child(cmd, command, minishell, argv);
-	ft_freesplit(argv);
+	free(argv);
 	return (pid);
 }
 
@@ -80,7 +80,7 @@ void	execute_single_command(t_minishell *minishell, t_command *current,
 	current->prev_pipe = *prev_fd;
 	if (current->is_builtin && needs_parent_execution(current->tokens->value))
 	{
-		status = exec_builtins(current, &minishell->env);
+		status = exec_builtins(current, minishell);
 		minishell->status = status;
 		current->pid = 0;
 	}
@@ -97,20 +97,29 @@ void	execute_single_command(t_minishell *minishell, t_command *current,
 		ft_printf("Quit (core dumped)\n");
 }
 
-void	execute_commands(t_minishell *minishell)
+void execute_commands(t_minishell *minishell)
 {
-	t_command	*current;
-	int			prev_fd;
+    t_command *current;
+    t_command *next;
+    int prev_fd;
 
-	prev_fd = -1;
-	init_pipes(minishell->commands);
-	current = minishell->commands;
-	while (current)
-	{
-		execute_single_command(minishell, current, &prev_fd);
-		current = current->next;
-	}
-	if (prev_fd != -1)
-		close(prev_fd);
-	wait_for_children(minishell);
+    prev_fd = -1;
+    init_pipes(minishell->commands, minishell);
+    current = minishell->commands;
+    while (current)
+    {
+        next = current->next;
+        execute_single_command(minishell, current, &prev_fd);
+        current = next;
+    }
+    if (prev_fd != -1)
+        close(prev_fd);
+    wait_for_children(minishell);
+    current = minishell->commands;
+    while (current)
+    {
+        next = current->next;
+        free_command(current);
+        current = next;
+    }
 }

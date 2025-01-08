@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/18 19:26:04 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:00:27 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 
 	if (needs_parent_execution(tokens->value))
 	{
-		status = exec_builtins(command, &minishell->env);
+		status = exec_builtins(command, minishell);
 		minishell->status = status;
 		return (0);
 	}

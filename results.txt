@@ -1,0 +1,14 @@
+2
+0
+exit_test
+libft
+main.c
+main.o
+Makefile
+minishell
+minishell.h
+other
+results.txt
+srcs
+test.txt
+val.sh

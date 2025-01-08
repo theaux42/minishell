@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/18 09:49:45 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/06 12:04:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,14 @@ t_redirection	*add_redirection(t_redirection *head, t_token_type type,
 		return (head);
 	new = malloc(sizeof(t_redirection));
 	if (!new)
-		exit_error("malloc error");
+		return (printf(ERR_MALLOC), NULL);
 	new->type = type;
 	new->file = ft_strdup(file);
+	if (!new->file)
+	{
+		free(new);
+		return (printf(ERR_MALLOC), NULL);
+	}
 	new->next = NULL;
 	if (!head)
 		return (new);

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 07:10:31 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/03 03:20:41 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,14 +100,12 @@ char	**ft_ms_split(char *line)
 	if (result == -1)
 		return (ft_freesplit(args), NULL);
 	if (result == 1)
-		return (printf("[%sERROR%s] Invalid prompt %s(Quote issue)%s\n", RED500,
-				RESET, GRAY500, RESET), NULL);
+		return (printf(ERR_UNCLOSED_QUOTES), NULL);
 	if (result != 0)
 	{
 		ft_print_split(args);
 		ft_freesplit(args);
-		return (printf("[%sERROR%s] Invalid prompt %s(Quote issue)%s\n", RED500,
-				RESET, GRAY500, RESET), NULL);
+		return (printf(ERR_UNCLOSED_QUOTES), NULL);
 	}
 	args[ft_prompt_length(line)] = NULL;
 	return (args);

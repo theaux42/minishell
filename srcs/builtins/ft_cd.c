@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/18 23:22:15 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:13:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ char	*get_cd_path(char *path, char **env)
 	{
 		new_path = ft_strjoin(get_env("PWD", env), path + 1);
 		if (!new_path)
-			exit_error("malloc error");
+			return (NULL);
 		return (new_path);
 	}
 	if (path[0] == '~')
 	{
 		new_path = ft_strjoin(get_env("HOME", env), path + 1);
 		if (!new_path)
-			exit_error("malloc error");
+			return (NULL);
 		return (new_path);
 	}
 	return (ft_strdup(path));

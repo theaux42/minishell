@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/23 06:42:40 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:00:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,19 +78,38 @@ int	builtins(t_command *command, char ***env)
 	return (ret);
 }
 
-int	exec_builtins(t_command *command, char ***env)
+int	exec_builtins(t_command *command, t_minishell *minishell)
 {
 	int	ret;
 
 	ret = 0;
 	if (is_valid_args(command->tokens, command->tokens->value))
-		ret = builtins(command, env);
+		ret = builtins(command, &minishell->env);
 	else
 		ret = 1;
 	if (!needs_parent_execution(command->tokens->value))
-	{
-		ft_freesplit(*env);
-		free_commands(command);
-	}
+		ft_free_builtins(minishell, false);
+	else
+		ft_free_builtins(minishell, true);
+	return (ret);
+}
+
+int	exec_builtins_2(char **argv, char *cmd, t_command *command,
+		t_minishell *minishell)
+{
+	int	ret;
+
+	ret = 0;
+	if (is_valid_args(command->tokens, command->tokens->value))
+		ret = builtins(command, &minishell->env);
+	else
+		ret = 1;
+	free(cmd);
+	free(argv);
+	ft_freesplit(minishell->env);
+	free_history(minishell->history);
+	free_commands(minishell->commands);
+	free(minishell->line);
+	free(minishell);
 	return (ret);
 }

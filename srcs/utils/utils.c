@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:24:35 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/08 09:27:30 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,30 @@ char	*get_full_cmd(char *bin, char **env)
 void	exit_error(char *msg)
 {
 	perror(msg);
+	exit(EXIT_FAILURE);
+}
+
+void	exit_error_parent(char *msg, t_minishell *minishell)
+{
+	printf("%s", msg);
+	free_commands(minishell->commands);
+	free_history(minishell->history);
+	ft_freesplit(minishell->env);
+	free(minishell->line);
+	free(minishell);
+	exit(EXIT_FAILURE);
+}
+
+void	exit_error_child(char *msg, t_minishell *minishell, char *cmd,
+		char **argv)
+{
+	perror(msg);
+	free_commands(minishell->commands);
+	free_history(minishell->history);
+	ft_freesplit(minishell->env);
+	free(minishell->line);
+	free(minishell);
+	free(cmd);
+	free(argv);
 	exit(EXIT_FAILURE);
 }

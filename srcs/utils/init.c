@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 05:31:06 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/25 09:52:37 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/06 12:07:27 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ void	set_default_values(t_command *command)
 	command->pid = -1;
 }
 
-void	init_env(char ***env)
+int	init_env(char ***env)
 {
 	*env = malloc(sizeof(char *));
 	if (!*env)
-		exit_error("malloc error");
+		return (1);
 	printf("Initialising the env\n");
 	(*env)[0] = NULL;
 	set_env("PATH", "/bin:/usr/bin:/usr/local/bin", env);
@@ -39,17 +39,21 @@ void	init_env(char ***env)
 	print_env(*env);
 	if (chdir(get_env("PWD", *env)) != 0)
 		perror("chdir error");
+	return (0);
 }
 
 t_minishell	*init_minishell(char **env)
 {
 	t_minishell	*minishell;
 
-	minishell = malloc(sizeof(t_minishell));
+	minishell = ft_calloc(1, sizeof(t_minishell));
 	if (!minishell)
-		exit_error("malloc error");
+		return(printf(ERR_MALLOC), NULL);
 	if (!env || !*env)
-		init_env(&minishell->env);
+	{
+		if(init_env(&minishell->env))
+			return(printf(ERR_MALLOC), NULL);
+	}
 	else
 		dup_env(&minishell->env, env);
 	minishell->status = 0;

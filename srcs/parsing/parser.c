@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/18 19:38:19 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/07 02:09:14 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ void	add_tokens(t_token **head, char *token, int position)
 	if (!new_token)
 		return ;
 	new_token->value = ft_strdup(token);
+	if (!new_token->value)
+	{
+		free(new_token);
+		return ;
+	}
 	new_token->type = get_tokens_type(token, position);
 	new_token->next = NULL;
 	if (*head == NULL)
@@ -111,7 +116,7 @@ t_command	*get_commands(char *line, t_minishell *minishell)
 	ft_freesplit(commands);
 	if (!parse_redirections(head))
 	{
-		printf("error: badly formated redirections.\n");
+		printf(ERR_BAD_REDIRECTION);
 		free_commands(head);
 		return (NULL);
 	}
