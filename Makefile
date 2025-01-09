@@ -41,7 +41,7 @@ OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@echo "🔨 Building libft..."
+	@echo "\n🔨 Building libft...\n"
 	@cd libft && make --no-print-directory
 	@echo "🚀 Linking objects..."
 	@$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
@@ -61,7 +61,7 @@ fclean: clean
 	@echo "🧹 Cleaning executable..."
 	@cd libft && make fclean --no-print-directory
 	@rm -f $(NAME)
-	@echo "🧼 Full clean complete!"
+	@echo "🧼 Full clean complete!\n"
 
 re: fclean all
 

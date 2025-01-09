@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/23 06:42:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/09 08:51:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*get_line_heredoc(char *delimiter)
 	heredoc = ft_strdup("");
 	while (1)
 	{
-		line = readline("> ");
+		line = readline(HEREDOC_PROMPT);
 		if (!line)
 			break ;
 		if (ft_strcmp(line, delimiter) == 0)
@@ -43,7 +43,7 @@ int	handle_heredoc(char *delimiter, t_minishell *minishell)
 	char	*line;
 
 	if (pipe(pipe_fd) == -1)
-		exit_error("pipe error");
+		exit_error_parent(ERR_PIPE_FAIL, minishell);
 	need_to_expand = true;
 	if (ft_edgecmp(delimiter, '"') || ft_edgecmp(delimiter, '\''))
 		need_to_expand = false;

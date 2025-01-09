@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:23:46 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/09 09:54:33 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,14 @@ void	execute_single_command(t_minishell *minishell, t_command *current,
 			exit(EXIT_FAILURE);
 	}
 	close_fds(prev_fd, current);
-	if (g_signal == SIGQUIT)
-		ft_printf("Quit (core dumped)\n");
+}
+
+void	check_signal_exec(t_minishell *minishell)
+{
+	if (minishell->status == 128 + SIGINT)
+		printf("\n");
+	else if (minishell->status == 128 + SIGQUIT)
+		printf(MSG_COREDUMP);
 }
 
 void execute_commands(t_minishell *minishell)
@@ -115,6 +121,7 @@ void execute_commands(t_minishell *minishell)
     if (prev_fd != -1)
         close(prev_fd);
     wait_for_children(minishell);
+	check_signal_exec(minishell);
     current = minishell->commands;
     while (current)
     {

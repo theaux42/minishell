@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:28:09 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/09 08:31:43 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,32 +35,20 @@ void	init_pipes(t_command *commands, t_minishell *minishell)
 
 void	wait_for_children(t_minishell *minishell)
 {
-	t_command	*current;
-	int			status;
+	t_command	*cmd;
 
-	current = minishell->commands;
-	while (current)
+	cmd = minishell->commands;
+	while (cmd)
 	{
-		if (waitpid(current->pid, &status, 0) == -1)
-			;
-		else if (WIFEXITED(status))
-			minishell->status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-		{
-			if (WTERMSIG(status) == SIGINT)
-			{
-				ft_printf("\n");
-				minishell->status = WTERMSIG(status);
-			}
-			else if (WTERMSIG(status) == SIGQUIT)
-			{
-				ft_printf("Quit (core dumped)\n");
-				minishell->status = WTERMSIG(status);
-			}
-		}
-		current = current->next;
+		waitpid(cmd->pid, &minishell->status, 0);
+		if (WIFEXITED(minishell->status))
+			minishell->status = WEXITSTATUS(minishell->status);
+		else if (WIFSIGNALED(minishell->status))
+			minishell->status = 128 + WTERMSIG(minishell->status);
+		else if (WIFSTOPPED(minishell->status))
+			minishell->status = 128 + WSTOPSIG(minishell->status);
+		cmd = cmd->next;
 	}
-	g_signal = 0;
 }
 
 int	count_arguments(t_command *command)

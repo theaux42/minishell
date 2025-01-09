@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:26:43 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/09 09:54:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,11 @@ typedef struct s_minishell
 }				t_minishell;
 
 # define DEFAULT_PROMPT "ᓚᘏᗢ $ "
+# define HEREDOC_PROMPT "heredoc> "
+
 # define CMD_NOT_FOUND 127
+
+# define MSG_COREDUMP "Quit (core dumped)\n"
 
 # define ERR_CMD_NOT_FOUND "minishell: %s: command not found\n"
 # define ERR_EMPTY_CMD "minishell: parse error near `|'\n"
@@ -95,6 +99,7 @@ typedef struct s_minishell
 # define ERR_MALLOC "minishell: a malloc failed\n"
 # define ERR_BAD_REDIRECTION "minishell: badly formated redirections.\n"
 # define ERR_PIPE_FAIL "minishell: pipe failed\n"
+
 
 extern volatile sig_atomic_t	g_signal;
 

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:32:47 by ededemog          #+#    #+#             */
-/*   Updated: 2024/12/23 06:52:44 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/09 08:46:45 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	sigquit_handler(int sig)
 {
 	(void)sig;
 	g_signal = SIGQUIT;
-	write(STDOUT_FILENO, "Quit (core dumped)\n", 20);
 }
 
 void	setup_signals(void)

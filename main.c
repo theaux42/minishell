@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 08:29:43 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/09 10:30:22 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	main_loop(t_minishell *minishell)
 	{
 		minishell->line = clean_readline(nice_prompt(minishell->env));
 		if (!minishell->line)
-			break ;
+			exit_error_parent("", minishell);
 		if (minishell->line && *minishell->line)
 		{
 			if (ft_strncmp(minishell->line, "exit ", 4) == 0)
@@ -61,10 +61,9 @@ void	main_loop(t_minishell *minishell)
 				add_to_history(&minishell->history, minishell->line);
 			minishell->commands = get_commands(minishell->line, minishell);
 			execute_commands(minishell);
-			// free_commands(minishell->commands);
 			add_history(minishell->line);
-			free(minishell->line);
 		}
+		free(minishell->line);
 	}
 	free_history(minishell->history);
 }
