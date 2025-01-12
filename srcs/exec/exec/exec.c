@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/09 09:54:33 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/10 12:36:48 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,30 +103,30 @@ void	check_signal_exec(t_minishell *minishell)
 		printf(MSG_COREDUMP);
 }
 
-void execute_commands(t_minishell *minishell)
+void	execute_commands(t_minishell *minishell)
 {
-    t_command *current;
-    t_command *next;
-    int prev_fd;
+	t_command	*current;
+	t_command	*next;
+	int			prev_fd;
 
-    prev_fd = -1;
-    init_pipes(minishell->commands, minishell);
-    current = minishell->commands;
-    while (current)
-    {
-        next = current->next;
-        execute_single_command(minishell, current, &prev_fd);
-        current = next;
-    }
-    if (prev_fd != -1)
-        close(prev_fd);
-    wait_for_children(minishell);
+	prev_fd = -1;
+	init_pipes(minishell->commands, minishell);
+	current = minishell->commands;
+	while (current)
+	{
+		next = current->next;
+		execute_single_command(minishell, current, &prev_fd);
+		current = next;
+	}
+	if (prev_fd != -1)
+		close(prev_fd);
+	wait_for_children(minishell);
 	check_signal_exec(minishell);
-    current = minishell->commands;
-    while (current)
-    {
-        next = current->next;
-        free_command(current);
-        current = next;
-    }
+	current = minishell->commands;
+	while (current)
+	{
+		next = current->next;
+		free_command(current);
+		current = next;
+	}
 }

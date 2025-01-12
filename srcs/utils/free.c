@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 08:50:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/09 10:39:46 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,10 @@ void	free_commands(t_command *commands)
 	}
 }
 
-void	ft_free_builtins(t_minishell *minishell, bool is_parent)
+void	ft_free_builtins(t_minishell *minishell)
 {
-	printf("Trying to free builtins\n");
-	if (!is_parent)
-	{
-		printf("freeing inside a builtin\n");
-		// free_commands(minishell->commands);
-		free_history(minishell->history);
-		ft_freesplit(minishell->env);
-		free(minishell->line);
-		free(minishell);
-	}
+	free_history(minishell->history);
+	ft_freesplit(minishell->env);
+	free(minishell->line);
+	free(minishell);
 }

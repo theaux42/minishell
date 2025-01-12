@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/03 03:20:41 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/10 11:47:33 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int	ft_prompt_length(char *line)
 	i = 0;
 	word_count = 0;
 	is_in_arg = 0;
+	if (!line)
+		return (0);
 	while (line[i])
 	{
 		while (line[i] && ft_ms_isspace(line[i]))
@@ -29,10 +31,7 @@ int	ft_prompt_length(char *line)
 		{
 			word_count++;
 			while (line[i] && (is_in_arg != 0 || !ft_ms_isspace(line[i])))
-			{
-				is_in_arg = quote_manager(line[i], is_in_arg);
-				i++;
-			}
+				is_in_arg = quote_manager(line[i++], is_in_arg);
 		}
 	}
 	return (word_count);
@@ -42,7 +41,11 @@ int	copy_arg(char **split, char *line, int j, int k)
 {
 	split[k] = malloc(j + 1);
 	if (!split[k])
+	{
+		while (--k >= 0)
+			free(split[k]);
 		return (-1);
+	}
 	ft_strncpy(split[k], line, j);
 	split[k][j] = '\0';
 	return (0);

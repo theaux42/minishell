@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:34:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/10 12:25:00 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,21 @@ char	*expand_env_var(char *line, int *i, char *new_line,
 
 	(*i)++;
 	current_key = get_current_key(line, i);
-	if (current_key)
+	if (!current_key)
 	{
-		value = get_env_var(current_key, minishell);
-		if (!value)
-			return (NULL);
-		temp = ft_strjoin(new_line, value);
-		free(new_line);
-		new_line = temp;
-		free(current_key);
-		free(value);
-	}
-	else
 		new_line = ft_addchar(new_line, '$');
-	return (new_line);
+		return (new_line);
+	}
+	value = get_env_var(current_key, minishell);
+	free(current_key);
+	if (!value)
+		return (NULL);
+	temp = ft_strjoin(new_line, value);
+	free(new_line);
+	free(value);
+	if (!temp)
+		return (NULL);
+	return (temp);
 }
 
 char	*expand_line(char *line, t_minishell *minishell)
@@ -64,31 +65,33 @@ char	*expand_line(char *line, t_minishell *minishell)
 	return (new_line);
 }
 
+void	process_token(t_token *token, t_minishell *minishell)
+{
+	char	*temp;
+
+	if (need_expansion(token->value))
+	{
+		temp = token->value;
+		token->value = expand_line(token->value, minishell);
+		if (!token->value)
+			exit_error("expand_line");
+		free(temp);
+	}
+	temp = token->value;
+	token->value = process_quote(token->value);
+	if (!token->value)
+		exit_error("process_quote");
+	free(temp);
+}
+
 void	expand_tokens(t_token *tokens, t_minishell *minishell)
 {
 	t_token	*current_token;
-	bool	need_expand;
 
 	current_token = tokens;
-	need_expand = false;
 	while (current_token)
 	{
-		if (need_expansion(current_token->value))
-			need_expand = true;
-		else
-			need_expand = false;
-		if (check_missused_quotes(current_token->value))
-			exit_error("check_missused_quotes");
-		current_token->value = process_quote(current_token->value);
-		if (!current_token->value)
-			exit_error("remove_quotes");
-		if (need_expand)
-		{
-			current_token->value = expand_line(current_token->value,
-					minishell);
-			if (!current_token->value)
-				exit_error("expand_line");
-		}
+		process_token(current_token, minishell);
 		current_token = current_token->next;
 	}
 }

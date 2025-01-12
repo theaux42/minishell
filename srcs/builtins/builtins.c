@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:00:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/12 09:55:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,16 +49,13 @@ int	is_builtin(char *str)
 
 bool	is_valid_args(t_token *tokens, char *cmd)
 {
-	if (ft_strncmp(cmd, "pwd", 2) == 0)
-		if (ft_cmdlen(tokens) > 1)
-			return (ft_putstr_fd("pwd: too many arguments\n", 2), false);
 	if (ft_strncmp(cmd, "cd", 2) == 0)
 		if (ft_cmdlen(tokens) > 2)
-			return (ft_putstr_fd("cd: too many arguments\n", 2), false);
+			return (printf(ERR_TOO_MANY_ARGS, "cd"), false);
 	return (true);
 }
 
-int	builtins(t_command *command, char ***env)
+int	builtins(t_command *command, char ***env, t_minishell *minishell)
 {
 	int	ret;
 
@@ -69,6 +66,8 @@ int	builtins(t_command *command, char ***env)
 		ret = ft_cd(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "pwd", 3) == 0)
 		ret = ft_pwd(*env);
+	else if (ft_strncmp(command->tokens->value, "exit", 4) == 0)
+		ret = ft_exit(command->tokens->next, minishell);
 	else if (ft_strncmp(command->tokens->value, "export", 6) == 0)
 		ret = ft_export(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "unset", 5) == 0)
@@ -84,13 +83,11 @@ int	exec_builtins(t_command *command, t_minishell *minishell)
 
 	ret = 0;
 	if (is_valid_args(command->tokens, command->tokens->value))
-		ret = builtins(command, &minishell->env);
+		ret = builtins(command, &minishell->env, minishell);
 	else
 		ret = 1;
 	if (!needs_parent_execution(command->tokens->value))
-		ft_free_builtins(minishell, false);
-	else
-		ft_free_builtins(minishell, true);
+		ft_free_builtins(minishell);
 	return (ret);
 }
 
@@ -101,15 +98,12 @@ int	exec_builtins_2(char **argv, char *cmd, t_command *command,
 
 	ret = 0;
 	if (is_valid_args(command->tokens, command->tokens->value))
-		ret = builtins(command, &minishell->env);
+		ret = builtins(command, &minishell->env, minishell);
 	else
 		ret = 1;
 	free(cmd);
 	free(argv);
-	ft_freesplit(minishell->env);
-	free_history(minishell->history);
 	free_commands(minishell->commands);
-	free(minishell->line);
-	free(minishell);
+	ft_free_builtins(minishell);
 	return (ret);
 }

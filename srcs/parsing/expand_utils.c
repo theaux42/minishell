@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 00:14:52 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/18 23:34:50 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/10 12:24:52 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,14 +88,20 @@ bool	is_valid_key(char *key)
 
 bool	need_expansion(char *value)
 {
-	int	i;
+	int		i;
+	bool	in_single_quote;
+	bool	in_double_quote;
 
 	i = 0;
-	if (value[i] == '\'' && value[ft_strlen(value) - 1] == '\'')
-		return (false);
+	in_single_quote = false;
+	in_double_quote = false;
 	while (value[i])
 	{
-		if (value[i] == '$')
+		if (value[i] == '\'' && !in_double_quote)
+			in_single_quote = !in_single_quote;
+		else if (value[i] == '"' && !in_single_quote)
+			in_double_quote = !in_double_quote;
+		else if (value[i] == '$' && !in_single_quote)
 			return (true);
 		i++;
 	}

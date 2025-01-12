@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/09 09:54:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/11 07:07:06 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ typedef struct s_minishell
 # define ERR_MALLOC "minishell: a malloc failed\n"
 # define ERR_BAD_REDIRECTION "minishell: badly formated redirections.\n"
 # define ERR_PIPE_FAIL "minishell: pipe failed\n"
-
+# define ERR_TOO_MANY_ARGS "minishell: %s: too many arguments\n"
+# define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -117,7 +118,6 @@ char							*expand_line(char *line,
 
 // Functions of parsing/quotes.c
 int								check_missused_quotes(const char *str);
-size_t							ft_strlen_quote(const char *str, char quote);
 char							*process_quote(char *line);
 
 // Functions of parsing/expand_utils.c
@@ -159,7 +159,8 @@ int								exec_cmd(t_minishell *minishell,
 									t_command *command);
 
 // Fonction Utils
-void							init_pipes(t_command *commands, t_minishell *minishell);
+void							init_pipes(t_command *commands,
+									t_minishell *minishell);
 void							wait_for_children(t_minishell *minishell);
 int								count_arguments(t_command *command);
 int								fill_arguments(char **argv, t_command *command);
@@ -196,6 +197,7 @@ int								ft_cd(t_token *token, char ***env);
 int								ft_env(char **env);
 int								ft_export(t_token *tokens, char ***env);
 int								ft_unset(t_token *tokens, char ***env);
+int								ft_exit(t_token *token, t_minishell *minishell);
 
 // === SIGNALS ===
 // Functions of signals/signals.c
@@ -211,16 +213,18 @@ int								ft_history(t_history *history);
 // === UTILS ===
 // Fonction de utils
 void							exit_error(char *msg);
-void							exit_error_parent(char *msg, t_minishell *minishell);
-void							exit_error_child(char *msg, t_minishell *minishell, char *cmd, char **argv);
+void							exit_error_parent(char *msg,
+									t_minishell *minishell);
+void							exit_error_child(char *msg,
+									t_minishell *minishell, char *cmd,
+									char **argv);
 void							set_default_values(t_command *command);
 // Fonction de free
 void							free_command(t_command *command);
 void							free_commands(t_command *commands);
 void							free_token(t_token *token);
 void							free_tokens(t_token *tokens);
-void							ft_free_builtins(t_minishell *minishell,
-									bool is_parent);
+void							ft_free_builtins(t_minishell *minishell);
 // Fonction d'initialisation
 t_minishell						*init_minishell(char **env);
 

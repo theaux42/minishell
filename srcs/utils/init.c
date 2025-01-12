@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 05:31:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/06 12:07:27 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/10 12:24:32 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ t_minishell	*init_minishell(char **env)
 
 	minishell = ft_calloc(1, sizeof(t_minishell));
 	if (!minishell)
-		return(printf(ERR_MALLOC), NULL);
+		return (printf(ERR_MALLOC), NULL);
 	if (!env || !*env)
 	{
-		if(init_env(&minishell->env))
-			return(printf(ERR_MALLOC), NULL);
+		if (init_env(&minishell->env))
+			return (printf(ERR_MALLOC), NULL);
 	}
 	else
 		dup_env(&minishell->env, env);
