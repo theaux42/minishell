@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:00:27 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/13 16:53:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,30 +34,27 @@ int	execute_external_command(t_minishell *minishell, t_command *command,
 }
 
 int	execute_builtin_command(t_minishell *minishell, t_command *command,
-		t_token *tokens)
+		t_token *tokens, bool exit_fork)
 {
 	char	*cmd;
 	int		pid;
-	int		status;
 
-	if (needs_parent_execution(tokens->value))
+	if (needs_parent_execution(tokens->value) && !exit_fork)
 	{
-		status = exec_builtins(command, minishell);
-		minishell->status = status;
+		minishell->status = exec_builtins(command, minishell);
 		return (0);
 	}
-	else
-	{
-		cmd = ft_strdup(tokens->value);
-		if (!cmd)
-			return (CMD_NOT_FOUND);
-		pid = execution(cmd, command, minishell);
-		free(cmd);
-		return (pid);
-	}
+	if (exit_fork)
+		return (0);
+	cmd = ft_strdup(tokens->value);
+	if (!cmd)
+		return (CMD_NOT_FOUND);
+	pid = execution(cmd, command, minishell);
+	free(cmd);
+	return (pid);
 }
 
-int	exec_cmd(t_minishell *minishell, t_command *command)
+int	exec_cmd(t_minishell *minishell, t_command *command, bool exit_fork)
 {
 	t_token	*tokens;
 	int		pid;
@@ -70,6 +67,6 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 	if (!command->is_builtin)
 		pid = execute_external_command(minishell, command, tokens);
 	else
-		pid = execute_builtin_command(minishell, command, tokens);
+		pid = execute_builtin_command(minishell, command, tokens, exit_fork);
 	return (pid);
 }

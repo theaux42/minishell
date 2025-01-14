@@ -23,7 +23,7 @@ OTHER_FILES = ft_addchar.c ft_freesplit.c ft_print_split.c ft_split_len.c \
 MATHS_FILES = ft_pow.c ft_sqrt.c ft_factorial.c ft_fibonacci.c ft_is_prime.c ft_intlen.c
 
 STRINGS_FILES = ft_strcap.c ft_strlowcase.c ft_strupcase.c ft_strjoins.c \
-	ft_strjoin_double.c ft_strcpy.c ft_edgecmp.c
+	ft_strjoin_double.c ft_strcpy.c ft_edgecmp.c ft_isdigits_str.c
 
 LIBC = $(addprefix basic/, $(LIBC_FILES))
 ADDITIONAL = $(addprefix additional/, $(ADDITIONAL_FILES))

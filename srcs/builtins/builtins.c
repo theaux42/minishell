@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/12 09:55:25 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 05:23:20 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,31 +27,47 @@ int	ft_cmdlen(t_token *lst)
 
 int	is_builtin(char *str)
 {
-	int	result;
-
-	result = 0;
-	if (ft_strncmp(str, "echo", 4) == 0)
-		result = 1;
-	else if (ft_strncmp(str, "cd", 2) == 0)
-		result = 1;
-	else if (ft_strncmp(str, "pwd", 3) == 0)
-		result = 1;
-	else if (ft_strncmp(str, "export", 6) == 0)
-		result = 1;
-	else if (ft_strncmp(str, "unset", 5) == 0)
-		result = 1;
-	else if (ft_strncmp(str, "env", 3) == 0)
-		result = 1;
-	else if (ft_strncmp(str, "exit", 4) == 0)
-		result = 1;
-	return (result);
+	if (ft_strcmp(str, "echo") == 0)
+		return (1);
+	else if (ft_strcmp(str, "cd") == 0)
+		return (1);
+	else if (ft_strcmp(str, "pwd") == 0)
+		return (1);
+	else if (ft_strcmp(str, "export") == 0)
+		return (1);
+	else if (ft_strcmp(str, "unset") == 0)
+		return (1);
+	else if (ft_strcmp(str, "env") == 0)
+		return (1);
+	else if (ft_strcmp(str, "exit") == 0)
+		return (1);
+	return (0);
 }
 
 bool	is_valid_args(t_token *tokens, char *cmd)
 {
-	if (ft_strncmp(cmd, "cd", 2) == 0)
+	bool	is_exit;
+
+	is_exit = false;
+	if (ft_strncmp(cmd, "exit", 4) == 0)
+		is_exit = true;
+	if (tokens->next != NULL && tokens->next->value != NULL
+		&& *tokens->next->value && !ft_isdigits_str(tokens->next->value)
+		&& is_exit)
+	{
+		printf(ERR_NUM_ARG, cmd);
+		return (false);
+	}
+	if (ft_strncmp(cmd, "cd", 2) == 0 || ft_strncmp(cmd, "exit", 4) == 0)
+	{
 		if (ft_cmdlen(tokens) > 2)
-			return (printf(ERR_TOO_MANY_ARGS, "cd"), false);
+		{
+			if (is_exit)
+				printf("exit\n");
+			printf(ERR_TOO_MANY_ARGS, cmd);
+			return (false);
+		}
+	}
 	return (true);
 }
 
@@ -85,7 +101,7 @@ int	exec_builtins(t_command *command, t_minishell *minishell)
 	if (is_valid_args(command->tokens, command->tokens->value))
 		ret = builtins(command, &minishell->env, minishell);
 	else
-		ret = 1;
+		ret = 1 % 256;
 	if (!needs_parent_execution(command->tokens->value))
 		ft_free_builtins(minishell);
 	return (ret);
@@ -100,7 +116,7 @@ int	exec_builtins_2(char **argv, char *cmd, t_command *command,
 	if (is_valid_args(command->tokens, command->tokens->value))
 		ret = builtins(command, &minishell->env, minishell);
 	else
-		ret = 1;
+		ret = 1 % 256;
 	free(cmd);
 	free(argv);
 	free_commands(minishell->commands);

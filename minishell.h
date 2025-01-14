@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/11 07:07:06 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 05:46:09 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ typedef struct s_minishell
 # define ERR_BAD_REDIRECTION "minishell: badly formated redirections.\n"
 # define ERR_PIPE_FAIL "minishell: pipe failed\n"
 # define ERR_TOO_MANY_ARGS "minishell: %s: too many arguments\n"
+# define ERR_NUM_ARG "minishell: %s: numeric argument required\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
 
 extern volatile sig_atomic_t	g_signal;
@@ -156,7 +157,7 @@ bool							needs_parent_execution(char *cmd_name);
 int								execute_external_command(t_minishell *minishell,
 									t_command *command, t_token *tokens);
 int								exec_cmd(t_minishell *minishell,
-									t_command *command);
+									t_command *command, bool exit_fork);
 
 // Fonction Utils
 void							init_pipes(t_command *commands,
@@ -202,6 +203,8 @@ int								ft_exit(t_token *token, t_minishell *minishell);
 // === SIGNALS ===
 // Functions of signals/signals.c
 void							setup_signals(void);
+void							setup_heredoc_signals(void);
+void							restore_signals(void);
 
 // === HISTORY ===
 void							add_to_history(t_history **history,
