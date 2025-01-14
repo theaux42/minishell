@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/06 12:04:35 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:48:20 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ t_redirection	*add_redirection(t_redirection *head, t_token_type type,
 		return (head);
 	new = malloc(sizeof(t_redirection));
 	if (!new)
-		return (printf(ERR_MALLOC), NULL);
+		return (ft_dprintf(2, ERR_MALLOC), NULL);
 	new->type = type;
 	new->file = ft_strdup(file);
 	if (!new->file)
 	{
 		free(new);
-		return (printf(ERR_MALLOC), NULL);
+		return (ft_dprintf(2, ERR_MALLOC), NULL);
 	}
 	new->next = NULL;
 	if (!head)
@@ -127,7 +127,7 @@ bool	parse_redirections(t_command *commands)
 	while (current_command)
 	{
 		if (!parse_cmd_redirections(current_command))
-			return (false);
+			return (ft_dprintf(2, ERR_BAD_REDIRECTION), false);
 		current_command = current_command->next;
 	}
 	return (true);

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/09 08:31:43 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:47:48 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	no_cmd_handler(t_command *current)
 	while (tok && tok->type != COMMAND)
 		tok = tok->next;
 	if (tok)
-		printf(ERR_CMD_NOT_FOUND, tok->value);
+		ft_dprintf(2, ERR_CMD_NOT_FOUND, tok->value);
 	else
-		printf(ERR_EMPTY_CMD);
+		ft_dprintf(2, ERR_EMPTY_CMD);
 }

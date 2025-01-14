@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 05:23:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:47:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ bool	is_valid_args(t_token *tokens, char *cmd)
 		&& *tokens->next->value && !ft_isdigits_str(tokens->next->value)
 		&& is_exit)
 	{
-		printf(ERR_NUM_ARG, cmd);
+		ft_dprintf(2, ERR_NUM_ARG, cmd);
 		return (false);
 	}
 	if (ft_strncmp(cmd, "cd", 2) == 0 || ft_strncmp(cmd, "exit", 4) == 0)
@@ -64,7 +64,7 @@ bool	is_valid_args(t_token *tokens, char *cmd)
 		{
 			if (is_exit)
 				printf("exit\n");
-			printf(ERR_TOO_MANY_ARGS, cmd);
+			ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd);
 			return (false);
 		}
 	}

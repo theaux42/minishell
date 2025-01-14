@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:27:30 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:49:14 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	exit_error(char *msg)
 
 void	exit_error_parent(char *msg, t_minishell *minishell)
 {
-	printf("%s", msg);
+	ft_dprintf(2, "%s", msg);
 	free_commands(minishell->commands);
 	free_history(minishell->history);
 	ft_freesplit(minishell->env);
@@ -105,7 +105,7 @@ void	exit_error_parent(char *msg, t_minishell *minishell)
 void	exit_error_child(char *msg, t_minishell *minishell, char *cmd,
 		char **argv)
 {
-	perror(msg);
+	ft_dprintf(2, "%s", msg);
 	free_commands(minishell->commands);
 	free_history(minishell->history);
 	ft_freesplit(minishell->env);

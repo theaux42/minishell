@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/11 07:10:15 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:48:55 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	main(int ac, char **av, char **env)
 	(void)ac;
 	(void)av;
 	if (!isatty(STDIN_FILENO))
-		return (printf(ERR_NOT_A_TTY), 1);
+		return (ft_dprintf(2, ERR_NOT_A_TTY), 1);
 	minishell = init_minishell(env);
 	if (!minishell)
 		return (1);

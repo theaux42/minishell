@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/10 12:25:00 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:47:57 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ bool	expand_commands(t_command *commands, t_minishell *minishell)
 	current = commands;
 	if (!check_commands(commands))
 	{
-		printf(ERR_UNCLOSED_QUOTES);
+		ft_dprintf(2, ERR_UNCLOSED_QUOTES);
 		return (false);
 	}
 	while (current)

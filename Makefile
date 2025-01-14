@@ -17,7 +17,7 @@ PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c \
 
 UTILS_SRCS = srcs/utils/free.c srcs/utils/split.c srcs/utils/parser.c \
 	   srcs/utils/utils.c srcs/utils/init.c srcs/utils/prompt.c \
-	   srcs/utils/prompt_utils.c\
+	   srcs/utils/prompt_utils.c srcs/utils/error.c 
 
 EXEC_SRCS = srcs/exec/exec/exec.c srcs/exec/exec/exec_utils.c \
 	    srcs/exec/exec/exec_2.c

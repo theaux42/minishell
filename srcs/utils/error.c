@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isdigits_str.c                                  :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/12 10:11:16 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 09:53:08 by tbabou           ###   ########.fr       */
+/*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
+/*   Updated: 2025/01/14 09:48:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_isdigits_str(char *str)
+bool	validate_commands(t_command *commands)
 {
-	int	i;
+	t_command	*cur;
+	t_token		*tok;
 
-	i = 0;
-	while (str[i])
+	cur = commands;
+	while (cur)
 	{
-		if (!ft_isdigit(str[i]) && (str[i] != '-' && str[i] != '+'))
-			return (0);
-		i++;
+		tok = cur->tokens;
+		while (tok && tok->type != COMMAND && tok->type != ARGUMENT)
+			tok = tok->next;
+		if (!tok)
+			return (ft_dprintf(2, ERR_EMPTY_CMD), false);
+		cur = cur->next;
 	}
-	return (1);
+	return (true);
 }

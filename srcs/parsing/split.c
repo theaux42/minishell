@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/10 11:47:33 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:48:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,12 +103,12 @@ char	**ft_ms_split(char *line)
 	if (result == -1)
 		return (ft_freesplit(args), NULL);
 	if (result == 1)
-		return (printf(ERR_UNCLOSED_QUOTES), NULL);
+		return (ft_dprintf(2, ERR_UNCLOSED_QUOTES), NULL);
 	if (result != 0)
 	{
 		ft_print_split(args);
 		ft_freesplit(args);
-		return (printf(ERR_UNCLOSED_QUOTES), NULL);
+		return (ft_dprintf(2, ERR_UNCLOSED_QUOTES), NULL);
 	}
 	args[ft_prompt_length(line)] = NULL;
 	return (args);

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/12 10:13:05 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:22:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,17 +90,19 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 void				ft_lstiter(t_list *lst, void (*f)(void *));
 
 // Functions of the printf
+int					ft_dprintf(int fd, const char *format, ...);
 int					ft_printf(const char *format, ...);
 int					ft_intlen(int nbr);
 int					ft_uintlen(unsigned int nbr);
 int					ft_hexalen(uintptr_t ptr);
 char				*ft_uitoa(unsigned int n);
-int					ft_puthexa(unsigned int num, int isUpper);
+int					ft_puthexa(unsigned int num, int isUpper, int fd);
 int					ft_putstr(char *str);
 int					ft_putchar_printf(int c, int fd);
-int					ft_putnbr(int nb);
-int					ft_putunbr(unsigned int nb);
-int					ft_putptr(unsigned long long ptr);
+int					ft_putstr_printf(char *str, int fd);
+int					ft_putnbr(int nb, int fd);
+int					ft_putunbr(unsigned int nb, int fd);
+int					ft_putptr(unsigned long long ptr, int fd);
 
 // Functions of the get_next_line function
 int					isnewline(char *str);

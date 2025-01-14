@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 05:46:09 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 08:41:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ typedef struct s_minishell
 # define ERR_TOO_MANY_ARGS "minishell: %s: too many arguments\n"
 # define ERR_NUM_ARG "minishell: %s: numeric argument required\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
+# define ERR_EMPTY_CMD "minishell: parse error near `|'\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -230,6 +231,9 @@ void							free_tokens(t_token *tokens);
 void							ft_free_builtins(t_minishell *minishell);
 // Fonction d'initialisation
 t_minishell						*init_minishell(char **env);
+
+// Fonction d'erreur
+bool							validate_commands(t_command *commands);
 
 // === DEBUG ===
 // Fonction de debug
