@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:40:40 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/19 02:17:13 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 10:14:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ bool	validate_heredoc_delimiter(char *delimiter)
 	i = 0;
 	while (delimiter[i])
 	{
-		if (ft_isspace(delimiter[i]) || !ft_isprint(delimiter[i]))
+		if (!ft_isprint(delimiter[i]))
 			return (false);
 		i++;
 	}

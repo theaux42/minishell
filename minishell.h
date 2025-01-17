@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 08:41:17 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 08:58:02 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ typedef struct s_minishell
 # define ERR_CMD_NOT_FOUND "minishell: %s: command not found\n"
 # define ERR_EMPTY_CMD "minishell: parse error near `|'\n"
 # define ERR_UNCLOSED_QUOTES "minishell: unclosed quotes\n"
+# define ERR_DEBUG "minishell: debug message\n"
 # define ERR_MALLOC "minishell: a malloc failed\n"
 # define ERR_BAD_REDIRECTION "minishell: badly formated redirections.\n"
 # define ERR_PIPE_FAIL "minishell: pipe failed\n"
@@ -139,6 +140,7 @@ bool							validate_heredoc_delimiter(char *delimiter);
 
 // Functions of parsing/split_utils.c
 int								ft_ms_isspace(char c);
+int								is_redirection_char(char c);
 int								quote_manager(char current, int is_in_arg);
 
 // Functions of parsing/redirections.c

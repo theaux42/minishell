@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 09:48:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 15:51:49 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,22 +69,47 @@ t_token	*remove_redirection_tokens(t_token *current, t_token **prev,
 	return (current);
 }
 
+int		ft_redirlen(t_token_type type)
+{
+	if (type == REDIR_HEREDOC || type == REDIR_APPEND)
+		return (2);
+	return (1);
+}
+
+int		where_delimiter(t_token_type type, char *delimiter)
+{
+	int	token_len;
+	int	redir_len;
+
+	token_len = ft_redirlen(type);
+	redir_len = ft_strlen(delimiter);
+	if (redir_len == token_len)
+		return (1);
+	return (0);
+}
+
+	// if ((*current)->type != REDIR_HEREDOC && (!(*current)->next
+	// 		|| (*current)->next->type != ARGUMENT))
+	// 	return (false);
+
 bool	handle_redirection(t_token **current, t_token **prev,
 		t_command *command, t_redirection **redirections)
 {
-	if ((*current)->type != REDIR_HEREDOC && (!(*current)->next
-			|| (*current)->next->type != ARGUMENT))
-		return (false);
-	if ((*current)->type == REDIR_HEREDOC)
-	{
-		if (!validate_heredoc_delimiter((*current)->value + 2))
+	int	redir_len;
+	
+	redir_len = ft_redirlen((*current)->type);
+	if (!where_delimiter((*current)->type,(*current)->value)) // check if the delimiter is within the redirection token
+	{ // in this case, the delimiter is in the same token as the redirection
+		if (!validate_heredoc_delimiter((*current)->value + redir_len))
 			return (false);
 		*redirections = add_redirection(*redirections, (*current)->type,
-				(*current)->value + 2);
+				(*current)->value + redir_len);
 		*current = remove_redirection_tokens(*current, prev, command, false);
 	}
 	else
-	{
+	{ // in this case, the delimiter is in the next token
+		if (!(*current)->next || (*current)->next->type != ARGUMENT)
+			return (false);
 		*redirections = add_redirection(*redirections, (*current)->type,
 				(*current)->next->value);
 		*current = remove_redirection_tokens(*current, prev, command, true);
@@ -127,7 +152,7 @@ bool	parse_redirections(t_command *commands)
 	while (current_command)
 	{
 		if (!parse_cmd_redirections(current_command))
-			return (ft_dprintf(2, ERR_BAD_REDIRECTION), false);
+			return (printf(ERR_BAD_REDIRECTION), false);
 		current_command = current_command->next;
 	}
 	return (true);
