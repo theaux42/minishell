@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 08:59:36 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 15:34:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ t_command	*get_commands(char *line, t_minishell *minishell)
 	commands = ft_ms_split(line);
 	if (!commands)
 		return (NULL);
+	ft_print_split(commands);
 	parse_commands(&head, commands);
 	expand_commands(head, minishell);
 	ft_freesplit(commands);

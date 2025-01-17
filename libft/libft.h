@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 09:22:35 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 12:29:23 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ char				*ft_strjoin_double(char *s1, char *s2, char *s3);
 char				*ft_strcpy(char *s1, char *s2);
 int					ft_edgecmp(const char *s1, const char s2);
 int					ft_isdigits_str(char *str);
+int					ft_isredir(char c);
 
 // Colors
 

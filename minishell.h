@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 08:58:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 15:35:42 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,12 +140,16 @@ bool							validate_heredoc_delimiter(char *delimiter);
 
 // Functions of parsing/split_utils.c
 int								ft_ms_isspace(char c);
-int								is_redirection_char(char c);
 int								quote_manager(char current, int is_in_arg);
-
+int								handle_token(char *line, int *i,
+									int *is_in_arg);
+int								process_redir(char **split, char *line,
+									int *i, int *k);
 // Functions of parsing/redirections.c
 bool							parse_redirections(t_command *command);
 // Functions of parsing/split.c
+int								copy_arg(char **split, char *line, int j,
+									int k);
 char							**ft_ms_split(char *line);
 int								ft_prompt_length(char *line);
 

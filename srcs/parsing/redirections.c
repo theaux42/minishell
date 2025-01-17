@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 15:51:49 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 15:05:01 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ bool	handle_redirection(t_token **current, t_token **prev,
 		*current = remove_redirection_tokens(*current, prev, command, false);
 	}
 	else
-	{ // in this case, the delimiter is in the next token
+	{
 		if (!(*current)->next || (*current)->next->type != ARGUMENT)
 			return (false);
 		*redirections = add_redirection(*redirections, (*current)->type,
