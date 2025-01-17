@@ -15,7 +15,7 @@ PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c \
 	   srcs/parsing/expand.c srcs/parsing/expand_utils.c srcs/parsing/quotes.c \
 	   srcs/parsing/redirections.c
 
-UTILS_SRCS = srcs/utils/free.c srcs/utils/split.c srcs/utils/parser.c \
+UTILS_SRCS = srcs/utils/free.c srcs/utils/split_utils.c srcs/utils/parser.c \
 	   srcs/utils/utils.c srcs/utils/init.c srcs/utils/prompt.c \
 	   srcs/utils/prompt_utils.c srcs/utils/error.c 
 
@@ -33,7 +33,8 @@ BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
 		
 REDIRECTION_SRCS = srcs/exec/redirection/redirection.c
 
-SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) $(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(SIGNALS_SRCS) $(HISTORY_SRCS) srcs/debug/debug.c
+SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) $(BUILTINS_SRCS) \
+	$(REDIRECTION_SRCS) $(SIGNALS_SRCS) $(HISTORY_SRCS) srcs/debug/debug.c
 
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)

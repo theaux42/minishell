@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 15:54:57 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 10:13:45 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int	inner_split(char **split, char *line)
 				return (-1);
 		}
 	}
+	split[k] = NULL;
 	return (is_in_arg);
 }
 
@@ -103,13 +104,9 @@ char	**ft_ms_split(char *line)
 	if (result == -1)
 		return (ft_freesplit(args), NULL);
 	if (result == 1)
-		return (ft_dprintf(2, ERR_DEBUG), NULL);
-	if (result != 0)
 	{
-		ft_print_split(args);
-		ft_freesplit(args);
+		free(args);
 		return (ft_dprintf(2, ERR_UNCLOSED_QUOTES), NULL);
 	}
-	args[ft_prompt_length(line)] = NULL;
 	return (args);
 }

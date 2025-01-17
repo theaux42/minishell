@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:33:11 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 08:59:05 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 10:04:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,4 @@ int	quote_manager(char current, int is_in_arg)
 			return (0);
 	}
 	return (is_in_arg);
-	
-} 
+}

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 03:27:47 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/10 12:21:26 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 10:03:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,14 @@ int	check_missused_quotes(const char *str)
 	int	in_d;
 	int	i;
 
-	if (!str)
-		return (0);
 	in_s = 0;
 	in_d = 0;
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'')
+		if (str[i] == '\'' && !in_d)
 			in_s = !in_s;
-		else if (str[i] == '"')
+		else if (str[i] == '"' && !in_s)
 			in_d = !in_d;
 		i++;
 	}
