@@ -6,11 +6,27 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:15:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:15:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/18 07:47:29 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	good_flag(const char *str)
+{
+	int	i;
+
+	i = 1;
+	if (str[0] != '-' || !str[1])
+		return (0);
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 int	ft_echo(t_token *tokens)
 {
@@ -18,11 +34,12 @@ int	ft_echo(t_token *tokens)
 	int		newline;
 
 	cur = tokens;
-	newline = 0;
-	if (cur && ft_strncmp(cur->value, "-n", ft_strlen(cur->value)) == 0)
+	newline = 1;
+	while (cur && good_flag(cur->value))
+	{
+			newline = 0;
 		cur = cur->next;
-	else
-		newline = 1;
+	}
 	while (cur)
 	{
 		printf("%s", cur->value);

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 09:47:39 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/17 15:56:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	is_builtin(char *str)
 	return (0);
 }
 
-bool	is_valid_args(t_token *tokens, char *cmd)
+bool	is_valid_args(t_token *tokens, char *cmd, bool print_exit)
 {
 	bool	is_exit;
 
@@ -62,7 +62,7 @@ bool	is_valid_args(t_token *tokens, char *cmd)
 	{
 		if (ft_cmdlen(tokens) > 2)
 		{
-			if (is_exit)
+			if (is_exit && print_exit)
 				printf("exit\n");
 			ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd);
 			return (false);
@@ -98,7 +98,7 @@ int	exec_builtins(t_command *command, t_minishell *minishell)
 	int	ret;
 
 	ret = 0;
-	if (is_valid_args(command->tokens, command->tokens->value))
+	if (is_valid_args(command->tokens, command->tokens->value, true))
 		ret = builtins(command, &minishell->env, minishell);
 	else
 		ret = 1 % 256;
@@ -113,7 +113,7 @@ int	exec_builtins_2(char **argv, char *cmd, t_command *command,
 	int	ret;
 
 	ret = 0;
-	if (is_valid_args(command->tokens, command->tokens->value))
+	if (is_valid_args(command->tokens, command->tokens->value, true))
 		ret = builtins(command, &minishell->env, minishell);
 	else
 		ret = 1 % 256;
