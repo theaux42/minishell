@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 10:42:04 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 12:48:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ typedef struct s_minishell
 
 # define DEBUG_MSG "Debug mode enabled\nCommands will be printed.\n"
 # define DEBUG_STATUS_MSG "Exited with status: %i\n"
+# define DEBUG_EXEC_PARENT "Executing builtins inside the parent process\n"
+# define DEBUG_EXEC_CHILD "Executing builtins inside the child process\n"
 
 # define DEFAULT_PROMPT "ᓚᘏᗢ $ "
 # define HEREDOC_PROMPT "heredoc> "
@@ -171,7 +173,7 @@ bool							needs_parent_execution(char *cmd_name);
 int								execute_external_command(t_minishell *minishell,
 									t_command *command, t_token *tokens);
 int								exec_cmd(t_minishell *minishell,
-									t_command *command, bool exit_fork);
+									t_command *command);
 int								ft_cmd_count(t_command *commands);
 
 // Fonction Utils
