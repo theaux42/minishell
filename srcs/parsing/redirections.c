@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 15:05:01 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 05:48:27 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,51 +69,14 @@ t_token	*remove_redirection_tokens(t_token *current, t_token **prev,
 	return (current);
 }
 
-int		ft_redirlen(t_token_type type)
-{
-	if (type == REDIR_HEREDOC || type == REDIR_APPEND)
-		return (2);
-	return (1);
-}
-
-int		where_delimiter(t_token_type type, char *delimiter)
-{
-	int	token_len;
-	int	redir_len;
-
-	token_len = ft_redirlen(type);
-	redir_len = ft_strlen(delimiter);
-	if (redir_len == token_len)
-		return (1);
-	return (0);
-}
-
-	// if ((*current)->type != REDIR_HEREDOC && (!(*current)->next
-	// 		|| (*current)->next->type != ARGUMENT))
-	// 	return (false);
-
 bool	handle_redirection(t_token **current, t_token **prev,
 		t_command *command, t_redirection **redirections)
 {
-	int	redir_len;
-	
-	redir_len = ft_redirlen((*current)->type);
-	if (!where_delimiter((*current)->type,(*current)->value)) // check if the delimiter is within the redirection token
-	{ // in this case, the delimiter is in the same token as the redirection
-		if (!validate_heredoc_delimiter((*current)->value + redir_len))
-			return (false);
-		*redirections = add_redirection(*redirections, (*current)->type,
-				(*current)->value + redir_len);
-		*current = remove_redirection_tokens(*current, prev, command, false);
-	}
-	else
-	{
-		if (!(*current)->next || (*current)->next->type != ARGUMENT)
-			return (false);
-		*redirections = add_redirection(*redirections, (*current)->type,
-				(*current)->next->value);
-		*current = remove_redirection_tokens(*current, prev, command, true);
-	}
+	if (!(*current)->next || (*current)->next->type != ARGUMENT)
+		return (false);
+	*redirections = add_redirection(*redirections, (*current)->type,
+			(*current)->next->value);
+	*current = remove_redirection_tokens(*current, prev, command, true);
 	return (true);
 }
 

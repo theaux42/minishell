@@ -4,7 +4,8 @@ NAME = minishell
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -g3 -I/opt/homebrew/opt/readline/include -I.
+CFLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I.
+DEBUG_FLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I. -g3 -DDEBUG_MODE=1
 
 LDFLAGS = -L./libft -lft -L/opt/homebrew/opt/readline/lib -lreadline
 
@@ -33,13 +34,18 @@ BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
 		
 REDIRECTION_SRCS = srcs/exec/redirection/redirection.c
 
-SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) $(BUILTINS_SRCS) \
-	$(REDIRECTION_SRCS) $(SIGNALS_SRCS) $(HISTORY_SRCS) srcs/debug/debug.c
+SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) \
+	$(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(SIGNALS_SRCS) $(HISTORY_SRCS) srcs/debug/debug.c
 
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
+VALGRIND_CMD = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp
 
 all: $(NAME)
+
+debug: CFLAGS=$(DEBUG_FLAGS)
+debug: re
+	@echo "🐞 Debug mode build complete!"
 
 $(NAME): $(OBJS)
 	@echo "\n🔨 Building libft...\n"
@@ -51,6 +57,11 @@ $(NAME): $(OBJS)
 %.o: %.c
 	@echo "🛠️ Compiling $<..."
 	@$(CC) $(CFLAGS) -c $< -o $@
+
+leak : all
+	@echo "{\nignore_libreadline_leaks\n Memcheck:Leak\n ...\n obj:*/libreadline.so.*\n }" > readline.supp
+	@${VALGRIND_CMD} ./${NAME}
+	@rm readline.supp
 
 clean:
 	@echo "🧹 Cleaning object files..."
@@ -66,4 +77,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re debug leak

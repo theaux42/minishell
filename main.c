@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 15:07:34 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 06:11:08 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,11 @@ void	main_loop(t_minishell *minishell)
 			if (ft_strncmp(minishell->line, "history", 7) != 0)
 				add_to_history(&minishell->history, minishell->line);
 			minishell->commands = get_commands(minishell->line, minishell);
+			if (DEBUG_MODE)
+				print_commands(minishell->commands);
 			execute_commands(minishell);
+			if (DEBUG_MODE)
+				printf(DEBUG_STATUS_MSG, minishell->status);
 			add_history(minishell->line);
 		}
 		free(minishell->line);
@@ -62,8 +66,10 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	if (!isatty(STDIN_FILENO))
-		return (ft_dprintf(2, ERR_NOT_A_TTY), 1);
+	// if (!isatty(STDIN_FILENO))
+	// 	return (ft_dprintf(2, ERR_NOT_A_TTY), 1);
+	if (DEBUG_MODE)
+		ft_dprintf(2, DEBUG_MSG);
 	minishell = init_minishell(env);
 	if (!minishell)
 		return (1);

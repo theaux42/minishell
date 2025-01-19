@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/13 15:55:36 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 06:08:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,8 @@ void	execute_commands(t_minishell *minishell)
 	int			prev_fd;
 
 	prev_fd = -1;
+	minishell->cmd_count = ft_cmd_count(minishell->commands);
+	printf("cmd_count: %d\n", minishell->cmd_count);
 	init_pipes(minishell->commands, minishell);
 	current = minishell->commands;
 	while (current)

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 15:35:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 06:07:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,15 @@ typedef struct s_minishell
 	char		**env;
 	char		*line;
 	int			status;
+	int			cmd_count;
 }				t_minishell;
+
+#ifndef DEBUG_MODE
+# define DEBUG_MODE 0
+#endif
+
+# define DEBUG_MSG "Debug mode enabled\nCommands will be printed.\n"
+# define DEBUG_STATUS_MSG "Exited with status: %i\n"
 
 # define DEFAULT_PROMPT "ᓚᘏᗢ $ "
 # define HEREDOC_PROMPT "heredoc> "
@@ -103,7 +111,6 @@ typedef struct s_minishell
 # define ERR_TOO_MANY_ARGS "minishell: %s: too many arguments\n"
 # define ERR_NUM_ARG "minishell: %s: numeric argument required\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
-# define ERR_EMPTY_CMD "minishell: parse error near `|'\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -165,6 +172,7 @@ int								execute_external_command(t_minishell *minishell,
 									t_command *command, t_token *tokens);
 int								exec_cmd(t_minishell *minishell,
 									t_command *command, bool exit_fork);
+int								ft_cmd_count(t_command *commands);
 
 // Fonction Utils
 void							init_pipes(t_command *commands,
@@ -197,6 +205,7 @@ int								exec_builtins(t_command *command,
 									t_minishell *minishell);
 int								exec_builtins_2(char **argv, char *cmd,
 									t_command *command, t_minishell *minishell);
+bool							is_valid_args(t_token *tokens, char *cmd, bool print_exit);
 
 // Les builtins
 int								ft_echo(t_token *tokens);

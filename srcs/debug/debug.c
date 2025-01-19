@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 07:48:34 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/18 06:26:18 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	print_tokens(t_token *tokens)
 	i = 0;
 	while (current)
 	{
-		printf("Token n%i: %s - %s\n", i, current->value,
-			type_str(current->type));
+		printf("   Token n%i: %s - %s\n", i, current->value,
+				type_str(current->type));
 		current = current->next;
 		i++;
 	}
@@ -60,8 +60,8 @@ void	print_redirections(t_redirection *redirections)
 	i = 0;
 	while (current)
 	{
-		printf("Redirection n%i: %s - %s\n", i, current->file,
-			type_str(current->type));
+		printf("		Redirection n%i: %s - %s\n", i, current->file,
+				type_str(current->type));
 		current = current->next;
 		i++;
 	}
@@ -74,15 +74,20 @@ void	print_commands(t_command *commands)
 
 	current = commands;
 	i = 0;
+	printf("=== COMMANDS ===\n");
 	while (current)
 	{
-		printf("Command n%i:\n", i);
+		printf(" --- Command n%i ---\n", i);
 		print_tokens(current->tokens);
 		if (current->redirections)
+		{
+			printf("	--- Redirections ---\n");
 			print_redirections(current->redirections);
+		}
 		current = current->next;
 		i++;
 	}
+	printf("=== COMMANDS ===\n");
 }
 
 void	print_env(char **env)

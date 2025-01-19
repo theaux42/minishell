@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/13 16:53:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 06:07:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,12 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 		return (0);
 	}
 	if (exit_fork)
-		return (0);
+	{
+		if (is_valid_args(command->tokens, command->tokens->value, false))
+			return (0);
+		else
+			return (1 % 256);
+	}
 	cmd = ft_strdup(tokens->value);
 	if (!cmd)
 		return (CMD_NOT_FOUND);
@@ -69,4 +74,21 @@ int	exec_cmd(t_minishell *minishell, t_command *command, bool exit_fork)
 	else
 		pid = execute_builtin_command(minishell, command, tokens, exit_fork);
 	return (pid);
+}
+
+int	ft_cmd_count(t_command *commands)
+{
+	int			count;
+	t_command	*current;
+
+	if (!commands)
+		return (0);
+	count = 0;
+	current = commands;
+	while (current)
+	{
+		count++;
+		current = current->next;
+	}
+	return (count);
 }
