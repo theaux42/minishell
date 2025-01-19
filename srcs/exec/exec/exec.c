@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 06:08:04 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 10:42:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
 	if (command->is_builtin)
-		exit(exec_builtins_2(argv, cmd, command, minishell));
+		exit(child_builtins(argv, cmd, command, minishell));
 	else
 	{
 		execve(cmd, argv, minishell->env);
@@ -85,7 +85,7 @@ void	execute_single_command(t_minishell *minishell, t_command *current,
 	if (current->is_builtin && needs_parent_execution(current->tokens->value)
 		&& !exit_fork)
 	{
-		minishell->status = exec_builtins(current, minishell);
+		minishell->status = parent_builtins(current, minishell);
 		current->pid = 0;
 	}
 	else

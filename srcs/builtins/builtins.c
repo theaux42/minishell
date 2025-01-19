@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 15:56:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 10:42:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	builtins(t_command *command, char ***env, t_minishell *minishell)
 	return (ret);
 }
 
-int	exec_builtins(t_command *command, t_minishell *minishell)
+int	parent_builtins(t_command *command, t_minishell *minishell)
 {
 	int	ret;
 
@@ -107,7 +107,7 @@ int	exec_builtins(t_command *command, t_minishell *minishell)
 	return (ret);
 }
 
-int	exec_builtins_2(char **argv, char *cmd, t_command *command,
+int	child_builtins(char **argv, char *cmd, t_command *command,
 		t_minishell *minishell)
 {
 	int	ret;

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 06:07:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 10:42:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,9 +201,9 @@ void							set_env(char *key, char *value, char ***env);
 
 // === BUILTINS ===
 int								is_builtin(char *str);
-int								exec_builtins(t_command *command,
+int								parent_builtins(t_command *command,
 									t_minishell *minishell);
-int								exec_builtins_2(char **argv, char *cmd,
+int								child_builtins(char **argv, char *cmd,
 									t_command *command, t_minishell *minishell);
 bool							is_valid_args(t_token *tokens, char *cmd, bool print_exit);
 
