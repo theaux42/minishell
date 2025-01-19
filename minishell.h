@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 12:48:04 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 13:30:14 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,10 @@ typedef struct s_minishell
 # define ERR_PIPE_FAIL "minishell: pipe failed\n"
 # define ERR_TOO_MANY_ARGS "minishell: %s: too many arguments\n"
 # define ERR_NUM_ARG "minishell: %s: numeric argument required\n"
+# define ERR_EXPORT_INVALID "minishell: export: %s: invalid syntax\n"
+# define ERR_EXPORT_INVALID_ID "minishell: export: %s: not a valid identifier\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
+# define ERR_NO_RIGHT "minishell: %s: Permission denied\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -192,7 +195,7 @@ char							*append_path_segment(char *current_path,
 									char *segment, bool add_slash);
 
 // Functions of exec/redirection/redirection.c
-void							apply_redirections(t_redirection *redirections,
+int								apply_redirections(t_redirection *redirections,
 									t_minishell *minishell);
 
 // Fonction env

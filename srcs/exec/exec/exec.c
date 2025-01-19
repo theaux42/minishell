@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 18:31:17 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 18:41:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 		char **argv)
 {
 	if (command->redirections)
-		apply_redirections(command->redirections, minishell);
+		if (apply_redirections(command->redirections, minishell))
+			exit_error_child(NULL, minishell, cmd, argv);
 	if (command->prev_pipe != -1)
 	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)

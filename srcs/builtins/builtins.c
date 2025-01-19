@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 12:45:55 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 12:49:27 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,6 @@ int	parent_builtins(t_command *command, t_minishell *minishell)
 		ret = builtins(command, &minishell->env, minishell);
 	else
 		ret = 1 % 256;
-	if (!needs_parent_execution(command->tokens->value))
-		ft_free_builtins(minishell);
 	return (ret);
 }
 

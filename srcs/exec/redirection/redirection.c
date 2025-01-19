@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 06:14:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 13:31:57 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	handle_heredoc(char *delimiter, t_minishell *minishell)
 	return (pipe_fd[0]);
 }
 
-void	apply_redirections(t_redirection *redirections, t_minishell *minishell)
+int	apply_redirections(t_redirection *redirections, t_minishell *minishell)
 {
 	int	fd;
 
@@ -75,7 +75,7 @@ void	apply_redirections(t_redirection *redirections, t_minishell *minishell)
 		else if (redirections->type == REDIR_HEREDOC)
 			fd = handle_heredoc(redirections->file, minishell);
 		if (fd == -1)
-			exit_error("Error opening file");
+			return (ft_dprintf(2, ERR_NO_RIGHT, redirections->file), 1);
 		if (redirections->type == REDIR_INPUT
 			|| redirections->type == REDIR_HEREDOC)
 			dup2(fd, STDIN_FILENO);
@@ -84,4 +84,5 @@ void	apply_redirections(t_redirection *redirections, t_minishell *minishell)
 		close(fd);
 		redirections = redirections->next;
 	}
+	return (0);
 }

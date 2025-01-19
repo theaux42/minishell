@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 03:27:47 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 10:03:35 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 13:19:19 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,6 @@ char	*process_quote(char *line)
 		return (NULL);
 	new_line = build_new_line(line);
 	if (!new_line)
-		exit_error("process_quote");
+		return (NULL);
 	return (new_line);
 }

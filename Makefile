@@ -5,7 +5,8 @@ NAME = minishell
 CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I.
-DEBUG_FLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I. -g3 -DDEBUG_MODE=1
+DEBUG_FLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I. -g3 
+P_DEBUG_FLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I. -g3 -DDEBUG_MODE=1
 
 LDFLAGS = -L./libft -lft -L/opt/homebrew/opt/readline/lib -lreadline
 
@@ -46,6 +47,10 @@ all: $(NAME)
 debug: CFLAGS=$(DEBUG_FLAGS)
 debug: re
 	@echo "🐞 Debug mode build complete!"
+
+pdebug: CFLAGS=$(P_DEBUG_FLAGS)
+pdebug: re
+	@echo "🐞 Debug mode (print enabled) build complete!"
 
 $(NAME): $(OBJS)
 	@echo "\n🔨 Building libft...\n"
