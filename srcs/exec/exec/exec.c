@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 12:47:17 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/19 18:31:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,19 +75,12 @@ void	close_fds(int *prev_fd, t_command *current)
 void	execute_single_command(t_minishell *minishell, t_command *current,
 		int *prev_fd)
 {
-	if (current->is_builtin && needs_parent_execution(current->tokens->value))
-	{
-		minishell->status = parent_builtins(current, minishell);
-		current->pid = 0;
-	}
-	else
-	{
-		current->pid = exec_cmd(minishell, current);
-		if (current->pid == CMD_NOT_FOUND)
-			no_cmd_handler(current);
-		if (current->pid == -1)
-			exit(EXIT_FAILURE);
-	}
+	current->prev_pipe = *prev_fd;
+	current->pid = exec_cmd(minishell, current);
+	if (current->pid == CMD_NOT_FOUND)
+		no_cmd_handler(current);
+	if (current->pid == -1)
+		exit(EXIT_FAILURE);
 	close_fds(prev_fd, current);
 }
 
