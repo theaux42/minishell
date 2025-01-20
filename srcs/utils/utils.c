@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 14:06:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/20 14:40:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,26 +35,35 @@ char	**get_paths(char *command, char **env)
 	return (paths);
 }
 
-char	*get_cmd(char *command)
+static char	*get_relative_cmd(char *command, char *path)
 {
-	char	*path;
 	char	*relative_path;
 	char	*temp;
 
+	if (!path)
+		return (NULL);
+	temp = ft_strjoin(path, "/");
+	relative_path = ft_strjoin(temp, command);
+	(free(temp), free(path));
+	if (access(relative_path, F_OK) == 0 && access(relative_path, X_OK) == 0)
+		return (relative_path);
+	free(relative_path);
+	return (NULL);
+}
+
+static char	*get_cmd(char *command)
+{
+	char	*path;
+	char	*relative_path;
+
 	if (command[0] == '/')
-	{
-		if (access(command, F_OK) == 0)
-			return (command);
-	}
+		return (ft_strdup(command));
 	else
 	{
 		path = getcwd(NULL, 0);
-		temp = ft_strjoin(path, "/");
-		relative_path = ft_strjoin(temp, command);
-		free(temp);
-		free(path);
-		if (access(relative_path, F_OK) == 0)
-			return (relative_path);
+		relative_path = get_relative_cmd(command, path);
+		if (relative_path)
+			return (ft_strdup(relative_path));
 	}
 	return (NULL);
 }
@@ -69,7 +78,7 @@ char	*get_full_cmd(char *bin, char **env)
 	if (ft_strcmp(bin, ".") == 0 || ft_strcmp(bin, "..") == 0)
 		return (NULL);
 	if (bin[0] == '/' || ft_strncmp(bin, "./", 2) == 0)
-		return (ft_strdup(get_cmd(bin)));
+		return (get_cmd(bin));
 	paths = get_paths(bin, env);
 	if (!paths)
 		return (NULL);
