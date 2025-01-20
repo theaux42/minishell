@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 11:20:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/20 14:06:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@ char	*get_full_cmd(char *bin, char **env)
 	int		i;
 
 	i = 0;
-	if (bin[0] == '/' || bin[0] == '.')
+	if (ft_strcmp(bin, ".") == 0 || ft_strcmp(bin, "..") == 0)
+		return (NULL);
+	if (bin[0] == '/' || ft_strncmp(bin, "./", 2) == 0)
 		return (ft_strdup(get_cmd(bin)));
 	paths = get_paths(bin, env);
 	if (!paths)
@@ -93,14 +95,14 @@ void	exit_error(char *msg)
 
 void	exit_error_parent(char *msg, t_minishell *minishell)
 {
-    ft_dprintf(2, "%s", msg);
-    if (minishell->commands)
-        free_commands(minishell->commands);
-    free_history(minishell->history);
-    ft_freesplit(minishell->env);
-    free(minishell->line);
-    free(minishell);
-    exit(EXIT_FAILURE);
+	ft_dprintf(2, "%s", msg);
+	if (minishell->commands)
+		free_commands(minishell->commands);
+	rl_clear_history();
+	ft_freesplit(minishell->env);
+	free(minishell->line);
+	free(minishell);
+	exit(EXIT_FAILURE);
 }
 
 void	exit_error_child(char *msg, t_minishell *minishell, char *cmd,
@@ -109,7 +111,7 @@ void	exit_error_child(char *msg, t_minishell *minishell, char *cmd,
 	if (msg != NULL)
 		ft_dprintf(2, "%s", msg);
 	free_commands(minishell->commands);
-	free_history(minishell->history);
+	rl_clear_history();
 	ft_freesplit(minishell->env);
 	free(minishell->line);
 	free(minishell);
