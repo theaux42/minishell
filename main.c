@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 06:11:08 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/20 11:23:38 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	main_loop(t_minishell *minishell)
 			if (DEBUG_MODE)
 				print_commands(minishell->commands);
 			execute_commands(minishell);
+			minishell->commands = NULL;
 			if (DEBUG_MODE)
 				printf(DEBUG_STATUS_MSG, minishell->status);
 			add_history(minishell->line);
