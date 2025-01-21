@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 10:19:39 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:13:58 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 	}
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
-	if (command->is_builtin)
+	if (is_builtin(cmd))
 		exit(child_builtins(argv, cmd, command, minishell));
 	else
 	{

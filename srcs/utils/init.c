@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 05:31:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 09:48:47 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:15:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	set_default_values(t_command *command)
 	command->next = NULL;
 	command->redirections = NULL;
 	command->is_last = 0;
-	command->is_builtin = 0;
 	command->is_absolute = 0;
 	command->pipes[0] = -1;
 	command->pipes[1] = -1;

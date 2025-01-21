@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 18:53:53 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:14:11 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 	char	*cmd;
 	int		pid;
 
-	if (minishell->cmd_count == 1 && command->is_builtin)
+	if (minishell->cmd_count == 1 && is_builtin(tokens->value))
 	{
 		minishell->status = parent_builtins(command, minishell);
 		return (0);
@@ -62,7 +62,7 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 		tokens = tokens->next;
 	if (!tokens)
 		return (CMD_NOT_FOUND);
-	if (!command->is_builtin)
+	if (!is_builtin(tokens->value))
 		pid = execute_external_command(minishell, command, tokens);
 	else
 		pid = execute_builtin_command(minishell, command, tokens);

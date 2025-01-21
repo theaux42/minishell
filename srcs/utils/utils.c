@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 21:32:23 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:10:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ char	*get_full_cmd(char *bin, char **env)
 	i = 0;
 	if (ft_strcmp(bin, ".") == 0 || ft_strcmp(bin, "..") == 0)
 		return (NULL);
+	if (is_builtin(bin))
+		return (ft_strdup(bin));
 	if (bin[0] == '/' || ft_strncmp(bin, "./", 2) == 0)
 		return (get_cmd(bin));
 	paths = get_paths(bin, env);
@@ -87,13 +89,11 @@ char	*get_full_cmd(char *bin, char **env)
 		if (access(paths[i], F_OK) == 0)
 		{
 			full_cmd = ft_strdup(paths[i]);
-			ft_freesplit(paths);
-			return (full_cmd);
+			return (ft_freesplit(paths),full_cmd);
 		}
 		i++;
 	}
-	ft_freesplit(paths);
-	return (NULL);
+	return (ft_freesplit(paths), NULL);
 }
 
 void	exit_error(char *msg)

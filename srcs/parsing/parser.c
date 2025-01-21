@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 06:00:53 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:15:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ t_command	*init_new_command(char *token)
 	new_command->pipes[0] = -1;
 	new_command->pipes[1] = -1;
 	new_command->prev_pipe = -1;
-	new_command->is_builtin = is_builtin(token);
 	new_command->is_absolute = 0;
 	new_command->is_last = 0;
 	new_command->pid = 0;

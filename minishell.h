@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 21:27:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:15:11 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ typedef struct s_command
 	t_redirection		*redirections; // Liste des redirections
 	int					pipes[2]; // Descripteurs de pipe
 	int					prev_pipe; // Descripteur de lecture du pipe précédent
-	int					is_builtin; // Commande internes
 	int					is_absolute; // Chemin absolu
 	int					is_last; // Dernière commande
 	pid_t				pid; // PID du processus
@@ -219,7 +218,8 @@ int								ft_cd(t_token *token, char ***env);
 int								ft_env(char **env);
 int								ft_export(t_token *tokens, char ***env);
 int								ft_unset(t_token *tokens, char ***env);
-int								ft_exit(t_token *token, t_minishell *minishell);
+int								ft_exit(t_token *token, t_minishell *minishell,
+									bool msg);
 
 // === SIGNALS ===
 // Functions of signals/signals.c

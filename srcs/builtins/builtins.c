@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 12:49:27 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:06:22 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ bool	is_valid_args(t_token *tokens, char *cmd, bool print_exit)
 	return (true);
 }
 
-int	builtins(t_command *command, char ***env, t_minishell *minishell)
+int	builtins(t_command *command, char ***env, t_minishell *minishell, bool msg)
 {
 	int	ret;
 
@@ -83,7 +83,7 @@ int	builtins(t_command *command, char ***env, t_minishell *minishell)
 	else if (ft_strncmp(command->tokens->value, "pwd", 3) == 0)
 		ret = ft_pwd(*env);
 	else if (ft_strncmp(command->tokens->value, "exit", 4) == 0)
-		ret = ft_exit(command->tokens->next, minishell);
+		ret = ft_exit(command->tokens->next, minishell, msg);
 	else if (ft_strncmp(command->tokens->value, "export", 6) == 0)
 		ret = ft_export(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "unset", 5) == 0)
@@ -101,7 +101,7 @@ int	parent_builtins(t_command *command, t_minishell *minishell)
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_PARENT);
 	if (is_valid_args(command->tokens, command->tokens->value, true))
-		ret = builtins(command, &minishell->env, minishell);
+		ret = builtins(command, &minishell->env, minishell, true);
 	else
 		ret = 1 % 256;
 	return (ret);
@@ -116,7 +116,7 @@ int	child_builtins(char **argv, char *cmd, t_command *command,
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_CHILD);
 	if (is_valid_args(command->tokens, command->tokens->value, true))
-		ret = builtins(command, &minishell->env, minishell);
+		ret = builtins(command, &minishell->env, minishell, false);
 	else
 		ret = 1 % 256;
 	free(cmd);

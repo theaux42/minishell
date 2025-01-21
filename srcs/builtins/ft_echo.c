@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:15:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/18 07:47:29 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:16:12 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_echo(t_token *tokens)
 	newline = 1;
 	while (cur && good_flag(cur->value))
 	{
-			newline = 0;
+		newline = 0;
 		cur = cur->next;
 	}
 	while (cur)

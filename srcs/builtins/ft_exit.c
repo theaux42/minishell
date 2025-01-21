@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 20:19:28 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 21:29:30 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:06:53 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,15 @@ static int	exit_value(t_token *token)
 	return (value % 256);
 }
 
-int	ft_exit(t_token *token, t_minishell *minishell)
+int	ft_exit(t_token *token, t_minishell *minishell, bool msg)
 {
 	int	status;
 
 	status = exit_value(token);
 	free_commands(minishell->commands);
 	ft_free_builtins(minishell);
-	ft_printf("exit\n");
+	if (msg)
+		ft_printf("exit\n");
 	exit(status);
 	return (status);
 }
