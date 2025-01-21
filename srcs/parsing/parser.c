@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:15:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:29:29 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_command	*init_new_command(char *token)
+t_command	*init_new_command(void)
 {
 	t_command	*new_command;
 
@@ -80,14 +80,14 @@ void	parse_commands(t_command **head, char **commands)
 
 	i = 0;
 	j = 0;
-	*head = init_new_command(commands[i]);
+	*head = init_new_command();
 	current = *head;
 	while (commands[i])
 	{
 		if (ft_strcmp(commands[i], "|") == 0)
 		{
 			j = -1;
-			new_cmd = init_new_command(commands[i + 1]);
+			new_cmd = init_new_command();
 			current->next = new_cmd;
 			current = new_cmd;
 		}

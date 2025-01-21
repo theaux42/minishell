@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:15:11 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:33:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,8 @@ typedef struct s_minishell
 # define ERR_EXPORT_INVALID_ID "minishell: export: %s: not a valid identifier\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
 # define ERR_NO_RIGHT "minishell: %s: Permission denied\n"
+# define ERR_CD_NO_RIGHT "cd: permission denied: %s\n"
+# define ERR_CD_NO_FILE "cd: no such file or directory\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -242,6 +244,7 @@ void							exit_parent(char *msg,
 void							exit_child(char *msg,
 									t_minishell *minishell, char *cmd,
 									char **argv);
+void							error_message(char *title, char *message);
 void							set_default_values(t_command *command);
 // Fonction de free
 void							free_command(t_command *command);

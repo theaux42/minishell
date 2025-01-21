@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:06:22 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:35:49 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int	parent_builtins(t_command *command, t_minishell *minishell)
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_PARENT);
 	if (is_valid_args(command->tokens, command->tokens->value, true))
-		ret = builtins(command, &minishell->env, minishell, true);
+		ret = builtins(command, &minishell->env, minishell, true) % 256;
 	else
 		ret = 1 % 256;
 	return (ret);
@@ -116,7 +116,7 @@ int	child_builtins(char **argv, char *cmd, t_command *command,
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_CHILD);
 	if (is_valid_args(command->tokens, command->tokens->value, true))
-		ret = builtins(command, &minishell->env, minishell, false);
+		ret = builtins(command, &minishell->env, minishell, false) % 256;
 	else
 		ret = 1 % 256;
 	free(cmd);

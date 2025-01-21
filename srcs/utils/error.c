@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 21:31:59 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:19:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@ bool	validate_commands(t_command *commands)
 		cur = cur->next;
 	}
 	return (true);
+}
+
+void	error_message(char *title, char *message)
+{
+	perror(title);
+	ft_dprintf(2, "%s\n", message);
 }
 
 void	exit_parent(char *msg, t_minishell *minishell)

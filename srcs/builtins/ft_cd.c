@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/08 09:13:40 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 14:13:51 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,16 @@ int	ft_cd(t_token *token, char ***env)
 	if (oldpwd)
 		set_env("OLDPWD", oldpwd, env);
 	new_path = get_cd_path(path, *env);
-	if (!new_path)
-		return (perror("cd"), 1);
+	if (!new_path || access(new_path, F_OK) != 0)
+		return (ft_dprintf(2, ERR_CD_NO_FILE), 1);
 	if (chdir(new_path) != 0)
 	{
 		free(new_path);
-		return (perror("cd"), 1);
+		return (ft_dprintf(2, ERR_CD_NO_RIGHT, path), 1);
 	}
 	free(new_path);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		return (set_env("PWD", cwd, env), 0);
-	perror("getcwd");
+	ft_dprintf(2, ERR_CD_NO_RIGHT, path);
 	return (1);
 }
