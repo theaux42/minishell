@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 20:19:28 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/13 16:56:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/20 21:29:30 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	ft_exit(t_token *token, t_minishell *minishell)
 	int	status;
 
 	status = exit_value(token);
-	free_command(minishell->commands);
+	free_commands(minishell->commands);
 	ft_free_builtins(minishell);
 	ft_printf("exit\n");
 	exit(status);

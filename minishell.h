@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 13:30:14 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/20 21:27:24 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,9 +237,9 @@ int								ft_history(t_history *history);
 // === UTILS ===
 // Fonction de utils
 void							exit_error(char *msg);
-void							exit_error_parent(char *msg,
+void							exit_parent(char *msg,
 									t_minishell *minishell);
-void							exit_error_child(char *msg,
+void							exit_child(char *msg,
 									t_minishell *minishell, char *cmd,
 									char **argv);
 void							set_default_values(t_command *command);

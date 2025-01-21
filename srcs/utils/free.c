@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/09 10:39:46 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:01:11 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,6 @@ void	free_redirections(t_redirection *redirections)
 		free(current);
 		current = next;
 	}
-}
-
-void	free_command(t_command *command)
-{
-	if (command->tokens)
-		free_tokens(command->tokens);
-	if (command->redirections)
-		free_redirections(command->redirections);
-	free(command);
 }
 
 void	free_commands(t_command *commands)

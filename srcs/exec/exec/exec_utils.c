@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 09:47:48 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 10:19:14 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,15 @@
 
 void	init_pipes(t_command *commands, t_minishell *minishell)
 {
-	t_command	*current;
-
-	current = commands;
-	while (current)
+	if (commands->next)
 	{
-		if (current->next)
-		{
-			if (pipe(current->pipes) == -1)
-				exit_error_parent(ERR_PIPE_FAIL, minishell);
-		}
-		else
-		{
-			current->pipes[0] = -1;
-			current->pipes[1] = -1;
-		}
-		current = current->next;
+		if (pipe(commands->pipes) == -1)
+			exit_parent(ERR_PIPE_FAIL, minishell);
+	}
+	else
+	{
+		commands->pipes[0] = -1;
+		commands->pipes[1] = -1;
 	}
 }
 

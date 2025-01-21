@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 11:24:46 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/21 10:19:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,17 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 {
 	if (command->redirections)
 		if (apply_redirections(command->redirections, minishell))
-			exit_error_child(NULL, minishell, cmd, argv);
+			exit_child(NULL, minishell, cmd, argv);
 	if (command->prev_pipe != -1)
 	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
-			exit_error_child("dup2_input_fd", minishell, cmd, argv);
+			exit_child("dup2_input_fd", minishell, cmd, argv);
 		close(command->prev_pipe);
 	}
 	if (command->pipes[1] != -1)
 	{
 		if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
-			exit_error_child("dup2_output_fd", minishell, cmd, argv);
+			exit_child("dup2_output_fd", minishell, cmd, argv);
 		close(command->pipes[1]);
 	}
 	if (command->pipes[0] != -1)
@@ -37,7 +37,7 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 	else
 	{
 		execve(cmd, argv, minishell->env);
-		exit_error_child("execve", minishell, cmd, argv);
+		exit_child("execve", minishell, cmd, argv);
 	}
 }
 
@@ -76,6 +76,7 @@ void	close_fds(int *prev_fd, t_command *current)
 void	execute_single_command(t_minishell *minishell, t_command *current,
 		int *prev_fd)
 {
+	init_pipes(current, minishell);
 	current->prev_pipe = *prev_fd;
 	current->pid = exec_cmd(minishell, current);
 	if (current->pid == CMD_NOT_FOUND)
@@ -101,7 +102,6 @@ void	execute_commands(t_minishell *minishell)
 
 	prev_fd = -1;
 	minishell->cmd_count = ft_cmd_count(minishell->commands);
-	init_pipes(minishell->commands, minishell);
 	current = minishell->commands;
 	while (current)
 	{
@@ -114,10 +114,5 @@ void	execute_commands(t_minishell *minishell)
 	wait_for_children(minishell);
 	check_signal_exec(minishell);
 	current = minishell->commands;
-	while (current)
-	{
-		next = current->next;
-		free_command(current);
-		current = next;
-	}
+	free_commands(current);
 }
