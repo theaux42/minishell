@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 10:36:16 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 14:27:27 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ typedef struct s_minishell
 # define ERR_CD_NO_RIGHT "minishell: cd: %s: Permission denied\n"
 # define ERR_CD_NO_FILE "minishell: cd: no such file or directory\n"
 # define ERR_CD_NO_FILE_2 "minishell: cd: %s: No such file or directory\n"
+# define ERR_NO_ENV "minishell: env: cannot find environment variable\n"
 
 extern volatile sig_atomic_t	g_signal;
 

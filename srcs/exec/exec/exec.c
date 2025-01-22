@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 10:34:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 14:32:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,19 @@ static void	close_fds(int *prev_fd, t_command *current)
 static void	execute_single_command(t_minishell *minishell, t_command *current,
 		int *prev_fd)
 {
+	int std_fd[2];
+
+	std_fd[STDIN_FILENO] = dup(STDIN_FILENO);
+	std_fd[STDOUT_FILENO] = dup(STDOUT_FILENO);
 	init_pipes(current, minishell);
 	current->prev_pipe = *prev_fd;
 	current->pid = exec_cmd(minishell, current);
 	if (current->pid == -1)
 		exit(EXIT_FAILURE);
 	close_fds(prev_fd, current);
+	dup2(std_fd[STDIN_FILENO], STDIN_FILENO);
+	dup2(std_fd[STDOUT_FILENO], STDOUT_FILENO);
+	(close(std_fd[STDIN_FILENO]), close(std_fd[STDOUT_FILENO]));
 }
 
 static void	check_signal_exec(t_minishell *minishell)

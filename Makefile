@@ -26,17 +26,14 @@ EXEC_SRCS = srcs/exec/exec/exec.c srcs/exec/exec/exec_utils.c \
 
 SIGNALS_SRCS = srcs/signals/signals.c \
 
-HISTORY_SRCS = srcs/history/history.c \
-
 BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
 		srcs/builtins/builtins.c srcs/builtins/ft_echo.c srcs/builtins/ft_env.c \
-		srcs/builtins/ft_export.c srcs/builtins/ft_unset.c \
-		srcs/builtins/ft_history.c srcs/builtins/ft_exit.c
+		srcs/builtins/ft_export.c srcs/builtins/ft_unset.c  srcs/builtins/ft_exit.c \
 		
 REDIRECTION_SRCS = srcs/exec/redirection/redirection.c
 
 SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) \
-	$(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(SIGNALS_SRCS) $(HISTORY_SRCS) srcs/debug/debug.c
+	$(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(SIGNALS_SRCS) srcs/debug/debug.c
 
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
