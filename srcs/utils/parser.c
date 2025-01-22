@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:40:40 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/14 10:14:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:22:30 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,4 @@ char	*ft_token_value(char *value)
 	if (ft_edgecmp(value, '\''))
 		return (ft_strtrim(value, "'"));
 	return (ft_strdup(value));
-}
-
-bool	validate_heredoc_delimiter(char *delimiter)
-{
-	int	i;
-
-	if (!delimiter || !*delimiter)
-		return (false);
-	i = 0;
-	while (delimiter[i])
-	{
-		if (!ft_isprint(delimiter[i]))
-			return (false);
-		i++;
-	}
-	return (true);
 }

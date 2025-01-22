@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:13:58 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:34:42 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 	if (command->pipes[0] != -1)
 		close(command->pipes[0]);
 	if (is_builtin(cmd))
-		exit(child_builtins(argv, cmd, command, minishell));
+		exit(child_builtins(argv, cmd, command, minishell) % 256);
 	else
 	{
 		execve(cmd, argv, minishell->env);
@@ -41,30 +41,7 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 	}
 }
 
-int	execution(char *cmd, t_command *command, t_minishell *minishell)
-{
-	pid_t	pid;
-	char	**argv;
-	int		argc;
-
-	argc = count_arguments(command);
-	argv = malloc(sizeof(char *) * (argc + 1));
-	if (!argv)
-		return (-1);
-	fill_arguments(argv, command);
-	pid = fork();
-	if (pid < 0)
-	{
-		ft_freesplit(argv);
-		return (-1);
-	}
-	else if (pid == 0)
-		execute_child(cmd, command, minishell, argv);
-	free(argv);
-	return (pid);
-}
-
-void	close_fds(int *prev_fd, t_command *current)
+static void	close_fds(int *prev_fd, t_command *current)
 {
 	if (*prev_fd != -1)
 		close(*prev_fd);
@@ -73,20 +50,18 @@ void	close_fds(int *prev_fd, t_command *current)
 	*prev_fd = current->pipes[0];
 }
 
-void	execute_single_command(t_minishell *minishell, t_command *current,
+static void	execute_single_command(t_minishell *minishell, t_command *current,
 		int *prev_fd)
 {
 	init_pipes(current, minishell);
 	current->prev_pipe = *prev_fd;
 	current->pid = exec_cmd(minishell, current);
-	if (current->pid == CMD_NOT_FOUND)
-		no_cmd_handler(current);
 	if (current->pid == -1)
 		exit(EXIT_FAILURE);
 	close_fds(prev_fd, current);
 }
 
-void	check_signal_exec(t_minishell *minishell)
+static void	check_signal_exec(t_minishell *minishell)
 {
 	if (minishell->status == 128 + SIGINT)
 		printf("\n");

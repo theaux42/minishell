@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 06:06:25 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:27:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ void	process_token(t_token *token, t_minishell *minishell)
 		temp = token->value;
 		token->value = expand_line(token->value, minishell);
 		if (!token->value)
-			exit_error("expand_line");
+			exit_parent(ERR_MALLOC, minishell, true);
 		free(temp);
 	}
 	temp = token->value;
 	token->value = process_quote(token->value);
 	if (!token->value)
-		exit_error("process_quote");
+		exit_parent(ERR_MALLOC, minishell, true);
 	free(temp);
 }
 
@@ -94,26 +94,6 @@ void	expand_tokens(t_token *tokens, t_minishell *minishell)
 		process_token(current_token, minishell);
 		current_token = current_token->next;
 	}
-}
-
-bool	check_commands(t_command *commands)
-{
-	t_command	*current_command;
-	t_token		*current_token;
-
-	current_command = commands;
-	while (current_command)
-	{
-		current_token = current_command->tokens;
-		while (current_token)
-		{
-			if (check_missused_quotes(current_token->value))
-				return (false);
-			current_token = current_token->next;
-		}
-		current_command = current_command->next;
-	}
-	return (true);
 }
 
 bool	expand_commands(t_command *commands, t_minishell *minishell)

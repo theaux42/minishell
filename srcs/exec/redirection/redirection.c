@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/20 21:27:14 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:22:10 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	handle_heredoc(char *delimiter, t_minishell *minishell)
 	char	*line;
 
 	if (pipe(pipe_fd) == -1)
-		exit_parent(ERR_PIPE_FAIL, minishell);
+		exit_parent(ERR_PIPE_FAIL, minishell, true);
 	need_to_expand = true;
 	if (ft_edgecmp(delimiter, '"') || ft_edgecmp(delimiter, '\''))
 		need_to_expand = false;
@@ -63,7 +63,7 @@ int	handle_heredoc(char *delimiter, t_minishell *minishell)
 int	apply_redirections(t_redirection *redirections, t_minishell *minishell)
 {
 	int	fd;
-	printf("apply_redirections\n");
+
 	while (redirections)
 	{
 		if (redirections->type == REDIR_INPUT)

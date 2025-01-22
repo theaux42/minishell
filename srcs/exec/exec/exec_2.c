@@ -6,18 +6,11 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:14:11 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:21:01 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-bool	needs_parent_execution(char *cmd_name)
-{
-	return (ft_strcmp(cmd_name, "cd") == 0 || ft_strcmp(cmd_name, "export") == 0
-		|| ft_strcmp(cmd_name, "unset") == 0 || ft_strcmp(cmd_name,
-			"exit") == 0);
-}
 
 int	execute_external_command(t_minishell *minishell, t_command *command,
 		t_token *tokens)
@@ -27,7 +20,12 @@ int	execute_external_command(t_minishell *minishell, t_command *command,
 
 	cmd = get_full_cmd(tokens->value, minishell->env);
 	if (!cmd)
-		return (CMD_NOT_FOUND);
+		return (ft_dprintf(2, ERR_CMD_NOT_FOUND, tokens->value), CMD_NOT_FOUND);
+	if (access(cmd, F_OK) != 0 || access(cmd, X_OK) != 0)
+	{
+		ft_dprintf(2, ERR_NO_RIGHT, cmd);
+		return (free(cmd), CMD_NO_RIGHT);
+	}
 	pid = execution(cmd, command, minishell);
 	free(cmd);
 	return (pid);
@@ -42,7 +40,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 	if (minishell->cmd_count == 1 && is_builtin(tokens->value))
 	{
 		minishell->status = parent_builtins(command, minishell);
-		return (0);
+		return (minishell->status);
 	}
 	cmd = ft_strdup(tokens->value);
 	if (!cmd)
@@ -66,6 +64,29 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 		pid = execute_external_command(minishell, command, tokens);
 	else
 		pid = execute_builtin_command(minishell, command, tokens);
+	return (pid);
+}
+
+int	execution(char *cmd, t_command *command, t_minishell *minishell)
+{
+	pid_t	pid;
+	char	**argv;
+	int		argc;
+
+	argc = count_arguments(command);
+	argv = malloc(sizeof(char *) * (argc + 1));
+	if (!argv)
+		return (-1);
+	fill_arguments(argv, command);
+	pid = fork();
+	if (pid < 0)
+	{
+		ft_freesplit(argv);
+		return (-1);
+	}
+	else if (pid == 0)
+		execute_child(cmd, command, minishell, argv);
+	free(argv);
 	return (pid);
 }
 

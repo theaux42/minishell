@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/18 06:26:18 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:22:59 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	print_tokens(t_token *tokens)
 	while (current)
 	{
 		printf("   Token n%i: %s - %s\n", i, current->value,
-				type_str(current->type));
+			type_str(current->type));
 		current = current->next;
 		i++;
 	}
@@ -61,7 +61,7 @@ void	print_redirections(t_redirection *redirections)
 	while (current)
 	{
 		printf("		Redirection n%i: %s - %s\n", i, current->file,
-				type_str(current->type));
+			type_str(current->type));
 		current = current->next;
 		i++;
 	}

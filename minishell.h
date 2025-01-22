@@ -6,12 +6,16 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:33:25 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:36:16 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+# ifndef DEBUG_MODE
+#  define DEBUG_MODE 0
+# endif
 
 # include "libft/libft.h"
 # include <errno.h>
@@ -86,10 +90,6 @@ typedef struct s_minishell
 	int			cmd_count;
 }				t_minishell;
 
-#ifndef DEBUG_MODE
-# define DEBUG_MODE 0
-#endif
-
 # define DEBUG_MSG "Debug mode enabled\nCommands will be printed.\n"
 # define DEBUG_STATUS_MSG "Exited with status: %i\n"
 # define DEBUG_EXEC_PARENT "Executing builtins inside the parent process\n"
@@ -98,7 +98,8 @@ typedef struct s_minishell
 # define DEFAULT_PROMPT "ᓚᘏᗢ $ "
 # define HEREDOC_PROMPT "heredoc> "
 
-# define CMD_NOT_FOUND 127
+# define CMD_NOT_FOUND -10
+# define CMD_NO_RIGHT -20
 
 # define MSG_COREDUMP "Quit (core dumped)\n"
 
@@ -115,8 +116,9 @@ typedef struct s_minishell
 # define ERR_EXPORT_INVALID_ID "minishell: export: %s: not a valid identifier\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
 # define ERR_NO_RIGHT "minishell: %s: Permission denied\n"
-# define ERR_CD_NO_RIGHT "cd: permission denied: %s\n"
-# define ERR_CD_NO_FILE "cd: no such file or directory\n"
+# define ERR_CD_NO_RIGHT "minishell: cd: %s: Permission denied\n"
+# define ERR_CD_NO_FILE "minishell: cd: no such file or directory\n"
+# define ERR_CD_NO_FILE_2 "minishell: cd: %s: No such file or directory\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -141,6 +143,7 @@ bool							need_expansion(char *value);
 char							*get_env_var(char *key, t_minishell *minishell);
 char							*get_current_key(char *line, int *i);
 bool							is_valid_key(char *key);
+bool							check_commands(t_command *commands);
 
 // Functions of parsing/parser.c
 t_command						*get_commands(char *line,
@@ -149,7 +152,6 @@ t_command						*get_commands(char *line,
 // Functions of parsing/utils.c
 t_token_type					get_redirection_type(char *str);
 t_token_type					get_tokens_type(char *str, int pos);
-bool							validate_heredoc_delimiter(char *delimiter);
 
 // Functions of parsing/split_utils.c
 int								ft_ms_isspace(char c);
@@ -171,9 +173,10 @@ int								ft_prompt_length(char *line);
 void							execute_commands(t_minishell *minishell);
 int								execution(char *cmd, t_command *command,
 									t_minishell *minishell);
+void							execute_child(char *cmd, t_command *command,
+									t_minishell *minishell, char **argv);
 
 // Functions of exec/exec/exec_2.c
-bool							needs_parent_execution(char *cmd_name);
 int								execute_external_command(t_minishell *minishell,
 									t_command *command, t_token *tokens);
 int								exec_cmd(t_minishell *minishell,
@@ -186,7 +189,9 @@ void							init_pipes(t_command *commands,
 void							wait_for_children(t_minishell *minishell);
 int								count_arguments(t_command *command);
 int								fill_arguments(char **argv, t_command *command);
-void							no_cmd_handler(t_command *current);
+void							cmd_error_handler(t_command *current,
+									t_minishell *minishell, int status);
+int								ft_cmdlen(t_token *lst);
 // Functions of utils/prompt.c
 char							*nice_prompt(char **env);
 
@@ -211,7 +216,8 @@ int								parent_builtins(t_command *command,
 									t_minishell *minishell);
 int								child_builtins(char **argv, char *cmd,
 									t_command *command, t_minishell *minishell);
-bool							is_valid_args(t_token *tokens, char *cmd, bool print_exit);
+bool							is_valid_args(t_token *tokens, char *cmd,
+									bool print_exit);
 
 // Les builtins
 int								ft_echo(t_token *tokens);
@@ -229,7 +235,7 @@ void							setup_signals(void);
 void							setup_heredoc_signals(void);
 void							restore_signals(void);
 
-// === HISTORY ===
+// === HISTORY === (Need to be removed)
 void							add_to_history(t_history **history,
 									char *command);
 void							print_history(t_history *history);
@@ -238,16 +244,13 @@ int								ft_history(t_history *history);
 
 // === UTILS ===
 // Fonction de utils
-void							exit_error(char *msg);
 void							exit_parent(char *msg,
-									t_minishell *minishell);
+									t_minishell *minishell, bool is_error);
 void							exit_child(char *msg,
 									t_minishell *minishell, char *cmd,
 									char **argv);
 void							error_message(char *title, char *message);
-void							set_default_values(t_command *command);
 // Fonction de free
-void							free_command(t_command *command);
 void							free_commands(t_command *commands);
 void							free_token(t_token *token);
 void							free_tokens(t_token *tokens);
@@ -262,7 +265,6 @@ bool							validate_commands(t_command *commands);
 // Fonction de debug
 void							print_commands(t_command *commands);
 void							print_tokens(t_token *tokens);
-void							print_tokens2(t_token *tokens, char separator);
 void							print_env(char **env);
 char							*type_str(t_token_type type);
 

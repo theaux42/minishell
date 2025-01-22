@@ -6,24 +6,11 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:35:49 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:26:14 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	ft_cmdlen(t_token *lst)
-{
-	int	i;
-
-	i = 0;
-	while (lst)
-	{
-		i++;
-		lst = lst->next;
-	}
-	return (i);
-}
 
 int	is_builtin(char *str)
 {
@@ -101,9 +88,9 @@ int	parent_builtins(t_command *command, t_minishell *minishell)
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_PARENT);
 	if (is_valid_args(command->tokens, command->tokens->value, true))
-		ret = builtins(command, &minishell->env, minishell, true) % 256;
+		ret = builtins(command, &minishell->env, minishell, true);
 	else
-		ret = 1 % 256;
+		ret = 1;
 	return (ret);
 }
 
@@ -116,9 +103,9 @@ int	child_builtins(char **argv, char *cmd, t_command *command,
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_CHILD);
 	if (is_valid_args(command->tokens, command->tokens->value, true))
-		ret = builtins(command, &minishell->env, minishell, false) % 256;
+		ret = builtins(command, &minishell->env, minishell, false);
 	else
-		ret = 1 % 256;
+		ret = 1;
 	free(cmd);
 	free(argv);
 	free_commands(minishell->commands);

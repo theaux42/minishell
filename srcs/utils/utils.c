@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:10:40 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 10:26:24 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ static char	*get_relative_cmd(char *command, char *path)
 		return (NULL);
 	temp = ft_strjoin(path, "/");
 	relative_path = ft_strjoin(temp, command);
-	(free(temp), free(path));
-	if (access(relative_path, F_OK) == 0 && access(relative_path, X_OK) == 0)
+	(free(path), free(temp));
+	if (access(relative_path, F_OK) == 0)
 		return (relative_path);
 	free(relative_path);
 	return (NULL);
@@ -63,7 +63,15 @@ static char	*get_cmd(char *command)
 		path = getcwd(NULL, 0);
 		relative_path = get_relative_cmd(command, path);
 		if (relative_path)
-			return (ft_strdup(relative_path));
+		{
+			if (access(relative_path, X_OK) == 0)
+				return (relative_path);
+			else
+			{
+				free(relative_path);
+				return (ft_strdup(command));
+			}
+		}
 	}
 	return (NULL);
 }
@@ -89,16 +97,22 @@ char	*get_full_cmd(char *bin, char **env)
 		if (access(paths[i], F_OK) == 0)
 		{
 			full_cmd = ft_strdup(paths[i]);
-			return (ft_freesplit(paths),full_cmd);
+			return (ft_freesplit(paths), full_cmd);
 		}
 		i++;
 	}
 	return (ft_freesplit(paths), NULL);
 }
 
-void	exit_error(char *msg)
+int	ft_cmdlen(t_token *lst)
 {
-	perror(msg);
-	exit(EXIT_FAILURE);
-}
+	int	i;
 
+	i = 0;
+	while (lst)
+	{
+		i++;
+		lst = lst->next;
+	}
+	return (i);
+}
