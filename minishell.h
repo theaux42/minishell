@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 14:27:27 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 14:36:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,13 +235,6 @@ int								ft_exit(t_token *token, t_minishell *minishell,
 void							setup_signals(void);
 void							setup_heredoc_signals(void);
 void							restore_signals(void);
-
-// === HISTORY === (Need to be removed)
-void							add_to_history(t_history **history,
-									char *command);
-void							print_history(t_history *history);
-void							free_history(t_history *history);
-int								ft_history(t_history *history);
 
 // === UTILS ===
 // Fonction de utils
