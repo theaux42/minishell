@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/21 12:01:11 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 14:37:27 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	free_commands(t_command *commands)
 
 void	ft_free_builtins(t_minishell *minishell)
 {
-	free_history(minishell->history);
+	rl_clear_history();
 	ft_freesplit(minishell->env);
 	free(minishell->line);
 	free(minishell);

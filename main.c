@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 08:47:38 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/22 14:37:13 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	main_loop(t_minishell *minishell)
 		}
 		free(minishell->line);
 	}
-	free_history(minishell->history);
 }
 
 int	main(int ac, char **av, char **env)
