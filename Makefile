@@ -37,7 +37,7 @@ SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) \
 
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
-VALGRIND_CMD = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp
+VALGRIND_CMD = valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --track-origins=yes --suppressions=readline.supp
 
 all: $(NAME)
 
