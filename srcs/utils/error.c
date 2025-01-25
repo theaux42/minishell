@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 08:45:34 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/24 11:11:54 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,16 @@
 
 bool	validate_commands(t_command *commands)
 {
-	t_command	*cur;
-	t_token		*tok;
+    t_command	*cur;
 
-	cur = commands;
-	while (cur)
-	{
-		tok = cur->tokens;
-		while (tok && tok->type != COMMAND && tok->type != ARGUMENT)
-			tok = tok->next;
-		if (!tok)
-			return (ft_dprintf(2, ERR_EMPTY_CMD), false);
-		cur = cur->next;
-	}
-	return (true);
+    cur = commands;
+    while (cur)
+    {
+        if (!cur->tokens && !cur->redirections)
+            return (ft_dprintf(2, ERR_EMPTY_CMD), false);
+        cur = cur->next;
+    }
+    return (true);
 }
 
 void	error_message(char *title, char *message)

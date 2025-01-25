@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 14:37:27 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/24 11:00:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ void	free_commands(t_command *commands)
 
 void	ft_free_builtins(t_minishell *minishell)
 {
+	if (minishell->fds[STDIN_FILENO] != -1)
+		close(minishell->fds[STDIN_FILENO]);
+	if (minishell->fds[STDOUT_FILENO] != -1)
+		close(minishell->fds[STDOUT_FILENO]);
 	rl_clear_history();
 	ft_freesplit(minishell->env);
 	free(minishell->line);

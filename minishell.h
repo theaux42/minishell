@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 14:36:40 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/24 10:57:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ typedef struct s_minishell
 	char		*line;
 	int			status;
 	int			cmd_count;
+	int			fds[2];
 }				t_minishell;
 
 # define DEBUG_MSG "Debug mode enabled\nCommands will be printed.\n"
@@ -202,7 +203,9 @@ char							*append_path_segment(char *current_path,
 									char *segment, bool add_slash);
 
 // Functions of exec/redirection/redirection.c
-int								apply_redirections(t_redirection *redirections,
+int								exec_redirections(t_redirection *redirections,
+									t_minishell *minishell);
+void							apply_redirections(t_command *command,
 									t_minishell *minishell);
 
 // Fonction env

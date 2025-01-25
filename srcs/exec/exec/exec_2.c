@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 10:21:01 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/24 10:57:35 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,10 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 
 	if (minishell->cmd_count == 1 && is_builtin(tokens->value))
 	{
+		apply_redirections(command, minishell);
 		minishell->status = parent_builtins(command, minishell);
 		return (minishell->status);
+	
 	}
 	cmd = ft_strdup(tokens->value);
 	if (!cmd)

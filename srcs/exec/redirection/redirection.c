@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 10:22:10 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/24 10:24:42 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	handle_heredoc(char *delimiter, t_minishell *minishell)
 	return (pipe_fd[0]);
 }
 
-int	apply_redirections(t_redirection *redirections, t_minishell *minishell)
+int	exec_redirections(t_redirection *redirections, t_minishell *minishell)
 {
 	int	fd;
 
@@ -85,4 +85,26 @@ int	apply_redirections(t_redirection *redirections, t_minishell *minishell)
 		redirections = redirections->next;
 	}
 	return (0);
+}
+
+void	apply_redirections(t_command *command, t_minishell *minishell)
+{
+	if (!command->redirections)
+		return ;
+	if (exec_redirections(command->redirections, minishell))
+		exit_parent(NULL, minishell, true);
+	if (command->prev_pipe != -1)
+	{
+		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
+			exit_parent("dup2_input_fd", minishell, true);
+		close(command->prev_pipe);
+	}
+	if (command->pipes[1] != -1)
+	{
+		if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
+			exit_parent("dup2_output_fd", minishell, true);
+		close(command->pipes[1]);
+	}
+	if (command->pipes[0] != -1)
+		close(command->pipes[0]);
 }
