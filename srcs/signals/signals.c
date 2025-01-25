@@ -6,57 +6,36 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:32:47 by ededemog          #+#    #+#             */
-/*   Updated: 2025/01/14 06:14:36 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/25 21:31:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t	g_signal = 0;
-
-void	sigint_handler(int sig)
+void	set_signal_child(void)
 {
-	(void)sig;
-	g_signal = SIGINT;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
 
-void	sigquit_handler(int sig)
+int	sig_event(void)
 {
-	(void)sig;
-	g_signal = SIGQUIT;
+	return (EXIT_SUCCESS);
 }
 
-void	setup_signals(void)
+void	signal_handler(int sig)
 {
-	struct sigaction	sa;
-
-	sa.sa_handler = sigint_handler;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGINT, &sa, NULL);
-	sa.sa_handler = sigquit_handler;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGQUIT, &sa, NULL);
+	if (sig == SIGINT)
+	{
+		rl_done = 1;
+		g_signal = sig + 128;
+	}
 }
 
-void	setup_heredoc_signals(void)
+void	ft_signal(void)
 {
-	struct sigaction	sa;
-
-	sa.sa_handler = SIG_DFL;
-	sa.sa_flags = 0;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGINT, &sa, NULL);
+	rl_event_hook = sig_event;
+	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, SIG_IGN);
-}
-
-void	restore_signals(void)
-{
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }

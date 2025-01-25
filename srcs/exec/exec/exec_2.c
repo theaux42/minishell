@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/24 10:57:35 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/25 21:48:34 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,10 @@ int	execution(char *cmd, t_command *command, t_minishell *minishell)
 		return (-1);
 	}
 	else if (pid == 0)
+	{
+		set_signal_child();
 		execute_child(cmd, command, minishell, argv);
+	}
 	free(argv);
 	return (pid);
 }

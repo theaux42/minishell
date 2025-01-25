@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: theaux <theaux@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/24 20:49:38 by theaux           ###   ########.fr       */
+/*   Updated: 2025/01/25 21:30:38 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,20 @@ char	*clean_readline(char *prompt)
 	return (NULL);
 }
 
+volatile sig_atomic_t	g_signal = 0;
+
 void	main_loop(t_minishell *minishell)
 {
-	setup_signals();
 	while (1)
 	{
+		ft_signal();
 		minishell->line = clean_readline(nice_prompt(minishell->env));
+		if (g_signal != 0)
+		{
+			minishell->status = g_signal;
+			g_signal = 0;
+			continue ;
+		}
 		if (!minishell->line)
 			exit_parent("exit\n", minishell, false);
 		if (minishell->line && *minishell->line)

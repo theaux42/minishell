@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/24 10:57:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/25 21:52:01 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,9 +235,11 @@ int								ft_exit(t_token *token, t_minishell *minishell,
 
 // === SIGNALS ===
 // Functions of signals/signals.c
-void							setup_signals(void);
-void							setup_heredoc_signals(void);
-void							restore_signals(void);
+void							set_signal_child(void);
+int								sig_event(void);
+void							signal_handler(int sig);
+void							ft_signal(void);
+
 
 // === UTILS ===
 // Fonction de utils

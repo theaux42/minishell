@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/24 10:24:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/25 21:52:23 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_line_heredoc(char *delimiter)
+char	*get_line_heredoc(char *delimiter, t_minishell *minishell)
 {
 	char	*line;
 	char	*heredoc;
@@ -21,6 +21,13 @@ char	*get_line_heredoc(char *delimiter)
 	while (1)
 	{
 		line = readline(HEREDOC_PROMPT);
+		if (g_signal != 0)
+		{
+			free(line);
+			minishell->status = g_signal;
+			g_signal = 0;
+			return (NULL);
+		}
 		if (!line)
 			break ;
 		if (ft_strcmp(line, delimiter) == 0)
@@ -47,7 +54,7 @@ int	handle_heredoc(char *delimiter, t_minishell *minishell)
 	need_to_expand = true;
 	if (ft_edgecmp(delimiter, '"') || ft_edgecmp(delimiter, '\''))
 		need_to_expand = false;
-	line = get_line_heredoc(delimiter);
+	line = get_line_heredoc(delimiter, minishell);
 	if (!line)
 	{
 		close(pipe_fd[0]);

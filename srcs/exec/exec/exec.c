@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/24 10:58:30 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/25 21:44:57 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,9 @@ void	execute_commands(t_minishell *minishell)
 	int			prev_fd;
 
 	prev_fd = -1;
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 	minishell->cmd_count = ft_cmd_count(minishell->commands);
 	current = minishell->commands;
 	while (current)
