@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/25 21:44:57 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 20:54:52 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 		char **argv)
 {
-	(close(minishell->fds[STDIN_FILENO]), close(minishell->fds[STDOUT_FILENO]));
 	if (command->redirections)
 		if (exec_redirections(command->redirections, minishell))
 			exit_child(NULL, minishell, cmd, argv);
+	(close(minishell->fds[STDIN_FILENO]), close(minishell->fds[STDOUT_FILENO]));
 	if (command->prev_pipe != -1)
 	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
@@ -38,7 +38,7 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 	else
 	{
 		execve(cmd, argv, minishell->env);
-		exit_child("execve", minishell, cmd, argv);
+		exit_child(ERR_EXECVE, minishell, cmd, argv);
 	}
 }
 
@@ -60,7 +60,7 @@ static void	execute_single_command(t_minishell *minishell, t_command *current,
 	current->prev_pipe = *prev_fd;
 	current->pid = exec_cmd(minishell, current);
 	if (current->pid == -1)
-		exit(EXIT_FAILURE);
+		exit_parent("", minishell, true);
 	close_fds(prev_fd, current);
 	dup2(minishell->fds[STDIN_FILENO], STDIN_FILENO);
 	dup2(minishell->fds[STDOUT_FILENO], STDOUT_FILENO);

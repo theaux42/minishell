@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 10:26:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 19:04:48 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,11 @@ static char	*get_cmd(char *command)
 	char	*relative_path;
 
 	if (command[0] == '/')
-		return (ft_strdup(command));
+	{
+		if (access(command, F_OK | X_OK) == 0)
+			return (ft_strdup(command));
+		return (NULL);
+	}
 	else
 	{
 		path = getcwd(NULL, 0);

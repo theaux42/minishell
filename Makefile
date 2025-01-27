@@ -15,7 +15,7 @@ ENV_SRCS =  srcs/exec/env/del_env.c srcs/exec/env/dup_env.c \
 
 PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c \
 	   srcs/parsing/expand.c srcs/parsing/expand_utils.c srcs/parsing/quotes.c \
-	   srcs/parsing/redirections.c
+	   srcs/parsing/parse_redir.c
 
 UTILS_SRCS = srcs/utils/free.c srcs/utils/split_utils.c srcs/utils/parser.c \
 	   srcs/utils/utils.c srcs/utils/init.c srcs/utils/prompt.c \
@@ -30,7 +30,7 @@ BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
 		srcs/builtins/builtins.c srcs/builtins/ft_echo.c srcs/builtins/ft_env.c \
 		srcs/builtins/ft_export.c srcs/builtins/ft_unset.c  srcs/builtins/ft_exit.c \
 		
-REDIRECTION_SRCS = srcs/exec/redirection/redirection.c
+REDIRECTION_SRCS = srcs/exec/redirection/exec_redir.c
 
 SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) \
 	$(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(SIGNALS_SRCS) srcs/debug/debug.c

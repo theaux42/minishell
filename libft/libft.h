@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 12:29:23 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 12:08:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,8 @@ char				*ft_strlowcase(char *str);
 char				*ft_strupcase(char *str);
 char				*ft_strcap(char *str);
 char				*ft_strjoins(char **strings, int count);
-char				*ft_strjoin_double(char *s1, char *s2, char *s3);
+char				*ft_strjoin_double(char *s1, char *s2, char *s3,
+						int amount_to_free);
 char				*ft_strcpy(char *s1, char *s2);
 int					ft_edgecmp(const char *s1, const char s2);
 int					ft_isdigits_str(char *str);

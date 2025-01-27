@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/25 21:48:34 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 20:55:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@ int	execute_external_command(t_minishell *minishell, t_command *command,
 	cmd = get_full_cmd(tokens->value, minishell->env);
 	if (!cmd)
 		return (ft_dprintf(2, ERR_CMD_NOT_FOUND, tokens->value), CMD_NOT_FOUND);
+	if (ft_isfolder(cmd))
+	{
+		ft_dprintf(2, ERR_IS_FOLDER, cmd);
+		return (free(cmd), CMD_NO_RIGHT);
+	}
 	if (access(cmd, F_OK) != 0 || access(cmd, X_OK) != 0)
 	{
 		ft_dprintf(2, ERR_NO_RIGHT, cmd);
@@ -65,7 +70,10 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 	if (!is_builtin(tokens->value))
 		pid = execute_external_command(minishell, command, tokens);
 	else
+	{
 		pid = execute_builtin_command(minishell, command, tokens);
+		
+	}
 	return (pid);
 }
 

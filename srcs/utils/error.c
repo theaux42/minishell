@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/24 11:11:54 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 19:10:38 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,13 @@ void	exit_child(char *msg, t_minishell *minishell, char *cmd, char **argv)
 	free(cmd);
 	free(argv);
 	exit(EXIT_FAILURE);
+}
+
+bool	ft_isfolder(char *path)
+{
+	struct stat	stats;
+
+	if (stat(path, &stats) == -1)
+		return (false);
+	return (S_ISDIR(stats.st_mode));
 }

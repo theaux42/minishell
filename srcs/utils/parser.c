@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:40:40 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 10:22:30 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 16:05:48 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ t_token_type	get_tokens_type(char *str, int pos)
 	{
 		last_type = COMMAND;
 		return (COMMAND);
+	}
+	if (last_type == REDIR_HEREDOC || last_type == REDIR_OUTPUT
+		|| last_type == REDIR_APPEND || last_type == REDIR_INPUT)
+	{
+		last_type = REDIR_TARGET;
+		return (REDIR_TARGET);
 	}
 	last_type = ARGUMENT;
 	return (ARGUMENT);

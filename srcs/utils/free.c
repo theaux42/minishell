@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/24 11:00:39 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 16:13:00 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	free_redirections(t_redirection *redirections)
 	current = redirections;
 	while (current)
 	{
-		if (current->file && *current->file)
+		if (current->file)
 			free(current->file);
 		next = current->next;
 		free(current);

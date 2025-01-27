@@ -1,69 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirection.c                                      :+:      :+:    :+:   */
+/*   exec_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/25 21:52:23 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 16:13:10 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_line_heredoc(char *delimiter, t_minishell *minishell)
-{
-	char	*line;
-	char	*heredoc;
-
-	heredoc = ft_strdup("");
-	while (1)
-	{
-		line = readline(HEREDOC_PROMPT);
-		if (g_signal != 0)
-		{
-			free(line);
-			minishell->status = g_signal;
-			g_signal = 0;
-			return (NULL);
-		}
-		if (!line)
-			break ;
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		heredoc = ft_strjoin_double(heredoc, line, "\n");
-		if (!heredoc)
-			return (NULL);
-		free(line);
-	}
-	return (heredoc);
-}
-
-int	handle_heredoc(char *delimiter, t_minishell *minishell)
+int	handle_heredoc(char *content, t_minishell *minishell)
 {
 	int		pipe_fd[2];
-	bool	need_to_expand;
-	char	*line;
 
 	if (pipe(pipe_fd) == -1)
 		exit_parent(ERR_PIPE_FAIL, minishell, true);
-	need_to_expand = true;
-	if (ft_edgecmp(delimiter, '"') || ft_edgecmp(delimiter, '\''))
-		need_to_expand = false;
-	line = get_line_heredoc(delimiter, minishell);
-	if (!line)
-	{
-		close(pipe_fd[0]);
-		return (-1);
-	}
-	if (need_to_expand)
-		line = expand_line(line, minishell);
-	ft_putstr_fd(line, pipe_fd[1]);
+	ft_dprintf(pipe_fd[1], "%s", content);
 	close(pipe_fd[1]);
+	free(content);
 	return (pipe_fd[0]);
 }
 

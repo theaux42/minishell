@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:42:39 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/24 23:55:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 12:07:47 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	edit_env_value(char *key, char *value, char **env)
 	{
 		if (ft_strncmp(env[i], key, key_len) == 0 && env[i][key_len] == '=')
 		{
-			new_env = ft_strjoin_double(key, "=", value);
+			new_env = ft_strjoin_double(key, "=", value, 0);
 			if (!new_env)
 				return (0);
 			free(env[i]);
@@ -52,7 +52,7 @@ char	**add_env_value(char *key, char *value, char **env)
 		new_env[i] = ft_strdup(env[i]);
 		i++;
 	}
-	new_env[env_len] = ft_strjoin_double(key, "=", value);
+	new_env[env_len] = ft_strjoin_double(key, "=", value, 0);
 	new_env[env_len + 1] = NULL;
 	return (new_env);
 }

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/22 10:22:59 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 16:06:28 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ char	*type_str(t_token_type type)
 		return ("REDIR_APPEND");
 	if (type == REDIR_HEREDOC)
 		return ("REDIR_HEREDOC");
-	if (type == HEREDOC_DELIMITER)
-		return ("HEREDOC_DELIMITER");
+	if (type == REDIR_TARGET)
+		return ("REDIR_TARGET");
 	return ("UNKNOWN");
 }
 

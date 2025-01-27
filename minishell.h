@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/25 21:52:01 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/26 19:35:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef enum e_token_type
 	REDIR_OUTPUT, // Redirection de sortie '>'
 	REDIR_APPEND, // Redirection avec ajout '>>'
 	REDIR_HEREDOC, // Redirection avec heredoc '<<'
-	HEREDOC_DELIMITER,
+	REDIR_TARGET, // La cible de la redirection
 }				t_token_type;
 
 // Structure pour un token
@@ -98,6 +98,7 @@ typedef struct s_minishell
 
 # define DEFAULT_PROMPT "ᓚᘏᗢ $ "
 # define HEREDOC_PROMPT "heredoc> "
+# define DEBUG_HEREDOC_PROMPT "debug_heredoc> "
 
 # define CMD_NOT_FOUND -10
 # define CMD_NO_RIGHT -20
@@ -121,6 +122,9 @@ typedef struct s_minishell
 # define ERR_CD_NO_FILE "minishell: cd: no such file or directory\n"
 # define ERR_CD_NO_FILE_2 "minishell: cd: %s: No such file or directory\n"
 # define ERR_NO_ENV "minishell: env: cannot find environment variable\n"
+# define ERR_IS_FOLDER "minishell: %s: Is a directory\n"
+# define ERR_IS_NOT_FOLDER "minishell: %s: Is not a directory\n"
+# define ERR_EXECVE "minishell: execve failed\n"
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -163,7 +167,8 @@ int								handle_token(char *line, int *i,
 int								process_redir(char **split, char *line,
 									int *i, int *k);
 // Functions of parsing/redirections.c
-bool							parse_redirections(t_command *command);
+bool							parse_redirections(t_command *command,
+									t_minishell *minishell);
 // Functions of parsing/split.c
 int								copy_arg(char **split, char *line, int j,
 									int k);
@@ -249,6 +254,8 @@ void							exit_child(char *msg,
 									t_minishell *minishell, char *cmd,
 									char **argv);
 void							error_message(char *title, char *message);
+bool							ft_isfolder(char *path);
+
 // Fonction de free
 void							free_commands(t_command *commands);
 void							free_token(t_token *token);
