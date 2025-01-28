@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 14:46:36 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 15:08:08 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,15 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 			exit_child(NULL, minishell, cmd, argv);
 	(close(minishell->fds[STDIN_FILENO]), close(minishell->fds[STDOUT_FILENO]));
 	if (command->prev_pipe != -1)
-	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
 			exit_child("dup2_input_fd", minishell, cmd, argv);
-		close(command->prev_pipe);
-	}
+	close(command->prev_pipe);
 	if (command->pipes[1] != -1)
 	{
-		if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
-			exit_child("dup2_output_fd", minishell, cmd, argv);
+		if (!has_redirections(command->redirections,
+				REDIR_OUTPUT | REDIR_APPEND))
+			if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
+				exit_child("dup2_output_fd", minishell, cmd, argv);
 		close(command->pipes[1]);
 	}
 	if (command->pipes[0] != -1)

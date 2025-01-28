@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 10:39:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 14:55:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,8 +203,6 @@ void							init_pipes(t_command *commands,
 void							wait_for_children(t_minishell *minishell);
 int								count_arguments(t_command *command);
 int								fill_arguments(char **argv, t_command *command);
-void							cmd_error_handler(t_command *current,
-									t_minishell *minishell, int status);
 int								ft_cmdlen(t_token *lst);
 // Functions of utils/prompt.c
 char							*nice_prompt(char **env);
@@ -219,6 +217,7 @@ int								exec_redirections(t_redirection *redirections,
 									t_minishell *minishell);
 void							apply_redirections(t_command *command,
 									t_minishell *minishell);
+bool							has_redirections(t_redirection *redirections, t_token_type types);
 
 // Fonction env
 char							*get_env(char *key, char **env);

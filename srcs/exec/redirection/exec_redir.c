@@ -6,11 +6,22 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 14:47:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 15:10:16 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+bool	has_redirections(t_redirection *redirections, t_token_type types)
+{
+	while (redirections)
+	{
+		if (redirections->type & types)
+			return (true);
+		redirections = redirections->next;
+	}
+	return (false);
+}
 
 static int	handle_heredoc(char *content, t_minishell *minishell)
 {
@@ -24,29 +35,31 @@ static int	handle_heredoc(char *content, t_minishell *minishell)
 	return (pipe_fd[0]);
 }
 
-int	exec_redirections(t_redirection *redirections, t_minishell *minishell)
+int	exec_redirections(t_redirection *redirs, t_minishell *minishell)
 {
 	int	fd;
 
-	while (redirections)
+	while (redirs)
 	{
-		if (redirections->type == REDIR_INPUT)
-			fd = open(redirections->file, O_RDONLY);
-		else if (redirections->type == REDIR_OUTPUT)
-			fd = open(redirections->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (redirections->type == REDIR_APPEND)
-			fd = open(redirections->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else if (redirections->type == REDIR_HEREDOC)
-			fd = handle_heredoc(redirections->file, minishell);
+		if (redirs->type == REDIR_INPUT)
+			fd = open(redirs->file, O_RDONLY);
+		else if (redirs->type == REDIR_OUTPUT)
+			fd = open(redirs->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (redirs->type == REDIR_APPEND)
+			fd = open(redirs->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else if (redirs->type == REDIR_HEREDOC)
+			fd = handle_heredoc(redirs->file, minishell);
 		if (fd == -1)
-			return (ft_dprintf(2, ERR_NO_RIGHT, redirections->file), 1);
-		if (redirections->type == REDIR_INPUT
-			|| redirections->type == REDIR_HEREDOC)
-			dup2(fd, STDIN_FILENO);
-		else
-			dup2(fd, STDOUT_FILENO);
+			return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
+		if (redirs->type == REDIR_INPUT || redirs->type == REDIR_HEREDOC)
+		{
+			if (dup2(fd, STDIN_FILENO) == -1)
+				return (close(fd), 1);
+			else if (dup2(fd, STDOUT_FILENO) == -1)
+				return (close(fd), 1);
+		}
 		close(fd);
-		redirections = redirections->next;
+		redirs = redirs->next;
 	}
 	return (0);
 }
