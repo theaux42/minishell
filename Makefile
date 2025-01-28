@@ -63,7 +63,7 @@ $(NAME): $(OBJS)
 leak:
 	@echo "{\n\t<ignore_basic_cmd_leaks>\n\tMemcheck:Leak\n\t...\n\tobj:/usr/bin/*\n}" > basic_leaks.supp
 	@echo "{\nignore_libreadline_leaks\n Memcheck:Leak\n ...\n obj:*/libreadline.so.*\n }" > readline.supp
-	@${VALGRIND_CMD} --suppressions=basic_leaks.supp --suppressions=readline.supp ./${NAME}
+	@${VALGRIND_CMD} --suppressions=basic_leaks.supp ./${NAME}
 	@rm -f basic_leaks.supp readline.supp
 
 clean:

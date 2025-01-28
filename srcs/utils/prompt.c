@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 04:13:50 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/03 03:23:36 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/27 14:13:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,27 +82,23 @@ char	*nice_pwd(char **env)
 	return (new_pwd);
 }
 
-char	*build_prompt(char **env, char *pwd)
+char    *build_prompt(char **env, char *pwd)
 {
-	char	*final_prompt;
-	char	*prompt[8];
-	char	*user;
+    char    *final_prompt;
+    char    *prompt[4];
+    char    *user;
 
-	user = get_env("USER", env);
-	if (!user)
-	{
-		user = "user";
-	}
-	prompt[0] = AMBER500;
-	prompt[1] = user;
-	prompt[2] = RESET;
-	prompt[3] = "@";
-	prompt[4] = VIOLET500;
-	prompt[5] = pwd;
-	prompt[6] = RESET;
-	prompt[7] = " → ";
-	final_prompt = ft_strjoins(prompt, 8);
-	return (final_prompt);
+    user = get_env("USER", env);
+    if (!user)
+        user = "user";
+    
+    prompt[0] = user;
+    prompt[1] = " @ ";
+    prompt[2] = pwd;
+    prompt[3] = " → ";
+    
+    final_prompt = ft_strjoins(prompt, 4);
+    return (final_prompt);
 }
 
 char	*nice_prompt(char **env)

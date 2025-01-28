@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 19:04:48 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/27 12:43:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ char	*get_full_cmd(char *bin, char **env)
 	int		i;
 
 	i = 0;
-	if (ft_strcmp(bin, ".") == 0 || ft_strcmp(bin, "..") == 0)
+	if (ft_strcmp(bin, ".") == 0 || ft_strcmp(bin, "..") == 0 || ft_strcmp(bin,
+			"") == 0)
 		return (NULL);
 	if (is_builtin(bin))
 		return (ft_strdup(bin));

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/23 16:03:00 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 11:37:46 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,34 +31,14 @@ int	is_builtin(char *str)
 	return (0);
 }
 
-bool	is_valid_args(t_token *tokens, char *cmd, bool print_exit)
+static bool	is_valid_args(t_token *tokens, char *cmd)
 {
-	bool	is_exit;
-
-	is_exit = false;
-	if (ft_strncmp(cmd, "exit", 4) == 0)
-		is_exit = true;
-	if (tokens->next != NULL && tokens->next->value != NULL
-		&& *tokens->next->value && !ft_isdigits_str(tokens->next->value)
-		&& is_exit)
-	{
-		ft_dprintf(2, ERR_NUM_ARG, cmd);
-		return (false);
-	}
-	if (ft_strncmp(cmd, "cd", 2) == 0 || ft_strncmp(cmd, "exit", 4) == 0)
-	{
-		if (ft_cmdlen(tokens) > 2)
-		{
-			if (is_exit && print_exit)
-				printf("exit\n");
-			ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd);
-			return (false);
-		}
-	}
+	if (ft_strncmp(cmd, "cd", 2) == 0 && ft_cmdlen(tokens) > 2)
+			return (ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd));
 	return (true);
 }
 
-int	builtins(t_command *command, char ***env, t_minishell *minishell, bool msg)
+static int	builtins(t_command *command, char ***env, t_minishell *minishell, bool msg)
 {
 	int	ret;
 
@@ -76,7 +56,7 @@ int	builtins(t_command *command, char ***env, t_minishell *minishell, bool msg)
 	else if (ft_strncmp(command->tokens->value, "unset", 5) == 0)
 		ret = ft_unset(command->tokens->next, env);
 	else if (ft_strncmp(command->tokens->value, "env", 3) == 0)
-		ret = ft_env(*env);
+		ret = ft_env(*env, false);
 	return (ret);
 }
 
@@ -87,7 +67,7 @@ int	parent_builtins(t_command *command, t_minishell *minishell)
 	ret = 0;
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_PARENT);
-	if (is_valid_args(command->tokens, command->tokens->value, true))
+	if (is_valid_args(command->tokens, command->tokens->value))
 		ret = builtins(command, &minishell->env, minishell, true);
 	else
 		ret = 1;
@@ -102,7 +82,7 @@ int	child_builtins(char **argv, char *cmd, t_command *command,
 	ret = 0;
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_CHILD);
-	if (is_valid_args(command->tokens, command->tokens->value, true))
+	if (is_valid_args(command->tokens, command->tokens->value))
 		ret = builtins(command, &minishell->env, minishell, false);
 	else
 		ret = 1;

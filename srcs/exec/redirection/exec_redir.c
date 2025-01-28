@@ -6,15 +6,15 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 16:13:10 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 14:47:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	handle_heredoc(char *content, t_minishell *minishell)
+static int	handle_heredoc(char *content, t_minishell *minishell)
 {
-	int		pipe_fd[2];
+	int	pipe_fd[2];
 
 	if (pipe(pipe_fd) == -1)
 		exit_parent(ERR_PIPE_FAIL, minishell, true);

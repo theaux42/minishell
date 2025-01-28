@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 20:55:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/27 17:16:05 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,8 @@
 int	execute_external_command(t_minishell *minishell, t_command *command,
 		t_token *tokens)
 {
-	char	*cmd;
 	int		pid;
-
-	cmd = get_full_cmd(tokens->value, minishell->env);
-	if (!cmd)
-		return (ft_dprintf(2, ERR_CMD_NOT_FOUND, tokens->value), CMD_NOT_FOUND);
-	if (ft_isfolder(cmd))
-	{
-		ft_dprintf(2, ERR_IS_FOLDER, cmd);
-		return (free(cmd), CMD_NO_RIGHT);
-	}
-	if (access(cmd, F_OK) != 0 || access(cmd, X_OK) != 0)
-	{
-		ft_dprintf(2, ERR_NO_RIGHT, cmd);
-		return (free(cmd), CMD_NO_RIGHT);
-	}
-	pid = execution(cmd, command, minishell);
-	free(cmd);
+	pid = execution(tokens->value, command, minishell);
 	return (pid);
 }
 
@@ -46,7 +30,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 	{
 		apply_redirections(command, minishell);
 		minishell->status = parent_builtins(command, minishell);
-		return (minishell->status);
+		return (CMD_PARENT_BUILTINS);
 	
 	}
 	cmd = ft_strdup(tokens->value);
@@ -68,12 +52,9 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 	if (!tokens)
 		return (CMD_NOT_FOUND);
 	if (!is_builtin(tokens->value))
-		pid = execute_external_command(minishell, command, tokens);
+		pid = execution(tokens->value, command, minishell);
 	else
-	{
 		pid = execute_builtin_command(minishell, command, tokens);
-		
-	}
 	return (pid);
 }
 

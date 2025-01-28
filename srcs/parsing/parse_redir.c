@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 17:38:30 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/27 10:47:18 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ bool	parse_cmd_redirections(t_command *command, t_minishell *minishell)
 		if (current->type >= REDIR_INPUT && current->type <= REDIR_HEREDOC)
 		{
 			if (!process_redirection(current, &redirections, minishell))
-				return (false);
+				return (free_redirections(redirections), false);
 			current = remove_redirection_tokens(current, &prev, command, true);
 		}
 		else

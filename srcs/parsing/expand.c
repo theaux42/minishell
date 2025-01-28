@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 19:17:55 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 14:11:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ char	*expand_line(char *line, t_minishell *minishell)
 void	process_token(t_token *token, t_minishell *minishell)
 {
 	char	*temp;
+
 	if (need_expansion(token->value))
 	{
 		token->value = expand_line(token->value, minishell);
@@ -82,22 +83,58 @@ void	process_token(t_token *token, t_minishell *minishell)
 	free(temp);
 }
 
-void	expand_tokens(t_token *tokens, t_minishell *minishell)
+bool	process_commands(t_token *tokens, t_minishell *minishell)
+{
+	char	*cmd;
+
+	cmd = get_full_cmd(tokens->value, minishell->env);
+	if (!cmd)
+	{
+		minishell->status = 127;
+		ft_dprintf(2, ERR_CMD_NOT_FOUND, tokens->value);
+		return (false);
+	}
+	if (ft_isfolder(cmd))
+	{
+		minishell->status = 126;
+		ft_dprintf(2, ERR_IS_FOLDER, tokens->value);
+		return (free(cmd), false);
+	}
+	if (access(cmd, F_OK | X_OK) != 0 && !is_builtin(cmd))
+	{
+		minishell->status = 127;
+		ft_dprintf(2, ERR_NO_RIGHT, tokens->value);
+		return (free(cmd), false);
+	}
+	free(tokens->value);
+	tokens->value = cmd;
+	tokens->type = COMMAND;
+	return (true);
+}
+
+bool	expand_tokens(t_token *tokens, t_minishell *minishell)
 {
 	t_token	*current_token;
+	int		pos;
 
+	pos = 0;
 	current_token = tokens;
 	while (current_token)
 	{
 		process_token(current_token, minishell);
+		if (current_token->type == COMMAND || pos == 0)
+			if (!process_commands(current_token, minishell))
+				return (false);
 		current_token = current_token->next;
+		pos++;
 	}
+	return (true);
 }
 
 bool	expand_commands(t_command *commands, t_minishell *minishell)
 {
-	t_command		*current;
-	int				i;
+	t_command	*current;
+	int			i;
 
 	i = 0;
 	current = commands;
@@ -105,25 +142,10 @@ bool	expand_commands(t_command *commands, t_minishell *minishell)
 		return (ft_dprintf(2, ERR_UNCLOSED_QUOTES), false);
 	while (current)
 	{
-		expand_tokens(current->tokens, minishell);
+		if (!expand_tokens(current->tokens, minishell))
+			return (false);
 		current = current->next;
 		i++;
 	}
 	return (true);
 }
-
-// bool	expand_commands(t_command *commands, t_minishell *minishell)
-// {
-// 	t_command		*current;
-// 	t_token_type	last_type;
-// 	current = commands;
-// 	if (!check_commands(commands))
-// 		return (ft_dprintf(2, ERR_UNCLOSED_QUOTES), false);
-// 	while (current)
-// 	{
-// 		expand_tokens(current->tokens, minishell);
-// 		last_type = current->tokens->type;
-// 		current = current->next;
-// 	}
-// 	return (true);
-// }

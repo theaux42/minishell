@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 19:35:31 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 10:39:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,12 @@ typedef struct s_minishell
 
 # define CMD_NOT_FOUND -10
 # define CMD_NO_RIGHT -20
+# define CMD_IS_FOLDER -25
+# define CMD_PARENT_BUILTINS -30
 
 # define MSG_COREDUMP "Quit (core dumped)\n"
 
+# define ERR_CANT_INIT "minishell: unable to initialize for some reasons.\n"
 # define ERR_CMD_NOT_FOUND "minishell: %s: command not found\n"
 # define ERR_EMPTY_CMD "minishell: parse error near `|'\n"
 # define ERR_UNCLOSED_QUOTES "minishell: unclosed quotes\n"
@@ -114,13 +117,17 @@ typedef struct s_minishell
 # define ERR_PIPE_FAIL "minishell: pipe failed\n"
 # define ERR_TOO_MANY_ARGS "minishell: %s: too many arguments\n"
 # define ERR_NUM_ARG "minishell: %s: numeric argument required\n"
+# define ERR_EXIT_NUM "minishell: exit: %s: numeric argument required\n"
 # define ERR_EXPORT_INVALID "minishell: export: %s: invalid syntax\n"
 # define ERR_EXPORT_INVALID_ID "minishell: export: %s: not a valid identifier\n"
+# define ERR_UNSET_INVALID_ID "minishell: unset: %s: not a valid identifier\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
 # define ERR_NO_RIGHT "minishell: %s: Permission denied\n"
 # define ERR_CD_NO_RIGHT "minishell: cd: %s: Permission denied\n"
 # define ERR_CD_NO_FILE "minishell: cd: no such file or directory\n"
 # define ERR_CD_NO_FILE_2 "minishell: cd: %s: No such file or directory\n"
+# define ERR_CD_NO_HOME "minishell: cd: HOME not set\n"
+# define ERR_NO_PWD "minishell: Unable to get PWD after two tries.\n"
 # define ERR_NO_ENV "minishell: env: cannot find environment variable\n"
 # define ERR_IS_FOLDER "minishell: %s: Is a directory\n"
 # define ERR_IS_NOT_FOLDER "minishell: %s: Is not a directory\n"
@@ -135,7 +142,7 @@ char							*ft_token_value(char *value);
 // Functions of parsing/expand.c
 bool							expand_commands(t_command *commands,
 									t_minishell *minishell);
-void							expand_tokens(t_token *tokens,
+bool							expand_tokens(t_token *tokens,
 									t_minishell *minishell);
 char							*expand_line(char *line,
 									t_minishell *minishell);
@@ -225,14 +232,14 @@ int								parent_builtins(t_command *command,
 									t_minishell *minishell);
 int								child_builtins(char **argv, char *cmd,
 									t_command *command, t_minishell *minishell);
-bool							is_valid_args(t_token *tokens, char *cmd,
-									bool print_exit);
+
 
 // Les builtins
 int								ft_echo(t_token *tokens);
 int								ft_pwd(char **env);
+char							*get_pwd(char **env);
 int								ft_cd(t_token *token, char ***env);
-int								ft_env(char **env);
+int								ft_env(char **env, bool show_empty);
 int								ft_export(t_token *tokens, char ***env);
 int								ft_unset(t_token *tokens, char ***env);
 int								ft_exit(t_token *token, t_minishell *minishell,
@@ -261,11 +268,13 @@ void							free_commands(t_command *commands);
 void							free_token(t_token *token);
 void							free_tokens(t_token *tokens);
 void							ft_free_builtins(t_minishell *minishell);
+void							free_redirections(t_redirection *redirections);
 // Fonction d'initialisation
 t_minishell						*init_minishell(char **env);
 
 // Fonction d'erreur
-bool							validate_commands(t_command *commands);
+bool							validate_commands(t_command *commands,
+									t_minishell *minishell);
 
 // === DEBUG ===
 // Fonction de debug

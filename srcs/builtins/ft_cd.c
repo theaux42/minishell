@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 19:31:08 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 10:13:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,22 @@ static void	no_folder(char *path)
 		ft_dprintf(2, ERR_CD_NO_FILE);
 	else
 		ft_dprintf(2, ERR_CD_NO_FILE_2, path);
+	free(path);
+}
+
+static char	*manage_relative_path(char *path, char **env)
+{
+	char	*new_path;
+	char	*pwd;
+
+	pwd = get_pwd(env);
+	if (!pwd)
+		return (NULL);
+	new_path = ft_strjoin(pwd, path + 1);
+	if (!new_path)
+		return (free(pwd), NULL);
+	free(pwd);
+	return (new_path);
 }
 
 static char	*get_cd_path(char *path, char **env)
@@ -27,23 +43,18 @@ static char	*get_cd_path(char *path, char **env)
 	if (path == NULL || ft_strcmp(path, "~") == 0)
 	{
 		if (!get_env("HOME", env))
-			return (NULL);
+			return ((ft_dprintf(2, ERR_CD_NO_HOME)), NULL);
 		return (ft_strdup(get_env("HOME", env)));
 	}
 	if (path[0] == '/')
 		return (ft_strdup(path));
 	if (path[0] == '.' && path[1] == '/')
-	{
-		new_path = ft_strjoin(get_env("PWD", env), path + 1);
-		if (!new_path)
-			return (NULL);
-		return (new_path);
-	}
+		return (manage_relative_path(path, env));
 	if (path[0] == '~')
 	{
 		new_path = ft_strjoin(get_env("HOME", env), path + 1);
 		if (!new_path)
-			return (NULL);
+			return (ft_dprintf(2, ERR_CD_NO_HOME), NULL);
 		return (new_path);
 	}
 	return (ft_strdup(path));
@@ -59,9 +70,10 @@ int	ft_cd(t_token *token, char ***env)
 	path = NULL;
 	if (token)
 		path = token->value;
-	oldpwd = get_env("PWD", *env);
+	oldpwd = get_pwd(*env);
 	if (oldpwd)
 		set_env("OLDPWD", oldpwd, env);
+	free(oldpwd);
 	new_path = get_cd_path(path, *env);
 	if (!new_path || access(new_path, F_OK) != 0)
 		return (no_folder(new_path), CMD_NOT_FOUND);

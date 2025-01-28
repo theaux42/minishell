@@ -6,13 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 19:10:38 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/27 17:23:14 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	validate_commands(t_command *commands)
+bool	validate_commands(t_command *commands, t_minishell *minishell)
 {
     t_command	*cur;
 
@@ -20,7 +20,10 @@ bool	validate_commands(t_command *commands)
     while (cur)
     {
         if (!cur->tokens && !cur->redirections)
+		{
+			minishell->status = 2;
             return (ft_dprintf(2, ERR_EMPTY_CMD), false);
+		}
         cur = cur->next;
     }
     return (true);

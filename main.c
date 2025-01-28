@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/25 21:30:38 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/27 15:41:34 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	main_loop(t_minishell *minishell)
 		minishell->line = clean_readline(nice_prompt(minishell->env));
 		if (g_signal != 0)
 		{
+			free(minishell->line);
 			minishell->status = g_signal;
 			g_signal = 0;
 			continue ;
