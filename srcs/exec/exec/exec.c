@@ -6,40 +6,58 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 15:08:08 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 16:19:09 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
-		char **argv)
+
+void execute_child(char *cmd, t_command *command, t_minishell *minishell, char **argv)
 {
-	if (command->redirections)
-		if (exec_redirections(command->redirections, minishell))
-			exit_child(NULL, minishell, cmd, argv);
-	(close(minishell->fds[STDIN_FILENO]), close(minishell->fds[STDOUT_FILENO]));
-	if (command->prev_pipe != -1)
-		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
-			exit_child("dup2_input_fd", minishell, cmd, argv);
-	close(command->prev_pipe);
-	if (command->pipes[1] != -1)
-	{
-		if (!has_redirections(command->redirections,
-				REDIR_OUTPUT | REDIR_APPEND))
-			if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
-				exit_child("dup2_output_fd", minishell, cmd, argv);
-		close(command->pipes[1]);
-	}
-	if (command->pipes[0] != -1)
-		close(command->pipes[0]);
-	if (is_builtin(cmd))
-		exit(child_builtins(argv, cmd, command, minishell) % 256);
-	else
-	{
-		execve(cmd, argv, minishell->env);
-		exit_child(ERR_EXECVE, minishell, cmd, argv);
-	}
+    // Appliquer les redirections si elles existent
+    if (command->redirections)
+    {
+        if (exec_redirections(command->redirections, minishell))
+            exit_child(NULL, minishell, cmd, argv);
+    }
+
+    // Gérer l'entrée via le pipe précédent
+    if (command->prev_pipe != -1)
+    {
+        // Ignorer le pipe si une redirection d'entrée est présente
+        if (!has_redirections(command->redirections, REDIR_INPUT | REDIR_HEREDOC))
+        {
+            if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
+                exit_child("dup2_input_fd", minishell, cmd, argv);
+        }
+        close(command->prev_pipe); // Toujours fermer l'extrémité lecture
+    }
+
+    // Gérer la sortie via le pipe actuel
+    if (command->pipes[1] != -1)
+    {
+        // Ignorer le pipe si une redirection de sortie est présente
+        if (!has_redirections(command->redirections, REDIR_OUTPUT | REDIR_APPEND))
+        {
+            if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
+                exit_child("dup2_output_fd", minishell, cmd, argv);
+        }
+        close(command->pipes[1]); // Toujours fermer l'extrémité écriture
+    }
+
+    // Fermer l'extrémité inutilisée du pipe actuel
+    if (command->pipes[0] != -1)
+        close(command->pipes[0]);
+
+    // Exécuter la commande (builtin ou externe)
+    if (is_builtin(cmd))
+        exit(child_builtins(argv, cmd, command, minishell) % 256);
+    else
+    {
+        execve(cmd, argv, minishell->env);
+        exit_child(ERR_EXECVE, minishell, cmd, argv);
+    }
 }
 
 static void	close_fds(int *prev_fd, t_command *current)
