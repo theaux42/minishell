@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 05:31:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 10:30:41 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 21:08:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ t_minishell	*init_minishell(char **env)
 	}
 	else
 		dup_env(&minishell->env, env);
+	if (!minishell->env)
+		exit_parent(ERR_CANT_INIT, minishell, true);
 	minishell->status = 0;
 	minishell->commands = NULL;
 	return (minishell);

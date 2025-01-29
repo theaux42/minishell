@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/27 17:23:14 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 22:25:57 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,15 @@ bool	validate_commands(t_command *commands, t_minishell *minishell)
     while (cur)
     {
         if (!cur->tokens && !cur->redirections)
-		{
-			minishell->status = 2;
+        {
+            minishell->status = 2;
             return (ft_dprintf(2, ERR_EMPTY_CMD), false);
-		}
+        }
+        if (cur->tokens && cur->tokens[0].value == NULL) // Check if the token value is NULL
+        {
+            minishell->status = 2;
+            return (ft_dprintf(2, "minishell: malloc error\n"), false);
+        }
         cur = cur->next;
     }
     return (true);

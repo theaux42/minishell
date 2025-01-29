@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:33:11 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 15:28:44 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 23:25:16 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ int	process_redir(char **split, char *line, int *i, int *k)
 {
 	if (line[*i + 1] == line[*i])
 	{
-		if (copy_arg(split, &line[*i], 2, (*k)++) == -1)
+		if (copy_arg(split, &line[*i], 2, (*k)++))
 			return (1);
 		(*i) += 2;
 	}
 	else
 	{
-		if (copy_arg(split, &line[*i], 1, (*k)++) == -1)
+		if (copy_arg(split, &line[*i], 1, (*k)++))
 			return (1);
 		(*i)++;
 	}

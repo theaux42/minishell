@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 16:19:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 18:50:36 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,45 +35,52 @@ static int	handle_heredoc(char *content, t_minishell *minishell)
 	return (pipe_fd[0]);
 }
 
-int exec_redirections(t_redirection *redirections, t_minishell *minishell)
+int    exec_redirections(t_redirection *redirs, t_minishell *minishell)
 {
-    int fd;
-
-    while (redirections)
+    int    fd;
+    
+    while (redirs)
     {
-        if (redirections->type == REDIR_INPUT)
-            fd = open(redirections->file, O_RDONLY);
-        else if (redirections->type == REDIR_OUTPUT)
-            fd = open(redirections->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        else if (redirections->type == REDIR_APPEND)
-            fd = open(redirections->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        else if (redirections->type == REDIR_HEREDOC)
-            fd = handle_heredoc(redirections->file, minishell);
-
-        if (fd == -1)
+        if (redirs->type == REDIR_INPUT)
         {
-            ft_dprintf(2, ERR_NO_RIGHT, redirections->file);
-            return (1);
-        }
-
-        if (redirections->type == REDIR_INPUT || redirections->type == REDIR_HEREDOC)
-        {
+            fd = open(redirs->file, O_RDONLY);
+            if (fd == -1)
+                return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
             if (dup2(fd, STDIN_FILENO) == -1)
                 return (close(fd), 1);
+            close(fd);
         }
-        else
+        else if (redirs->type == REDIR_OUTPUT)
         {
+            fd = open(redirs->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fd == -1)
+                return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
             if (dup2(fd, STDOUT_FILENO) == -1)
                 return (close(fd), 1);
+            close(fd);
         }
-
-        // Ferme immédiatement le FD après duplication
-        close(fd);
-        redirections = redirections->next;
+        else if (redirs->type == REDIR_APPEND)
+        {
+            fd = open(redirs->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            if (fd == -1)
+                return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
+            if (dup2(fd, STDOUT_FILENO) == -1)
+                return (close(fd), 1);
+            close(fd);
+        }
+        else if (redirs->type == REDIR_HEREDOC)
+        {
+            fd = handle_heredoc(redirs->file, minishell);
+            if (fd == -1)
+                return (1);
+            if (dup2(fd, STDIN_FILENO) == -1)
+                return (close(fd), 1);
+            close(fd);
+        }
+        redirs = redirs->next;
     }
     return (0);
 }
-
 
 void	apply_redirections(t_command *command, t_minishell *minishell)
 {

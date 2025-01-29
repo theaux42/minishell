@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/17 15:29:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 23:14:38 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,20 @@ int	ft_prompt_length(char *line)
 
 int	copy_arg(char **split, char *line, int j, int k)
 {
-	split[k] = malloc(j + 1);
+	if (!split || !line || j < 0 || k < 0)
+		return (-1);
+	split[k] = malloc(sizeof(char) * (j + 1));
+	// if (k == 2)
+	// {
+	// 	free(split[k]);
+	// 	split[k] = NULL;
+	// }
 	if (!split[k])
 	{
 		while (--k >= 0)
 			free(split[k]);
 		free(split);
-		return (-1);
+		return (ft_dprintf(2, ERR_MALLOC) , 1);
 	}
 	ft_strncpy(split[k], line, j);
 	split[k][j] = '\0';
@@ -61,7 +68,7 @@ int	process_argument(char **split, char *line, int *i, int *k)
 		if (!is_in_arg && ft_isredir(line[*i]))
 		{
 			if (*i > start)
-				if (copy_arg(split, &line[start], *i - start, (*k)++) == -1)
+				if (copy_arg(split, &line[start], *i - start, (*k)++))
 					return (-1);
 			if (process_redir(split, line, i, k))
 				return (-1);
@@ -71,7 +78,7 @@ int	process_argument(char **split, char *line, int *i, int *k)
 			(*i)++;
 	}
 	if (*i > start)
-		if (copy_arg(split, &line[start], *i - start, (*k)++) == -1)
+		if (copy_arg(split, &line[start], *i - start, (*k)++))
 			return (-1);
 	return (is_in_arg);
 }
@@ -108,14 +115,23 @@ char	**ft_ms_split(char *line)
 	int		result;
 	int		prompt_length;
 
+	if (!line)
+		return (NULL);
 	prompt_length = ft_prompt_length(line);
+	if (prompt_length <= 0)
+		return (NULL);
 	args = malloc(sizeof(char *) * (prompt_length + 1));
 	if (!args)
 		return (NULL);
+	ft_memset(args, 0, sizeof(char *) * (prompt_length + 1));
 	result = inner_split(args, line);
 	if (result == -1)
-		return (ft_freesplit(args), NULL);
+		return (NULL);
 	if (result == 1)
-		return ((free(args), ft_dprintf(2, ERR_UNCLOSED_QUOTES)), NULL);
+	{
+		ft_freesplit(args);
+		ft_dprintf(2, ERR_UNCLOSED_QUOTES);
+		return (NULL);
+	}
 	return (args);
 }

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/27 12:43:25 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/28 20:52:26 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ char	**get_paths(char *command, char **env)
 	if (!path || !*path)
 		return (NULL);
 	paths = ft_split(path, ':');
+	if (!paths)
+		return (NULL);
 	while (paths[i])
 	{
 		temp = ft_strjoin(paths[i], "/");
