@@ -6,22 +6,11 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 16:10:48 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 14:49:51 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:15:55 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// static int	is_valid_export_format(char **split)
-// {
-// 	if (!split)
-// 		return (0);
-// 	if (!split[0] && !split[1])
-// 		return (ft_freesplit(split), 0);
-// 	if (*split[0] != '\0')
-// 		return (1);
-// 	return (1);
-// }
 
 static bool	is_only_equal(char *str)
 {
@@ -103,7 +92,7 @@ int	ft_export(t_token *tokens, char ***env)
 		cur = cur->next;
 	}
 	cur = tokens;
-	if (token_count == 1 && cur && (!cur->value || !*cur->value))
+	if (token_count == 1 && cur && (!cur->value))
 		return (ft_env(*env, true));
 	while (cur)
 	{
