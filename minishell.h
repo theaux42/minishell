@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 06:23:40 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 12:35:11 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ t_token_type					get_tokens_type(char *str, int pos);
 
 // Functions of parsing/check.c
 bool							check_empty_pipes(char **tokens);
+int								get_active_quotes(char *line, int n);
 
 // Functions of parsing/split_utils.c
 int								ft_ms_isspace(char c);

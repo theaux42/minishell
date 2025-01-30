@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 00:14:52 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/27 10:27:14 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:01:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ char	*get_current_key(char *line, int *i)
 		current_key = ft_substr(line, start, 1);
 		return (current_key);
 	}
+	if (!get_active_quotes(line, start) && (line[start + 1] == '\''
+			|| line[start + 1] == '\"'))
+		return (ft_strdup(""));
 	while (line[*i] && (ft_isalnum(line[*i]) || line[*i] == '_'))
 		(*i)++;
 	len = *i - start;

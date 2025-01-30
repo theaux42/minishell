@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 05:40:56 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:02:55 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*expand_line(char *line, t_minishell *minishell)
 		return (NULL);
 	while (line[i] && line[i] != '\0')
 	{
-		if (line[i] == '$')
+		if (line[i] == '$' && get_active_quotes(line, i) != 1)
 		{
 			new_line = expand_env_var(line, &i, new_line, minishell);
 			if (!new_line)

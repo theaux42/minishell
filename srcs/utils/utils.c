@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 20:52:26 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 09:56:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,12 +89,12 @@ char	*get_full_cmd(char *bin, char **env)
 	int		i;
 
 	i = 0;
-	if (ft_strcmp(bin, ".") == 0 || ft_strcmp(bin, "..") == 0 || ft_strcmp(bin,
-			"") == 0)
+	if (!ft_strcmp(bin, ".") || !ft_strcmp(bin, "..") || !ft_strcmp(bin, ""))
 		return (NULL);
 	if (is_builtin(bin))
 		return (ft_strdup(bin));
-	if (bin[0] == '/' || ft_strncmp(bin, "./", 2) == 0)
+	if (bin[0] == '/' || !ft_strncmp(bin, "./", 2) || !ft_strncmp(bin, "../", 3)
+		|| !ft_strncmp(bin, "~/", 2))
 		return (get_cmd(bin));
 	paths = get_paths(bin, env);
 	if (!paths)

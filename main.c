@@ -6,19 +6,25 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 05:32:10 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:09:34 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*clean_readline(void)
+char	*clean_readline(char *prompt)
 {
 	char	*cleared;
 	char	*line;
 
 	rl_catch_signals = 0;
-	line = readline(DEFAULT_PROMPT);
+	if (!prompt)
+		line = readline(DEFAULT_PROMPT);
+	else
+	{
+		line = readline(prompt);
+		free(prompt);
+	}
 	if (!line)
 		return (NULL);
 	cleared = ft_strtrim(line, " \t\n");
@@ -35,7 +41,7 @@ void	main_loop(t_minishell *minishell)
 	while (1)
 	{
 		ft_signal();
-		minishell->line = clean_readline();
+		minishell->line = clean_readline(nice_prompt(minishell->env));
 		if (g_signal != 0)
 		{
 			free(minishell->line);
@@ -69,8 +75,8 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	// if (!isatty(STDIN_FILENO))
-	// 	return (ft_dprintf(2, ERR_NOT_A_TTY), 1);
+	if (!isatty(STDIN_FILENO))
+		return (ft_dprintf(2, ERR_NOT_A_TTY), 1);
 	if (DEBUG_MODE)
 		ft_dprintf(2, DEBUG_MSG);
 	minishell = init_minishell(env);

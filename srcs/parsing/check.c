@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 06:21:26 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 06:35:10 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 12:53:12 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,23 @@ bool	check_empty_pipes(char **tokens)
 		i++;
 	}
 	return (true);
+}
+
+int	get_active_quotes(char *line, int n)
+{
+	int	i;
+	int	quote;
+
+	i = 0;
+	quote = 0;
+	if (n < 0)
+		return (-1);
+	if (!line)
+		return (-1);
+	while (i < n)
+	{
+		quote = quote_manager(line[i], quote);
+		i++;
+	}
+	return (quote);
 }
