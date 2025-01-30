@@ -37,7 +37,7 @@ SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) \
 
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
-VALGRIND_CMD = valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-fds=yes --track-origins=yes --suppressions=/home/tbabou/Desktop/readline.supp
+VALGRIND_CMD = valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-fds=yes --track-origins=yes --suppressions=readline.supp
 
 all: $(NAME)
 
@@ -61,8 +61,10 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 leak:
-	@${VALGRIND_CMD} --suppressions=/home/tbabou/Desktop/basic_leaks.supp ./${NAME}
-
+	@echo "{\n\t<ignore_basic_cmd_leaks>\n\tMemcheck:Leak\n\t...\n\tobj:/usr/bin/*\n}" > basic_leaks.supp
+	@echo "{\nignore_libreadline_leaks\n Memcheck:Leak\n ...\n obj:*/libreadline.so.*\n }" > readline.supp
+	@${VALGRIND_CMD} --suppressions=basic_leaks.supp ./${NAME}
+	@rm -f basic_leaks.supp readline.supp
 clean:
 	@echo "🧹 Cleaning object files..."
 	@cd libft && make clean --no-print-directory
