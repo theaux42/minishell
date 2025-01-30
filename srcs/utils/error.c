@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 06:01:28 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:35:58 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,24 @@
 
 bool	validate_commands(t_command *commands, t_minishell *minishell)
 {
-    t_command	*cur;
+	t_command	*cur;
 
-    cur = commands;
-    while (cur)
-    {
-        if (!cur->tokens && !cur->redirections)
-        {
-            minishell->status = 2;
-            return (ft_dprintf(2, ERR_EMPTY_CMD), false);
-        }
-        if (cur->tokens && cur->tokens[0].value == NULL)
-        {
-            minishell->status = 2;
-            return (ft_dprintf(2, ERR_MALLOC), false);
-        }
-        cur = cur->next;
-    }
-    return (true);
+	cur = commands;
+	while (cur)
+	{
+		if (!cur->tokens && !cur->redirections)
+		{
+			minishell->status = 2;
+			return (ft_dprintf(2, ERR_EMPTY_CMD), false);
+		}
+		if (cur->tokens && cur->tokens[0].value == NULL)
+		{
+			minishell->status = 2;
+			return (ft_dprintf(2, ERR_MALLOC), false);
+		}
+		cur = cur->next;
+	}
+	return (true);
 }
 
 void	error_message(char *title, char *message)
@@ -84,7 +84,7 @@ void	exit_child(char *msg, t_minishell *minishell, char *cmd, char **argv)
 
 bool	ft_isfolder(char *path)
 {
-	struct stat	stats;
+	struct stat stats;
 
 	if (stat(path, &stats) == -1)
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 12:35:11 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 15:08:58 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,62 +34,62 @@
 
 typedef enum e_token_type
 {
-	COMMAND, // Commande principale
-	OPTION, // Option de commande (ex: -l)
-	ARGUMENT, // Argument de commande
-	PIPE, // Pipe '|'
-	REDIR_INPUT, // Redirection d'entrée '<'
-	REDIR_OUTPUT, // Redirection de sortie '>'
-	REDIR_APPEND, // Redirection avec ajout '>>'
-	REDIR_HEREDOC, // Redirection avec heredoc '<<'
-	REDIR_TARGET, // La cible de la redirection
-}				t_token_type;
+	COMMAND,
+	OPTION,
+	ARGUMENT,
+	PIPE,
+	REDIR_INPUT,
+	REDIR_OUTPUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC,
+	REDIR_TARGET,
+}								t_token_type;
 
 // Structure pour un token
 typedef struct s_token
 {
-	char			*value; // Valeur du token
-	t_token_type	type; // Type du token
-	struct s_token	*next; // Token suivant
-}				t_token;
+	char						*value;
+	t_token_type				type;
+	struct s_token				*next;
+}								t_token;
 
 // Structure pour une redirection
 typedef struct s_redirection
 {
-	t_token_type			type; // Type de redirection
-	char					*file; // Nom du fichier de redirection
-	struct s_redirection	*next; // Redirection suivante
-}				t_redirection;
+	t_token_type				type;
+	char						*file;
+	struct s_redirection		*next;
+}								t_redirection;
 
 // Structure pour une commande
 typedef struct s_command
 {
-	t_token				*tokens; // Liste des tokens
-	t_redirection		*redirections; // Liste des redirections
-	int					pipes[2]; // Descripteurs de pipe
-	int					prev_pipe; // Descripteur de lecture du pipe précédent
-	int					is_absolute; // Chemin absolu
-	int					is_last; // Dernière commande
-	pid_t				pid; // PID du processus
-	struct s_command	*next; // Commande suivante (si pipe)
-}				t_command;
+	t_token						*tokens;
+	t_redirection				*redirections;
+	int							pipes[2];
+	int							prev_pipe;
+	int							is_absolute;
+	int							is_last;
+	pid_t						pid;
+	struct s_command			*next;
+}								t_command;
 
 typedef struct s_history
 {
-	char				*command;
-	struct s_history	*next;
-}			t_history;
+	char						*command;
+	struct s_history			*next;
+}								t_history;
 
 typedef struct s_minishell
 {
-	t_command	*commands;
-	t_history	*history;
-	char		**env;
-	char		*line;
-	int			status;
-	int			cmd_count;
-	int			fds[2];
-}				t_minishell;
+	t_command					*commands;
+	t_history					*history;
+	char						**env;
+	char						*line;
+	int							status;
+	int							cmd_count;
+	int							fds[2];
+}								t_minishell;
 
 # define DEBUG_MSG "Debug mode enabled\nCommands will be printed.\n"
 # define DEBUG_STATUS_MSG "Exited with status: %i\n"
@@ -98,7 +98,6 @@ typedef struct s_minishell
 
 # define DEFAULT_PROMPT "ᓚᘏᗢ $ "
 # define HEREDOC_PROMPT "heredoc> "
-# define DEBUG_HEREDOC_PROMPT "debug_heredoc> "
 
 # define CMD_NOT_FOUND -10
 # define CMD_NO_RIGHT -20
@@ -174,11 +173,12 @@ int								ft_ms_isspace(char c);
 int								quote_manager(char current, int is_in_arg);
 int								handle_token(char *line, int *i,
 									int *is_in_arg);
-int								process_redir(char **split, char *line,
-									int *i, int *k);
+int								process_redir(char **split, char *line, int *i,
+									int *k);
 // Functions of parsing/redirections.c
 bool							parse_redirections(t_command *command,
 									t_minishell *minishell);
+
 // Functions of parsing/split.c
 int								copy_arg(char **split, char *line, int j,
 									int k);
@@ -220,7 +220,8 @@ int								exec_redirections(t_redirection *redirections,
 									t_minishell *minishell);
 int								parent_apply_redir(t_command *command,
 									t_minishell *minishell);
-bool							has_redirections(t_redirection *redirections, t_token_type types);
+bool							has_redirections(t_redirection *redirections,
+									t_token_type types);
 
 // Fonction env
 char							*get_env(char *key, char **env);
@@ -234,7 +235,6 @@ int								parent_builtins(t_command *command,
 									t_minishell *minishell);
 int								child_builtins(char **argv, char *cmd,
 									t_command *command, t_minishell *minishell);
-
 
 // Les builtins
 int								ft_echo(t_token *tokens);
@@ -254,14 +254,12 @@ int								sig_event(void);
 void							signal_handler(int sig);
 void							ft_signal(void);
 
-
 // === UTILS ===
 // Fonction de utils
-void							exit_parent(char *msg,
-									t_minishell *minishell, bool is_error);
-void							exit_child(char *msg,
-									t_minishell *minishell, char *cmd,
-									char **argv);
+void							exit_parent(char *msg, t_minishell *minishell,
+									bool is_error);
+void							exit_child(char *msg, t_minishell *minishell,
+									char *cmd, char **argv);
 void							error_message(char *title, char *message);
 bool							ft_isfolder(char *path);
 

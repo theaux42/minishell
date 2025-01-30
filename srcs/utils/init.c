@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 05:31:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 21:08:17 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:34:05 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	init_env(char ***env)
 {
-	char *pwd;
-	
+	char	*pwd;
+
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (1);

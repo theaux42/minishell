@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 13:55:50 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 14:40:08 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static char	*get_heredoc_content(char *delimiter)
 		return (NULL);
 	while (1)
 	{
-		line = readline(DEBUG_HEREDOC_PROMPT);
+		line = readline(HEREDOC_PROMPT);
 		if (g_signal != 0)
 			return (free(result), NULL);
 		if (!line)
@@ -93,18 +93,48 @@ static char	*get_heredoc_content(char *delimiter)
 	}
 }
 
+static char	*get_delimiter(char *delimiter, bool *need_expansion)
+{
+	char	*tmp;
+
+	tmp = ft_strdup(delimiter);
+	if (!tmp)
+		return (NULL);
+	delimiter = process_quote(tmp);
+	if (!delimiter)
+		return ((free(tmp)), NULL);
+	if (ft_strcmp(tmp, delimiter) == 0)
+		*need_expansion = true;
+	else
+		*need_expansion = false;
+	free(tmp);
+	return (delimiter);
+}
+
 static bool	handle_heredoc(t_token *current, char **value,
 		t_minishell *minishell)
 {
-	*value = get_heredoc_content(current->next->value);
-	if (!*value)
+	char	*delimiter;
+	bool	need_expansion;
+	char	*content;
+
+	need_expansion = true;
+	if (!current || !current->next || !current->next->value)
 		return (false);
-	if (!ft_edgecmp(*value, '\'') && !ft_edgecmp(*value, '"'))
+	delimiter = get_delimiter(current->next->value, &need_expansion);
+	if (!delimiter)
+		return (false);
+	content = get_heredoc_content(delimiter);
+	free(delimiter);
+	if (!content)
+		return (false);
+	if (need_expansion)
 	{
-		*value = expand_line(*value, minishell);
-		if (!*value)
-			return (false);
+		*value = expand_line(content, minishell);
+		free(content);
+		return (*value != NULL);
 	}
+	*value = content;
 	return (true);
 }
 

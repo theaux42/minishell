@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 13:09:34 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:53:22 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	main_loop(t_minishell *minishell)
 			exit_parent("exit\n", minishell, false);
 		if (*minishell->line)
 		{
+			add_history(minishell->line);
 			minishell->commands = get_commands(minishell->line, minishell);
 			if (!minishell->commands)
 			{
@@ -63,7 +64,6 @@ void	main_loop(t_minishell *minishell)
 				print_commands(minishell->commands);
 			execute_commands(minishell);
 			minishell->commands = NULL;
-			add_history(minishell->line);
 		}
 		free(minishell->line);
 	}

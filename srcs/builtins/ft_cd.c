@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 10:35:07 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:35:00 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static char	*manage_relative_path(char *path, char **env)
 	return (new_path);
 }
 
-static char	* get_cd_path(char *path, char **env)
+static char	*get_cd_path(char *path, char **env)
 {
 	char	*new_path;
 

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 00:14:52 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 13:23:19 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 15:11:09 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,24 +46,24 @@ char	*get_current_key(char *line, int *i)
 	int		len;
 	char	*current_key;
 
+	if (!line || !i || !*i || !line[*i])
+		return (NULL);
 	start = *i;
-	if (!get_active_quotes(line, start - 1) && (line[start] == '\''
-			|| line[start + 1] == '\"'))
+	if (!get_active_quotes(line, start - 1) && line[start]
+		&& (line[start] == '\'' || (line[start + 1] && line[start
+			+ 1] == '\"')))
 		return (ft_strdup(""));
 	if (line[start] == '?')
 	{
 		(*i)++;
-		current_key = ft_substr(line, start, 1);
-		return (current_key);
+		return (ft_substr(line, start, 1));
 	}
 	while (line[*i] && (ft_isalnum(line[*i]) || line[*i] == '_'))
 		(*i)++;
 	len = *i - start;
+	if (len <= 0)
+		return (ft_strdup(""));
 	current_key = ft_substr(line, start, len);
-	if (!current_key)
-		return (NULL);
-	if (!is_valid_key(current_key))
-		return (free(current_key), NULL);
 	return (current_key);
 }
 
