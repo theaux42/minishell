@@ -14,7 +14,7 @@ BONUS_FILES = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
 
 PRINTF_FILES = ft_printf.c print_hexa.c print_nbr.c print_ptr.c \
 	print_str.c print_utils.c
-
+	
 GNL_FILES = get_next_line.c get_next_line_utils.c \
 
 OTHER_FILES = ft_addchar.c ft_freesplit.c ft_print_split.c ft_split_len.c \
@@ -24,7 +24,7 @@ MATHS_FILES = ft_pow.c ft_sqrt.c ft_factorial.c ft_fibonacci.c ft_is_prime.c ft_
 
 STRINGS_FILES = ft_strcap.c ft_strlowcase.c ft_strupcase.c ft_strjoins.c \
 	ft_strjoin_double.c ft_strcpy.c ft_edgecmp.c ft_isdigits_str.c \
-	ft_isredir.c
+	ft_isredir.c ft_safecmp.c
 
 LIBC = $(addprefix basic/, $(LIBC_FILES))
 ADDITIONAL = $(addprefix additional/, $(ADDITIONAL_FILES))

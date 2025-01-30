@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:33:11 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 01:56:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 06:06:32 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	handle_token(char *line, int *i, int *is_in_arg)
 
 int	process_redir(char **split, char *line, int *i, int *k)
 {
-	if (line[*i + 1] == line[*i])
+	if ((line[*i + 1] == line[*i]) && (line[*i] == '>' || line[*i] == '<'))
 	{
 		if (copy_arg(split, &line[*i], 2, (*k)++))
 			return (1);

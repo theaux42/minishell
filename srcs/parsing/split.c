@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 01:03:19 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 06:34:53 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	copy_arg(char **split, char *line, int j, int k)
 		while (--k >= 0)
 			free(split[k]);
 		free(split);
-		return (ft_dprintf(2, ERR_MALLOC) , 1);
+		return (ft_dprintf(2, ERR_MALLOC), 1);
 	}
 	ft_strncpy(split[k], line, j);
 	split[k][j] = '\0';
@@ -117,7 +117,7 @@ char	**ft_ms_split(char *line)
 
 	if (!line)
 		return (NULL);
-	prompt_length = ft_prompt_length(line);
+	prompt_length = ft_prompt_length(line) + 1;
 	if (prompt_length <= 0)
 		return (NULL);
 	args = malloc(sizeof(char *) * (prompt_length + 1));

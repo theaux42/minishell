@@ -15,7 +15,7 @@ ENV_SRCS =  srcs/exec/env/del_env.c srcs/exec/env/dup_env.c \
 
 PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c \
 	   srcs/parsing/expand.c srcs/parsing/expand_utils.c srcs/parsing/quotes.c \
-	   srcs/parsing/parse_redir.c
+	   srcs/parsing/parse_redir.c srcs/parsing/check.c
 
 UTILS_SRCS = srcs/utils/free.c srcs/utils/split_utils.c srcs/utils/parser.c \
 	   srcs/utils/utils.c srcs/utils/init.c srcs/utils/prompt.c \

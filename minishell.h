@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 23:42:07 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 06:23:40 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,9 @@ t_command						*get_commands(char *line,
 // Functions of parsing/utils.c
 t_token_type					get_redirection_type(char *str);
 t_token_type					get_tokens_type(char *str, int pos);
+
+// Functions of parsing/check.c
+bool							check_empty_pipes(char **tokens);
 
 // Functions of parsing/split_utils.c
 int								ft_ms_isspace(char c);

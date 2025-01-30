@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 22:41:56 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 15:48:44 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 06:26:04 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,24 +72,6 @@ static bool	add_tokens(t_token **head, char *token, int position)
 	return (false);
 }
 
-static int fake_ft_strcmp(char *s1, char *s2)
-{
-    int	i;
-
-    if (!s1 && !s2)
-        return (-1337);
-    if (!s1)
-        return (-1337);
-    if (!s2)
-        return (-1337);
-    i = 0;
-    if (s1[0] == '\0' && s2[0] == '\0')
-        return (0);
-    while (s1[i] && s1[i] == s2[i])
-        i++;
-    return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
-
 static bool	parse_commands(t_command **head, char **commands)
 {
 	t_command	*current;
@@ -100,14 +82,14 @@ static bool	parse_commands(t_command **head, char **commands)
 	i = 0;
 	j = 0;
 	*head = init_new_command();
-	if (!*head)
+	if (!*head || !commands)
 		return (false);
 	current = *head;
 	while (commands[i])
 	{
-		if (!commands[i] || fake_ft_strcmp(commands[i], "") == -1337)
+		if (!commands[i] || ft_safecmp(commands[i], "") == -4242)
 			return ((free(commands), ft_dprintf(2, ERR_MALLOC)), false);
-		if (fake_ft_strcmp(commands[i], "|") == 0)
+		if (ft_safecmp(commands[i], "|") == 0)
 		{
 			j = -1;
 			new_cmd = init_new_command();
@@ -116,9 +98,8 @@ static bool	parse_commands(t_command **head, char **commands)
 			current->next = new_cmd;
 			current = new_cmd;
 		}
-		else
-			if (add_tokens(&current->tokens, commands[i], j))
-				return (false);
+		else if (add_tokens(&current->tokens, commands[i], j))
+			return (false);
 		i++;
 		j++;
 	}
@@ -136,9 +117,12 @@ t_command	*get_commands(char *line, t_minishell *minishell)
 	commands = ft_ms_split(line);
 	if (!commands)
 		return (NULL);
+	if (!check_empty_pipes(commands))
+		return (ft_freesplit(commands), NULL);
 	if (!parse_commands(&head, commands))
 		return (free_commands(head), NULL);
 	ft_freesplit(commands);
+	minishell->cmd_count = ft_cmd_count(head);
 	if (!parse_redirections(head, minishell))
 		return (free_commands(head), NULL);
 	if (!validate_commands(head, minishell))

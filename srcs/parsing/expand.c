@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 14:59:00 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 05:40:56 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,63 @@ char	*expand_line(char *line, t_minishell *minishell)
 	return (new_line);
 }
 
+static t_token	*create_arg_token(char *value, t_token *next)
+{
+	t_token	*new;
+
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->value = ft_strdup(value);
+	new->type = ARGUMENT;
+	new->next = next;
+	return (new);
+}
+
+static int	split_expanded_token(t_token *token, char **split)
+{
+	t_token	*current;
+	int		i;
+
+	if (!split[0] || !split[1])
+		return (0);
+	free(token->value);
+	token->value = ft_strdup(split[0]);
+	if (!token->value)
+		return (-1);
+	current = token;
+	i = 1;
+	while (split[i])
+	{
+		current->next = create_arg_token(split[i], current->next);
+		if (!current->next)
+			return (-1);
+		current = current->next;
+		i++;
+	}
+	return (0);
+}
+
 void	process_token(t_token *token, t_minishell *minishell)
 {
 	char	*temp;
+	char	**split;
 
 	if (need_expansion(token->value))
 	{
 		token->value = expand_line(token->value, minishell);
 		if (!token->value)
 			exit_parent(ERR_MALLOC, minishell, true);
+		if ((token->type == COMMAND || token->type == ARGUMENT) && token->value
+			&& token->value[0] != '\0')
+		{
+			split = ft_split(token->value, ' ');
+			if (!split)
+				exit_parent(ERR_MALLOC, minishell, true);
+			if (split_expanded_token(token, split) == -1)
+				exit_parent(ERR_MALLOC, minishell, true);
+			ft_freesplit(split);
+		}
 	}
 	temp = token->value;
 	token->value = process_quote(token->value);
@@ -92,18 +140,18 @@ bool	process_commands(t_token *tokens, t_minishell *minishell)
 	{
 		minishell->status = 127;
 		ft_dprintf(2, ERR_CMD_NOT_FOUND, tokens->value);
+		tokens->type = ARGUMENT;
+		if (minishell->cmd_count > 1)
+			return (true);
 		return (false);
 	}
-	if (ft_isfolder(cmd))
+	if ((access(cmd, F_OK | X_OK) != 0 && !is_builtin(cmd)) || ft_isfolder(cmd))
 	{
 		minishell->status = 126;
-		ft_dprintf(2, ERR_IS_FOLDER, tokens->value);
-		return (free(cmd), false);
-	}
-	if (access(cmd, F_OK | X_OK) != 0 && !is_builtin(cmd))
-	{
-		minishell->status = 126;
-		ft_dprintf(2, ERR_NO_RIGHT, tokens->value);
+		if (ft_isfolder(cmd))
+			ft_dprintf(2, ERR_IS_FOLDER, tokens->value);
+		else if (access(cmd, F_OK | X_OK) != 0 && !is_builtin(cmd))
+			ft_dprintf(2, ERR_NO_RIGHT, tokens->value);
 		return (free(cmd), false);
 	}
 	free(tokens->value);
@@ -128,7 +176,6 @@ static bool	expand_tokens(t_command *command, t_minishell *minishell)
 			if (!process_commands(current_token, minishell))
 				if (!command->redirections)
 					return (false);
-
 		}
 		current_token = current_token->next;
 		pos++;
