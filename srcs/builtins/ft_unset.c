@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 20:09:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 09:09:03 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 13:56:43 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_unset(t_token *tokens, char ***env)
 {
-	int ret;
+	int	ret;
 
 	ret = 0;
 	if (!tokens || !tokens->value)

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:40:40 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 16:05:48 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 15:51:48 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 t_token_type	get_redirection_type(char *str)
 {
-	if (strncmp(str, ">>", 2) == 0)
+	if (ft_strncmp(str, ">>", 2) == 0)
 		return (REDIR_APPEND);
-	if (strncmp(str, ">", 1) == 0)
+	if (ft_strncmp(str, ">", 1) == 0)
 		return (REDIR_OUTPUT);
-	if (strncmp(str, "<<", 2) == 0)
+	if (ft_strncmp(str, "<<", 2) == 0)
 		return (REDIR_HEREDOC);
-	if (strncmp(str, "<", 1) == 0)
+	if (ft_strncmp(str, "<", 1) == 0)
 		return (REDIR_INPUT);
 	return (ARGUMENT);
 }

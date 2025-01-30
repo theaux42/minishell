@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 00:49:19 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 12:47:21 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,18 @@
 
 char	*clean_readline(void)
 {
-    char	*cleared;
-    char	*line;
+	char	*cleared;
+	char	*line;
 
-    rl_catch_signals = 0;
-    line = readline(DEFAULT_PROMPT);
-    if (!line)
-    {
-        ft_dprintf(2, "Error: readline returned NULL\n");
-        return (NULL);
-    }
-    cleared = ft_strtrim(line, " \t\n");
-    free(line);
-    if (!cleared)
-    {
-        ft_dprintf(2, "Error: ft_strtrim returned NULL\n");
-        ft_dprintf(2, ERR_MALLOC);
-        return (NULL);
-    }
-    return (cleared);
+	rl_catch_signals = 0;
+	line = readline(DEFAULT_PROMPT);
+	if (!line)
+		return (NULL);
+	cleared = ft_strtrim(line, " \t\n");
+	free(line);
+	if (!cleared)
+		return (ft_dprintf(2, ERR_MALLOC), NULL);
+	return (cleared);
 }
 
 volatile sig_atomic_t	g_signal = 0;
@@ -43,14 +36,15 @@ void	main_loop(t_minishell *minishell)
 	{
 		ft_signal();
 		minishell->line = clean_readline();
-		if (!minishell->line)
+		if (g_signal != 0)
 		{
-			if (g_signal == 0) // EOF/Ctrl-D
-				exit_parent("exit\n", minishell, false);
+			free(minishell->line);
 			minishell->status = g_signal;
 			g_signal = 0;
 			continue ;
 		}
+		if (!minishell->line)
+			exit_parent("exit\n", minishell, false);
 		if (*minishell->line)
 		{
 			minishell->commands = get_commands(minishell->line, minishell);

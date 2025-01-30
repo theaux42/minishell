@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 08:39:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 22:25:57 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 23:01:25 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ bool	validate_commands(t_command *commands, t_minishell *minishell)
             minishell->status = 2;
             return (ft_dprintf(2, ERR_EMPTY_CMD), false);
         }
-        if (cur->tokens && cur->tokens[0].value == NULL) // Check if the token value is NULL
+        if (cur->tokens && cur->tokens[0].value == NULL)
         {
             minishell->status = 2;
             return (ft_dprintf(2, "minishell: malloc error\n"), false);
@@ -67,12 +67,17 @@ void	exit_child(char *msg, t_minishell *minishell, char *cmd, char **argv)
 {
 	if (msg != NULL)
 		ft_dprintf(2, "%s", msg);
+	if ((cmd && cmd != NULL) && is_builtin(cmd))
+		free(cmd);
 	free_commands(minishell->commands);
 	rl_clear_history();
 	ft_freesplit(minishell->env);
 	free(minishell->line);
+	if (minishell->fds[STDIN_FILENO] != -1)
+		close(minishell->fds[STDIN_FILENO]);
+	if (minishell->fds[STDOUT_FILENO] != -1)
+		close(minishell->fds[STDOUT_FILENO]);
 	free(minishell);
-	free(cmd);
 	free(argv);
 	exit(EXIT_FAILURE);
 }

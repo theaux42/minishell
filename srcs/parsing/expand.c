@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 14:11:04 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 14:59:00 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ bool	process_commands(t_token *tokens, t_minishell *minishell)
 	}
 	if (access(cmd, F_OK | X_OK) != 0 && !is_builtin(cmd))
 	{
-		minishell->status = 127;
+		minishell->status = 126;
 		ft_dprintf(2, ERR_NO_RIGHT, tokens->value);
 		return (free(cmd), false);
 	}
@@ -112,19 +112,24 @@ bool	process_commands(t_token *tokens, t_minishell *minishell)
 	return (true);
 }
 
-bool	expand_tokens(t_token *tokens, t_minishell *minishell)
+static bool	expand_tokens(t_command *command, t_minishell *minishell)
 {
 	t_token	*current_token;
 	int		pos;
 
 	pos = 0;
-	current_token = tokens;
+	current_token = command->tokens;
 	while (current_token)
 	{
 		process_token(current_token, minishell);
 		if (current_token->type == COMMAND || pos == 0)
+		{
+			current_token->type = ARGUMENT;
 			if (!process_commands(current_token, minishell))
-				return (false);
+				if (!command->redirections)
+					return (false);
+
+		}
 		current_token = current_token->next;
 		pos++;
 	}
@@ -142,7 +147,7 @@ bool	expand_commands(t_command *commands, t_minishell *minishell)
 		return (ft_dprintf(2, ERR_UNCLOSED_QUOTES), false);
 	while (current)
 	{
-		if (!expand_tokens(current->tokens, minishell))
+		if (!expand_tokens(current, minishell))
 			return (false);
 		current = current->next;
 		i++;

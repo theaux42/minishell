@@ -6,24 +6,24 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 16:10:48 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/27 16:48:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 14:49:51 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_valid_export_format(char **split)
-{
-	if (!split)
-		return (0);
-	if (!split[0] && !split[1])
-		return (ft_freesplit(split), 0);
-	if (*split[0] != '\0')
-		return (1);
-	return (1);
-}
+// static int	is_valid_export_format(char **split)
+// {
+// 	if (!split)
+// 		return (0);
+// 	if (!split[0] && !split[1])
+// 		return (ft_freesplit(split), 0);
+// 	if (*split[0] != '\0')
+// 		return (1);
+// 	return (1);
+// }
 
-static bool is_only_equal(char *str)
+static bool	is_only_equal(char *str)
 {
 	int	i;
 
@@ -35,43 +35,75 @@ static bool is_only_equal(char *str)
 	return (false);
 }
 
+static char	*get_key(char *str)
+{
+	int		i;
+	char	*key;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	key = ft_substr(str, 0, i);
+	return (key);
+}
+
+static char	*get_value(char *str)
+{
+	int		i;
+	char	*value;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	if (!str[i])
+		return (ft_strdup(""));
+	value = ft_strdup(str + i + 1);
+	return (value);
+}
+
 static int	handle_single_export(char *str, char ***env)
 {
-    char	**split;
+	char	*key;
+	char	*value;
+	int		has_equals;
 
-    if (!str || str[0] == '=' || is_only_equal(str))
-        return (ft_dprintf(2, ERR_EXPORT_INVALID, str), 1);
-    split = ft_split(str, '=');
-    if (!split)
-        return (ft_dprintf(2, ERR_MALLOC), 1);
-    if (!is_valid_export_format(split))
-    {
-        ft_freesplit(split);
-        return (ft_dprintf(2, ERR_EXPORT_INVALID, str), 1);
-    }
-    if (!is_valid_key(split[0]))
-    {
-        ft_dprintf(2, ERR_EXPORT_INVALID_ID, split[0]);
-        return (ft_freesplit(split), 1);
-    }
-    if (ft_split_len(split) == 1)
-        set_env(split[0], "", env);
-    else
-        set_env(split[0], split[1], env);
-    ft_freesplit(split);
-    return (0);
+	if (!str || str[0] == '=' || is_only_equal(str))
+		return (ft_dprintf(2, ERR_EXPORT_INVALID, str), 1);
+	has_equals = ft_strchr(str, '=') != NULL;
+	key = get_key(str);
+	if (!key)
+		return (ft_dprintf(2, ERR_MALLOC), 1);
+	if (!is_valid_key(key))
+		return ((ft_dprintf(2, ERR_EXPORT_INVALID_ID, key), free(key)), 1);
+	if (!has_equals)
+		return ((set_env(key, "", env), free(key)), 0);
+	value = get_value(str);
+	if (!value)
+		return ((ft_dprintf(2, ERR_MALLOC), free(key)), 1);
+	set_env(key, value, env);
+	free(key);
+	free(value);
+	return (0);
 }
 
 int	ft_export(t_token *tokens, char ***env)
 {
 	t_token	*cur;
 	int		ret;
+	int		token_count;
 
+	token_count = 0;
 	cur = tokens;
 	ret = 0;
 	if (!tokens && *env)
 		return (ft_env(*env, true));
-	if (!cur->value || !*cur->value)
+	while (cur)
+	{
+		token_count++;
+		cur = cur->next;
+	}
+	cur = tokens;
+	if (token_count == 1 && cur && (!cur->value || !*cur->value))
 		return (ft_env(*env, true));
 	while (cur)
 	{

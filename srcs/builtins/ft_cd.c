@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 10:13:25 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 14:05:57 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 static void	no_folder(char *path)
 {
-	if (!path)
-		ft_dprintf(2, ERR_CD_NO_FILE);
+	if (!path || ft_strcmp(path, "~") == 0)
+		ft_dprintf(2, ERR_CD_NO_HOME);
+	else if (path[0] == '~')
+		ft_dprintf(2, ERR_CD_NO_HOME);
 	else
-		ft_dprintf(2, ERR_CD_NO_FILE_2, path);
+		ft_dprintf(2, ERR_CD_NO_FILE, path);
 	free(path);
 }
 
@@ -43,7 +45,7 @@ static char	*get_cd_path(char *path, char **env)
 	if (path == NULL || ft_strcmp(path, "~") == 0)
 	{
 		if (!get_env("HOME", env))
-			return ((ft_dprintf(2, ERR_CD_NO_HOME)), NULL);
+			return (NULL);
 		return (ft_strdup(get_env("HOME", env)));
 	}
 	if (path[0] == '/')
@@ -54,7 +56,7 @@ static char	*get_cd_path(char *path, char **env)
 	{
 		new_path = ft_strjoin(get_env("HOME", env), path + 1);
 		if (!new_path)
-			return (ft_dprintf(2, ERR_CD_NO_HOME), NULL);
+			return (NULL);
 		return (new_path);
 	}
 	return (ft_strdup(path));
@@ -76,12 +78,11 @@ int	ft_cd(t_token *token, char ***env)
 	free(oldpwd);
 	new_path = get_cd_path(path, *env);
 	if (!new_path || access(new_path, F_OK) != 0)
-		return (no_folder(new_path), CMD_NOT_FOUND);
+		return (no_folder(new_path), 1);
 	if (!ft_isfolder(new_path))
 		return (free(new_path), ft_dprintf(2, ERR_IS_NOT_FOLDER, path), 1);
 	if (chdir(new_path) != 0)
-		return ((free(new_path), ft_dprintf(2, ERR_CD_NO_RIGHT, path)),
-			CMD_NO_RIGHT);
+		return ((free(new_path), ft_dprintf(2, ERR_CD_NO_RIGHT, path)), 1);
 	free(new_path);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		return (set_env("PWD", cwd, env), 0);

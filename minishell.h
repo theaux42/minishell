@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 16:19:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 23:42:07 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,13 +119,14 @@ typedef struct s_minishell
 # define ERR_NUM_ARG "minishell: %s: numeric argument required\n"
 # define ERR_EXIT_NUM "minishell: exit: %s: numeric argument required\n"
 # define ERR_EXPORT_INVALID "minishell: export: %s: invalid syntax\n"
+# define ERR_NO_FILE "minishell: %s: No such file or directory\n"
 # define ERR_EXPORT_INVALID_ID "minishell: export: %s: not a valid identifier\n"
 # define ERR_UNSET_INVALID_ID "minishell: unset: %s: not a valid identifier\n"
 # define ERR_NOT_A_TTY "minishell: this is not a tty!\n"
 # define ERR_NO_RIGHT "minishell: %s: Permission denied\n"
 # define ERR_CD_NO_RIGHT "minishell: cd: %s: Permission denied\n"
-# define ERR_CD_NO_FILE "minishell: cd: no such file or directory\n"
-# define ERR_CD_NO_FILE_2 "minishell: cd: %s: No such file or directory\n"
+# define ERR_DUP_FD "minishell: dup2 failed\n"
+# define ERR_CD_NO_FILE "minishell: cd: %s: No such file or directory\n"
 # define ERR_CD_NO_HOME "minishell: cd: HOME not set\n"
 # define ERR_NO_PWD "minishell: Unable to get PWD after two tries.\n"
 # define ERR_NO_ENV "minishell: env: cannot find environment variable\n"
@@ -141,8 +142,6 @@ char							*ft_token_value(char *value);
 // === PARSING ===
 // Functions of parsing/expand.c
 bool							expand_commands(t_command *commands,
-									t_minishell *minishell);
-bool							expand_tokens(t_token *tokens,
 									t_minishell *minishell);
 char							*expand_line(char *line,
 									t_minishell *minishell);
@@ -215,7 +214,7 @@ char							*append_path_segment(char *current_path,
 // Functions of exec/redirection/redirection.c
 int								exec_redirections(t_redirection *redirections,
 									t_minishell *minishell);
-void							apply_redirections(t_command *command,
+int								parent_apply_redir(t_command *command,
 									t_minishell *minishell);
 bool							has_redirections(t_redirection *redirections, t_token_type types);
 

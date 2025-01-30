@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/27 17:16:05 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 23:45:00 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 int	execute_external_command(t_minishell *minishell, t_command *command,
 		t_token *tokens)
 {
-	int		pid;
+	int	pid;
+
 	pid = execution(tokens->value, command, minishell);
 	return (pid);
 }
@@ -28,10 +29,10 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 
 	if (minishell->cmd_count == 1 && is_builtin(tokens->value))
 	{
-		apply_redirections(command, minishell);
+		if (parent_apply_redir(command, minishell) == -1)
+			return (1);
 		minishell->status = parent_builtins(command, minishell);
 		return (CMD_PARENT_BUILTINS);
-	
 	}
 	cmd = ft_strdup(tokens->value);
 	if (!cmd)
@@ -39,6 +40,22 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 	pid = execution(cmd, command, minishell);
 	free(cmd);
 	return (pid);
+}
+
+static int	handle_no_cmd_redir(t_command *command, t_minishell *minishell)
+{
+	parent_apply_redir(command, minishell);
+	if (command->pipes[1] != -1)
+		close(command->pipes[1]);
+	if (command->prev_pipe != -1)
+		close(command->prev_pipe);
+	if (command->pipes[0] != -1)
+	{
+		if (!command->next)
+			close(command->pipes[0]);
+	}
+	command->pipes[0] = -1;
+	return (CMD_PARENT_BUILTINS);
 }
 
 int	exec_cmd(t_minishell *minishell, t_command *command)
@@ -50,7 +67,12 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 	while (tokens && tokens->type != COMMAND)
 		tokens = tokens->next;
 	if (!tokens)
-		return (CMD_NOT_FOUND);
+	{
+		if (command->redirections)
+			return (handle_no_cmd_redir(command, minishell));
+		else
+			return (0);
+	}
 	if (!is_builtin(tokens->value))
 		pid = execution(tokens->value, command, minishell);
 	else
@@ -77,6 +99,8 @@ int	execution(char *cmd, t_command *command, t_minishell *minishell)
 	}
 	else if (pid == 0)
 	{
+		(close(minishell->fds[STDIN_FILENO]),
+			close(minishell->fds[STDOUT_FILENO]));
 		set_signal_child();
 		execute_child(cmd, command, minishell, argv);
 	}

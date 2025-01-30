@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 11:37:46 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 13:56:23 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,12 @@ int	is_builtin(char *str)
 static bool	is_valid_args(t_token *tokens, char *cmd)
 {
 	if (ft_strncmp(cmd, "cd", 2) == 0 && ft_cmdlen(tokens) > 2)
-			return (ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd));
+		return (ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd));
 	return (true);
 }
 
-static int	builtins(t_command *command, char ***env, t_minishell *minishell, bool msg)
+static int	builtins(t_command *command, char ***env, t_minishell *minishell,
+		bool msg)
 {
 	int	ret;
 
@@ -79,6 +80,7 @@ int	child_builtins(char **argv, char *cmd, t_command *command,
 {
 	int	ret;
 
+	(void)cmd;
 	ret = 0;
 	if (DEBUG_MODE)
 		printf(DEBUG_EXEC_CHILD);

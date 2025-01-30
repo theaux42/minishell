@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:42:11 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/19 18:53:40 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 14:37:52 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static char	**remove_var(char *key, char ***env)
 	int		env_len;
 
 	env_len = ft_split_len(*env);
-	result = malloc(sizeof(char *) * env_len);
+	result = malloc(sizeof(char *) * (env_len + 1));
 	if (!result)
 		return (NULL);
 	i = 0;

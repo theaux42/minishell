@@ -6,52 +6,48 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 18:50:14 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 22:50:30 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    execute_child(char *cmd, t_command *command, t_minishell *minishell, char **argv)
+static void	apply_pipes(t_command *command, t_minishell *minishell, char *cmd,
+		char **argv)
 {
-    // Step 1: Set up pipes first - this establishes default input/output
-    if (command->prev_pipe != -1)
-    {
-        if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
-            exit_child("dup2_input_fd", minishell, cmd, argv);
-        close(command->prev_pipe);
-    }
-    
-    if (command->pipes[1] != -1)
-    {
-        if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
-            exit_child("dup2_output_fd", minishell, cmd, argv);
-        close(command->pipes[1]);
-    }
-    
-    // Close unused read end of current pipe
-    if (command->pipes[0] != -1)
-        close(command->pipes[0]);
-        
-    // Step 2: Apply redirections - these will override pipes as per POSIX spec
-    if (command->redirections)
-    {
-        if (exec_redirections(command->redirections, minishell))
-            exit_child(NULL, minishell, cmd, argv);
-    }
-    
-    // Step 3: Close original file descriptors
-    close(minishell->fds[STDIN_FILENO]);
-    close(minishell->fds[STDOUT_FILENO]);
-    
-    // Step 4: Execute the command
-    if (is_builtin(cmd))
-        exit(child_builtins(argv, cmd, command, minishell) % 256);
-    else
-    {
-        execve(cmd, argv, minishell->env);
-        exit_child(ERR_EXECVE, minishell, cmd, argv);
-    }
+	if (command->prev_pipe != -1)
+	{
+		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
+			exit_child(ERR_DUP_FD, minishell, cmd, argv);
+		close(command->prev_pipe);
+	}
+	if (command->pipes[1] != -1)
+	{
+		if (dup2(command->pipes[1], STDOUT_FILENO) == -1)
+			exit_child(ERR_DUP_FD, minishell, cmd, argv);
+		close(command->pipes[1]);
+	}
+	if (command->pipes[0] != -1)
+		close(command->pipes[0]);
+}
+
+void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
+		char **argv)
+{
+	apply_pipes(command, minishell, cmd, argv);
+	if (command->redirections)
+	{
+		if (exec_redirections(command->redirections, minishell))
+			exit_child(NULL, minishell, cmd, argv);
+	}
+	(close(minishell->fds[STDIN_FILENO]), close(minishell->fds[STDOUT_FILENO]));
+	if (is_builtin(cmd))
+		exit(child_builtins(argv, cmd, command, minishell) % 256);
+	else
+	{
+		execve(cmd, argv, minishell->env);
+		exit_child(ERR_EXECVE, minishell, cmd, argv);
+	}
 }
 
 static void	close_fds(int *prev_fd, t_command *current)
