@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:33:11 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 00:54:16 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 01:56:02 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ int	handle_token(char *line, int *i, int *is_in_arg)
 
 	word_count = 1;
 	if (!(*is_in_arg) && ft_isredir(line[*i]))
-		(*i) += 2;
+	{
+		(*i)++;
+		if (line[*i] == line[*i - 1])
+			(*i)++;
+	}
 	else
 	{
 		while (line[*i] && (*is_in_arg || !ft_ms_isspace(line[*i])))
