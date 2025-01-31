@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 23:41:42 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 11:47:50 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static int	handle_heredoc(char *content, t_minishell *minishell)
 		exit_parent(ERR_PIPE_FAIL, minishell, true);
 	ft_dprintf(pipe_fd[1], "%s", content);
 	close(pipe_fd[1]);
-	free(content);
 	return (pipe_fd[0]);
 }
 

@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 14:52:08 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 10:10:18 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,5 +105,5 @@ void	execute_commands(t_minishell *minishell)
 	wait_for_children(minishell);
 	check_signal_exec(minishell);
 	current = minishell->commands;
-	// free_commands(current);
+	free_commands(current);
 }

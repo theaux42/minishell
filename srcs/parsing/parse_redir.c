@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 02:40:05 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 14:40:08 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 11:53:55 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,30 +112,24 @@ static char	*get_delimiter(char *delimiter, bool *need_expansion)
 }
 
 static bool	handle_heredoc(t_token *current, char **value,
-		t_minishell *minishell)
+        t_minishell *minishell)
 {
-	char	*delimiter;
-	bool	need_expansion;
-	char	*content;
+    char	*delimiter;
+    bool	need_expansion;
 
-	need_expansion = true;
-	if (!current || !current->next || !current->next->value)
-		return (false);
-	delimiter = get_delimiter(current->next->value, &need_expansion);
-	if (!delimiter)
-		return (false);
-	content = get_heredoc_content(delimiter);
-	free(delimiter);
-	if (!content)
-		return (false);
-	if (need_expansion)
-	{
-		*value = expand_line(content, minishell);
-		free(content);
-		return (*value != NULL);
-	}
-	*value = content;
-	return (true);
+    need_expansion = true;
+    if (!current || !current->next || !current->next->value)
+        return (false);
+    delimiter = get_delimiter(current->next->value, &need_expansion);
+    if (!delimiter)
+        return (false);
+    *value = get_heredoc_content(delimiter);
+    free(delimiter);
+    if (!*value)
+        return (false);
+    if (need_expansion)
+        *value = expand_line(*value, minishell);
+    return (true);
 }
 
 static bool	handle_simple_redir(t_token *current, char **value,
