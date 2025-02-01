@@ -6,37 +6,69 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 23:42:11 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/06 22:29:23 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/29 14:37:52 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	del_env(char *key, char ***env)
+static bool	check_var(char *key, char ***env)
+{
+	int		i;
+	char	*value;
+
+	i = 0;
+	while ((*env)[i])
+	{
+		if (ft_strncmp((*env)[i], key, ft_strlen(key) - 1) == 0)
+		{
+			value = ft_strchr((*env)[i], '=');
+			if (value && *value)
+				return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+static char	**remove_var(char *key, char ***env)
 {
 	char	**result;
 	int		i;
 	int		j;
+	int		env_len;
 
-	result = malloc(sizeof(char *) * (ft_split_len(*env)));
+	env_len = ft_split_len(*env);
+	result = malloc(sizeof(char *) * (env_len + 1));
 	if (!result)
-		return ;
+		return (NULL);
 	i = 0;
-	j = -1;
-	while ((*env)[++j])
+	j = 0;
+	while ((*env)[j])
 	{
-		if (ft_strncmp((*env)[j], key, ft_strlen(key) - 1) != 0)
+		if (ft_strncmp((*env)[j], key, ft_strlen(key)) != 0
+			|| (*env)[j][ft_strlen(key)] != '=')
 		{
 			result[i] = ft_strdup((*env)[j]);
 			if (!result[i])
-			{
-				ft_freesplit(result);
-				return ;
-			}
+				return (ft_freesplit(result), NULL);
 			i++;
 		}
+		j++;
 	}
 	result[i] = NULL;
+	return (result);
+}
+
+void	del_env(char *key, char ***env)
+{
+	char	**result;
+
+	if (!check_var(key, env))
+		return ;
+	result = remove_var(key, env);
+	if (!result)
+		return ;
 	ft_freesplit(*env);
 	*env = result;
 }

@@ -1,37 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*   ft_atoll.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/07 20:09:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 13:56:43 by tbabou           ###   ########.fr       */
+/*   Created: 2025/02/01 13:42:22 by tbabou            #+#    #+#             */
+/*   Updated: 2025/02/01 13:44:07 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_unset(t_token *tokens, char ***env)
+long long	ft_atoll(const char *str)
 {
-	int	ret;
+	size_t		i;
+	long long	n;
+	long long	result;
 
-	ret = 0;
-	if (!tokens || !tokens->value)
+	if (!str)
 		return (0);
-	while (tokens)
+	i = 0;
+	n = 1;
+	result = 0;
+	while (ft_isspace(str[i]))
+		i++;
+	if (str[i] == '-')
 	{
-		if (tokens->value)
-		{
-			if (is_valid_key(tokens->value))
-				del_env(tokens->value, env);
-			else
-			{
-				ft_dprintf(2, ERR_UNSET_INVALID_ID, tokens->value);
-				ret = 1;
-			}
-		}
-		tokens = tokens->next;
+		n = -1;
+		i++;
 	}
-	return (ret);
+	else if (str[i] == '+')
+		i++;
+	while (str[i] >= '0' && str[i] <= '9' && str[i] != '\0')
+	{
+		result *= 10;
+		result += str[i] - 48;
+		i++;
+	}
+	return (result * n);
 }

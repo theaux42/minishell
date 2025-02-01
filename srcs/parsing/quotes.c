@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 03:27:47 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:01:13 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:34:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,72 +19,73 @@ int	check_missused_quotes(const char *str)
 	int	i;
 
 	if (!str)
-		return (0);
+		return (-1);
+	if (!*str)
+		return (-1);
 	in_s = 0;
 	in_d = 0;
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'')
+		if (str[i] == '\'' && !in_d)
 			in_s = !in_s;
-		else if (str[i] == '"')
+		else if (str[i] == '"' && !in_s)
 			in_d = !in_d;
 		i++;
 	}
 	return (in_s || in_d);
 }
 
-size_t	ft_strlen_quote(const char *str, char quote)
+bool	handle_quotes(char c, bool *in_single_quote, bool *in_double_quote)
 {
-	int		i;
-	size_t	len;
-
-	i = 0;
-	len = 0;
-	if (!str)
-		return (0);
-	while (str[i])
+	if (c == '\'' && !*in_double_quote)
 	{
-		if (str[i] != quote)
-			len++;
-		i++;
+		*in_single_quote = !*in_single_quote;
+		return (true);
 	}
-	return (len);
+	else if (c == '"' && !*in_single_quote)
+	{
+		*in_double_quote = !*in_double_quote;
+		return (true);
+	}
+	return (false);
 }
 
-char	define_quote(char *line)
+char	*build_new_line(char *line)
 {
-	if (line[0] == '\'' && line[ft_strlen(line) - 1] == '\'')
-		return ('\'');
-	else if (line[0] == '"' && line[ft_strlen(line) - 1] == '"')
-		return ('"');
-	return ('\0');
+	char	*new_line;
+	int		i;
+	int		j;
+	bool	in_single_quote;
+	bool	in_double_quote;
+
+	new_line = ft_calloc(ft_strlen(line) + 1, sizeof(char));
+	if (!new_line)
+		return (NULL);
+	i = 0;
+	j = 0;
+	in_single_quote = false;
+	in_double_quote = false;
+	while (line[i])
+	{
+		if (handle_quotes(line[i], &in_single_quote, &in_double_quote))
+			;
+		else
+			new_line[j++] = line[i];
+		i++;
+	}
+	new_line[j] = '\0';
+	return (new_line);
 }
 
 char	*process_quote(char *line)
 {
-	char	quote_type;
 	char	*new_line;
-	char	*new_line_ptr;
-	char	*line_ptr;
 
-	quote_type = define_quote(line);
-	if (quote_type == '\0')
-		return (line);
-	new_line = ft_calloc(ft_strlen_quote(line, quote_type) + 1, sizeof(char));
+	if (!line)
+		return (NULL);
+	new_line = build_new_line(line);
 	if (!new_line)
 		return (NULL);
-	new_line_ptr = new_line;
-	line_ptr = line;
-	while (*line++)
-	{
-		if (*line != quote_type)
-		{
-			*new_line_ptr = *line;
-			new_line_ptr++;
-		}
-	}
-	*new_line_ptr = '\0';
-	free(line_ptr);
 	return (new_line);
 }

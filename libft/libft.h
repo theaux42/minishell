@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:59:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/02/01 13:43:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,17 +90,19 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 void				ft_lstiter(t_list *lst, void (*f)(void *));
 
 // Functions of the printf
+int					ft_dprintf(int fd, const char *format, ...);
 int					ft_printf(const char *format, ...);
 int					ft_intlen(int nbr);
 int					ft_uintlen(unsigned int nbr);
 int					ft_hexalen(uintptr_t ptr);
 char				*ft_uitoa(unsigned int n);
-int					ft_puthexa(unsigned int num, int isUpper);
+int					ft_puthexa(unsigned int num, int isUpper, int fd);
 int					ft_putstr(char *str);
 int					ft_putchar_printf(int c, int fd);
-int					ft_putnbr(int nb);
-int					ft_putunbr(unsigned int nb);
-int					ft_putptr(unsigned long long ptr);
+int					ft_putstr_printf(char *str, int fd);
+int					ft_putnbr(int nb, int fd);
+int					ft_putunbr(unsigned int nb, int fd);
+int					ft_putptr(unsigned long long ptr, int fd);
 
 // Functions of the get_next_line function
 int					isnewline(char *str);
@@ -120,14 +122,20 @@ int					ft_fibonacci(int index);
 int					ft_sqrt(int nb);
 int					ft_is_prime(int nb);
 int					ft_intlen(int nbr);
+long long			ft_atoll(const char *str);
 
 // String functions
 char				*ft_strlowcase(char *str);
 char				*ft_strupcase(char *str);
 char				*ft_strcap(char *str);
 char				*ft_strjoins(char **strings, int count);
-char				*ft_strjoin_double(char *s1, char *s2, char *s3);
+char				*ft_strjoin_double(char *s1, char *s2, char *s3,
+						int amount_to_free);
 char				*ft_strcpy(char *s1, char *s2);
+int					ft_edgecmp(const char *s1, const char s2);
+int					ft_isdigits_str(char *str);
+int					ft_isredir(char c);
+int					ft_safecmp(char *s1, char *s2);
 
 // Colors
 

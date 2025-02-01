@@ -6,11 +6,18 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 23:36:05 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 04:26:18 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 10:06:31 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_token(t_token *token)
+{
+	if (token->value)
+		free(token->value);
+	free(token);
+}
 
 void	free_tokens(t_token *tokens)
 {
@@ -21,10 +28,7 @@ void	free_tokens(t_token *tokens)
 	while (current)
 	{
 		next = current->next;
-		if (current->value)
-			free(current->value);
-		if (current)
-			free(current);
+		free_token(current);
 		current = next;
 	}
 }
@@ -37,7 +41,7 @@ void	free_redirections(t_redirection *redirections)
 	current = redirections;
 	while (current)
 	{
-		if (current->file && *current->file)
+		if (current->file)
 			free(current->file);
 		next = current->next;
 		free(current);
@@ -61,4 +65,16 @@ void	free_commands(t_command *commands)
 		free(current);
 		current = next;
 	}
+}
+
+void	ft_free_builtins(t_minishell *minishell)
+{
+	if (minishell->fds[STDIN_FILENO] != -1)
+		close(minishell->fds[STDIN_FILENO]);
+	if (minishell->fds[STDOUT_FILENO] != -1)
+		close(minishell->fds[STDOUT_FILENO]);
+	rl_clear_history();
+	ft_freesplit(minishell->env);
+	free(minishell->line);
+	free(minishell);
 }

@@ -1,37 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*   ft_isdigits_str.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/07 20:09:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 13:56:43 by tbabou           ###   ########.fr       */
+/*   Created: 2025/01/12 10:11:16 by tbabou            #+#    #+#             */
+/*   Updated: 2025/01/28 11:42:16 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_unset(t_token *tokens, char ***env)
+int	ft_isdigits_str(char *str)
 {
-	int	ret;
+	int	i;
 
-	ret = 0;
-	if (!tokens || !tokens->value)
+	i = 0;
+	if (!str)
 		return (0);
-	while (tokens)
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
 	{
-		if (tokens->value)
-		{
-			if (is_valid_key(tokens->value))
-				del_env(tokens->value, env);
-			else
-			{
-				ft_dprintf(2, ERR_UNSET_INVALID_ID, tokens->value);
-				ret = 1;
-			}
-		}
-		tokens = tokens->next;
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
 	}
-	return (ret);
+	return (1);
 }

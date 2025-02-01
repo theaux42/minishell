@@ -6,36 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 18:25:30 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:03:05 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 21:34:54 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*expand_env_var(char *line, int *i, char *new_line,
-		t_minishell *minishell)
-{
-	char	*current_key;
-	char	*value;
-	char	*temp;
-
-	(*i)++;
-	current_key = get_current_key(line, i);
-	if (current_key)
-	{
-		value = get_env_var(current_key, minishell);
-		temp = ft_strjoin(new_line, value);
-		free(new_line);
-		new_line = temp;
-		free(current_key);
-		free(value);
-	}
-	else
-		new_line = ft_addchar(new_line, '$');
-	return (new_line);
-}
-
-char	*expand_line_2(char *line, t_minishell *minishell)
+char	*expand_line(char *line, t_minishell *minishell)
 {
 	char	*new_line;
 	int		i;
@@ -46,7 +23,7 @@ char	*expand_line_2(char *line, t_minishell *minishell)
 		return (NULL);
 	while (line[i] && line[i] != '\0')
 	{
-		if (line[i] == '$')
+		if (line[i] == '$' && get_active_quotes(line, i) != 1)
 		{
 			new_line = expand_env_var(line, &i, new_line, minishell);
 			if (!new_line)
@@ -59,54 +36,86 @@ char	*expand_line_2(char *line, t_minishell *minishell)
 				return (NULL);
 		}
 	}
+	free(line);
 	return (new_line);
 }
 
-void	expand_tokens(t_token *tokens, t_minishell *minishell)
+void	process_token(t_token *token, t_minishell *minishell)
 {
-	t_token	*current_token;
-	bool	need_expand;
+	char	*temp;
+	char	**split;
 
-	current_token = tokens;
-	need_expand = false;
-	while (current_token)
+	if (need_expansion(token->value))
 	{
-		if (need_expansion(current_token->value))
-			need_expand = true;
-		else
-			need_expand = false;
-		if (check_missused_quotes(current_token->value))
-			exit_error("check_missused_quotes");
-		current_token->value = process_quote(current_token->value);
-		if (!current_token->value)
-			exit_error("remove_quotes");
-		if (need_expand)
+		token->value = expand_line(token->value, minishell);
+		if (!token->value)
+			exit_parent(ERR_MALLOC, minishell, true);
+		if ((token->type == COMMAND || token->type == ARGUMENT) && token->value
+			&& token->value[0] != '\0')
 		{
-			current_token->value = expand_line_2(current_token->value,
-					minishell);
-			if (!current_token->value)
-				exit_error("expand_line_2");
+			split = ft_ms_split(token->value);
+			if (!split)
+				exit_parent(ERR_MALLOC, minishell, true);
+			if (split_expanded_token(token, split) == -1)
+				exit_parent(ERR_MALLOC, minishell, true);
+			ft_freesplit(split);
 		}
-		current_token = current_token->next;
 	}
+	temp = token->value;
+	token->value = process_quote(token->value);
+	if (!token->value)
+		exit_parent(ERR_MALLOC, minishell, true);
+	free(temp);
 }
 
-bool	check_commands(t_command *commands)
+bool	process_commands(t_token *tokens, t_minishell *minishell)
 {
-	t_command	*current_command;
-	t_token		*current_token;
+	char	*cmd;
 
-	current_command = commands;
-	while (current_command)
+	cmd = get_full_cmd(tokens->value, minishell->env);
+	if (!cmd)
 	{
-		current_token = current_command->tokens;
-		while (current_token)
+		minishell->status = 127;
+		ft_dprintf(2, ERR_CMD_NOT_FOUND, tokens->value);
+		tokens->type = ARGUMENT;
+		if (minishell->cmd_count > 1)
+			return (true);
+		return (false);
+	}
+	if ((access(cmd, F_OK | X_OK) != 0 && !is_builtin(cmd)) || ft_isfolder(cmd))
+	{
+		minishell->status = 126;
+		if (ft_isfolder(cmd))
+			ft_dprintf(2, ERR_IS_FOLDER, tokens->value);
+		else if (access(cmd, F_OK | X_OK) != 0 && !is_builtin(cmd))
+			ft_dprintf(2, ERR_NO_RIGHT, tokens->value);
+		return (free(cmd), false);
+	}
+	free(tokens->value);
+	tokens->value = cmd;
+	tokens->type = COMMAND;
+	return (true);
+}
+
+static bool	expand_tokens(t_command *command, t_minishell *minishell)
+{
+	t_token	*current_token;
+	int		pos;
+
+	pos = 0;
+	current_token = command->tokens;
+	while (current_token)
+	{
+		process_token(current_token, minishell);
+		if (current_token->type == COMMAND || pos == 0)
 		{
-			if (check_missused_quotes(current_token->value))
-				return (false);
-			current_token = current_token->next;
+			current_token->type = ARGUMENT;
+			if (!process_commands(current_token, minishell))
+				if (!command->redirections)
+					return (false);
 		}
-		current_command = current_command->next;
+		current_token = current_token->next;
+		pos++;
 	}
 	return (true);
 }
@@ -114,17 +123,18 @@ bool	check_commands(t_command *commands)
 bool	expand_commands(t_command *commands, t_minishell *minishell)
 {
 	t_command	*current;
+	int			i;
 
+	i = 0;
 	current = commands;
 	if (!check_commands(commands))
-	{
-		printf("[%sError%s]: missused quotes\n", RED500, RESET);
-		return (false);
-	}
+		return (ft_dprintf(2, ERR_UNCLOSED_QUOTES), false);
 	while (current)
 	{
-		expand_tokens(current->tokens, minishell);
+		if (!expand_tokens(current, minishell))
+			return (false);
 		current = current->next;
+		i++;
 	}
 	return (true);
 }

@@ -1,39 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   split.c                                            :+:      :+:    :+:   */
+/*   ft_edgecmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 03:33:11 by tbabou            #+#    #+#             */
-/*   Updated: 2024/10/11 23:49:47 by tbabou           ###   ########.fr       */
+/*   Created: 2024/12/18 10:08:47 by tbabou            #+#    #+#             */
+/*   Updated: 2024/12/23 06:41:32 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_ms_isspace(char c)
+int	ft_edgecmp(const char *s1, const char s2)
 {
-	if (c == ' ' || c == '\t')
+	size_t	len;
+
+	if (!s1)
+		return (0);
+	len = ft_strlen(s1);
+	if (len > 0 && s1[0] == s2 && s1[len - 1] == s2)
 		return (1);
 	return (0);
-}
-
-int	quote_manager(char current, int is_in_arg)
-{
-	if (current == '\'')
-	{
-		if (is_in_arg == 0)
-			is_in_arg = 1;
-		else if (is_in_arg == 1)
-			is_in_arg = 0;
-	}
-	else if (current == '"')
-	{
-		if (is_in_arg == 0)
-			is_in_arg = 2;
-		else if (is_in_arg == 2)
-			is_in_arg = 0;
-	}
-	return (is_in_arg);
 }

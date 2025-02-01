@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 00:14:52 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 07:20:10 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 17:57:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,22 @@ char	*get_current_key(char *line, int *i)
 	int		len;
 	char	*current_key;
 
+	if (!line || !i || !*i || !line[*i])
+		return (NULL);
 	start = *i;
+	if (!get_active_quotes(line, *i - 1) && line[*i] && (line[*i] == '\''
+			|| (line[*i + 1] && line[*i + 1] == '\"')))
+		return (ft_strdup(""));
 	if (line[start] == '?')
 	{
 		(*i)++;
-		current_key = ft_substr(line, start, 1);
-		return (current_key);
+		return (ft_substr(line, start, 1));
 	}
 	while (line[*i] && (ft_isalnum(line[*i]) || line[*i] == '_'))
 		(*i)++;
 	len = *i - start;
+	if (len <= 0)
+		return (ft_strdup(""));
 	current_key = ft_substr(line, start, len);
 	return (current_key);
 }
@@ -86,16 +92,42 @@ bool	is_valid_key(char *key)
 
 bool	need_expansion(char *value)
 {
-	int	i;
+	int		i;
+	bool	in_single_quote;
+	bool	in_double_quote;
 
 	i = 0;
-	if (value[i] == '\'' && value[ft_strlen(value) - 1] == '\'')
-		return (false);
+	in_single_quote = false;
+	in_double_quote = false;
 	while (value[i])
 	{
-		if (value[i] == '$')
+		if (value[i] == '\'' && !in_double_quote)
+			in_single_quote = !in_single_quote;
+		else if (value[i] == '"' && !in_single_quote)
+			in_double_quote = !in_double_quote;
+		else if (value[i] == '$' && !in_single_quote)
 			return (true);
 		i++;
 	}
 	return (false);
+}
+
+bool	check_commands(t_command *commands)
+{
+	t_command	*current_command;
+	t_token		*current_token;
+
+	current_command = commands;
+	while (current_command)
+	{
+		current_token = current_command->tokens;
+		while (current_token)
+		{
+			if (check_missused_quotes(current_token->value))
+				return (false);
+			current_token = current_token->next;
+		}
+		current_command = current_command->next;
+	}
+	return (true);
 }

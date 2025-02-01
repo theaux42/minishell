@@ -1,37 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/07 20:09:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 13:56:43 by tbabou           ###   ########.fr       */
+/*   Created: 2024/12/02 17:32:47 by ededemog          #+#    #+#             */
+/*   Updated: 2025/01/31 23:54:45 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_unset(t_token *tokens, char ***env)
+void	set_signal_child(void)
 {
-	int	ret;
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
 
-	ret = 0;
-	if (!tokens || !tokens->value)
-		return (0);
-	while (tokens)
+int	sig_event(void)
+{
+	return (EXIT_SUCCESS);
+}
+
+void	signal_handler(int sig)
+{
+	if (sig == SIGINT)
 	{
-		if (tokens->value)
-		{
-			if (is_valid_key(tokens->value))
-				del_env(tokens->value, env);
-			else
-			{
-				ft_dprintf(2, ERR_UNSET_INVALID_ID, tokens->value);
-				ret = 1;
-			}
-		}
-		tokens = tokens->next;
+		ft_printf("^C");
+		rl_done = 1;
+		g_signal = sig + 128;
 	}
-	return (ret);
+}
+
+void	ft_signal(void)
+{
+	rl_event_hook = sig_event;
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }

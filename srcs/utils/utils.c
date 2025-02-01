@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:53:44 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:24:35 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 09:56:17 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ char	**get_paths(char *command, char **env)
 	if (!path || !*path)
 		return (NULL);
 	paths = ft_split(path, ':');
+	if (!paths)
+		return (NULL);
 	while (paths[i])
 	{
 		temp = ft_strjoin(paths[i], "/");
@@ -35,26 +37,47 @@ char	**get_paths(char *command, char **env)
 	return (paths);
 }
 
-char	*get_cmd(char *command)
+static char	*get_relative_cmd(char *command, char *path)
 {
-	char	*path;
 	char	*relative_path;
 	char	*temp;
 
+	if (!path)
+		return (NULL);
+	temp = ft_strjoin(path, "/");
+	relative_path = ft_strjoin(temp, command);
+	(free(path), free(temp));
+	if (access(relative_path, F_OK) == 0)
+		return (relative_path);
+	free(relative_path);
+	return (NULL);
+}
+
+static char	*get_cmd(char *command)
+{
+	char	*path;
+	char	*relative_path;
+
 	if (command[0] == '/')
 	{
-		if (access(command, F_OK) == 0)
-			return (command);
+		if (access(command, F_OK | X_OK) == 0)
+			return (ft_strdup(command));
+		return (NULL);
 	}
 	else
 	{
 		path = getcwd(NULL, 0);
-		temp = ft_strjoin(path, "/");
-		relative_path = ft_strjoin(temp, command);
-		free(temp);
-		free(path);
-		if (access(relative_path, F_OK) == 0)
-			return (relative_path);
+		relative_path = get_relative_cmd(command, path);
+		if (relative_path)
+		{
+			if (access(relative_path, X_OK) == 0)
+				return (relative_path);
+			else
+			{
+				free(relative_path);
+				return (ft_strdup(command));
+			}
+		}
 	}
 	return (NULL);
 }
@@ -66,8 +89,13 @@ char	*get_full_cmd(char *bin, char **env)
 	int		i;
 
 	i = 0;
-	if (bin[0] == '/' || bin[0] == '.')
-		return (ft_strdup(get_cmd(bin)));
+	if (!ft_strcmp(bin, ".") || !ft_strcmp(bin, "..") || !ft_strcmp(bin, ""))
+		return (NULL);
+	if (is_builtin(bin))
+		return (ft_strdup(bin));
+	if (bin[0] == '/' || !ft_strncmp(bin, "./", 2) || !ft_strncmp(bin, "../", 3)
+		|| !ft_strncmp(bin, "~/", 2))
+		return (get_cmd(bin));
 	paths = get_paths(bin, env);
 	if (!paths)
 		return (NULL);
@@ -76,17 +104,22 @@ char	*get_full_cmd(char *bin, char **env)
 		if (access(paths[i], F_OK) == 0)
 		{
 			full_cmd = ft_strdup(paths[i]);
-			ft_freesplit(paths);
-			return (full_cmd);
+			return (ft_freesplit(paths), full_cmd);
 		}
 		i++;
 	}
-	ft_freesplit(paths);
-	return (NULL);
+	return (ft_freesplit(paths), NULL);
 }
 
-void	exit_error(char *msg)
+int	ft_cmdlen(t_token *lst)
 {
-	perror(msg);
-	exit(EXIT_FAILURE);
+	int	i;
+
+	i = 0;
+	while (lst)
+	{
+		i++;
+		lst = lst->next;
+	}
+	return (i);
 }

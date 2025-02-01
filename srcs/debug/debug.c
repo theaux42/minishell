@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:09:17 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 23:53:29 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ char	*type_str(t_token_type type)
 		return ("REDIR_APPEND");
 	if (type == REDIR_HEREDOC)
 		return ("REDIR_HEREDOC");
+	if (type == REDIR_TARGET)
+		return ("REDIR_TARGET");
 	return ("UNKNOWN");
 }
 
@@ -42,24 +44,27 @@ void	print_tokens(t_token *tokens)
 	i = 0;
 	while (current)
 	{
-		printf("Token n%i: %s - %s\n", i, current->value,
+		printf("   Token n%i: %s - %s\n", i, current->value,
 			type_str(current->type));
 		current = current->next;
 		i++;
 	}
 }
 
-void	print_tokens2(t_token *tokens, char separator)
+void	print_redirections(t_redirection *redirections)
 {
-	t_token	*current;
+	t_redirection	*current;
+	int				i;
 
-	current = tokens;
+	current = redirections;
+	i = 0;
 	while (current)
 	{
-		printf("%s%c", current->value, separator);
+		printf("		Redirection n%i: %s - %s\n", i, current->file,
+			type_str(current->type));
 		current = current->next;
+		i++;
 	}
-	printf("\n");
 }
 
 void	print_commands(t_command *commands)
@@ -69,25 +74,18 @@ void	print_commands(t_command *commands)
 
 	current = commands;
 	i = 0;
+	printf("=== COMMANDS ===\n");
 	while (current)
 	{
-		printf("Command n%i:\n", i);
+		printf(" --- Command n%i ---\n", i);
 		print_tokens(current->tokens);
+		if (current->redirections)
+		{
+			printf("	--- Redirections ---\n");
+			print_redirections(current->redirections);
+		}
 		current = current->next;
 		i++;
 	}
-}
-
-void	print_env(char **env)
-{
-	int	i;
-
-	i = 0;
-	if (!env)
-	{
-		fprintf(stderr, "env: No environment variables found\n");
-		return ;
-	}
-	while (env[i])
-		i++;
+	printf("=== COMMANDS ===\n");
 }

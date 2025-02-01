@@ -6,13 +6,39 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:20:31 by tbabou            #+#    #+#             */
-/*   Updated: 2024/11/07 20:06:49 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:35:00 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_cd_path(char *path, char **env)
+static void	no_folder(char *path)
+{
+	if (!path || ft_strcmp(path, "~") == 0)
+		ft_dprintf(2, ERR_CD_NO_HOME);
+	else if (path[0] == '~')
+		ft_dprintf(2, ERR_CD_NO_HOME);
+	else
+		ft_dprintf(2, ERR_CD_NO_FILE, path);
+	free(path);
+}
+
+static char	*manage_relative_path(char *path, char **env)
+{
+	char	*new_path;
+	char	*pwd;
+
+	pwd = get_pwd(env);
+	if (!pwd)
+		return (NULL);
+	new_path = ft_strjoin(pwd, path + 1);
+	if (!new_path)
+		return (free(pwd), NULL);
+	free(pwd);
+	return (new_path);
+}
+
+static char	*get_cd_path(char *path, char **env)
 {
 	char	*new_path;
 
@@ -25,17 +51,12 @@ char	*get_cd_path(char *path, char **env)
 	if (path[0] == '/')
 		return (ft_strdup(path));
 	if (path[0] == '.' && path[1] == '/')
-	{
-		new_path = ft_strjoin(get_env("PWD", env), path + 1);
-		if (!new_path)
-			exit_error("malloc error");
-		return (new_path);
-	}
+		return (manage_relative_path(path, env));
 	if (path[0] == '~')
 	{
 		new_path = ft_strjoin(get_env("HOME", env), path + 1);
 		if (!new_path)
-			exit_error("malloc error");
+			return (NULL);
 		return (new_path);
 	}
 	return (ft_strdup(path));
@@ -51,20 +72,20 @@ int	ft_cd(t_token *token, char ***env)
 	path = NULL;
 	if (token)
 		path = token->value;
-	oldpwd = get_env("PWD", *env);
+	oldpwd = get_pwd(*env);
 	if (oldpwd)
 		set_env("OLDPWD", oldpwd, env);
+	free(oldpwd);
 	new_path = get_cd_path(path, *env);
-	if (!new_path)
-		return (perror("cd"), 1);
+	if (!new_path || access(new_path, F_OK) != 0)
+		return (no_folder(new_path), 1);
+	if (!ft_isfolder(new_path))
+		return (free(new_path), ft_dprintf(2, ERR_IS_NOT_FOLDER, path), 1);
 	if (chdir(new_path) != 0)
-	{
-		free(new_path);
-		return (perror("cd"), 1);
-	}
+		return ((free(new_path), ft_dprintf(2, ERR_CD_NO_RIGHT, path)), 1);
 	free(new_path);
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		return (set_env("PWD", cwd, env), 0);
-	perror("getcwd");
+	ft_dprintf(2, ERR_CD_NO_RIGHT, path);
 	return (1);
 }

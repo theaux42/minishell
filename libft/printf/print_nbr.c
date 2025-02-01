@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 07:47:07 by tbabou            #+#    #+#             */
-/*   Updated: 2024/06/15 14:30:38 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/14 09:11:53 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*ft_uitoa(unsigned int n)
 	return (str);
 }
 
-int	ft_putnbr(int nb)
+int	ft_putnbr(int nb, int fd)
 {
 	char	*str;
 	int		len;
@@ -42,23 +42,23 @@ int	ft_putnbr(int nb)
 	str = ft_itoa(nb);
 	while (str[len])
 		len++;
-	ft_putstr(str);
+	ft_putstr_printf(str, fd);
 	free(str);
 	return (len);
 }
 
-int	ft_putunbr(unsigned int n)
+int	ft_putunbr(unsigned int n, int fd)
 {
 	int		len;
 	char	*str;
 
 	len = 0;
 	if (n == 0)
-		len += ft_putchar_printf('0', 1);
+		len += ft_putchar_printf('0', fd);
 	else
 	{
 		str = ft_uitoa(n);
-		len += ft_putstr(str);
+		len += ft_putstr_printf(str, fd);
 		free(str);
 	}
 	return (len);

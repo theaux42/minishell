@@ -6,55 +6,31 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 03:23:12 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 21:15:19 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-bool	needs_parent_execution(char *cmd_name)
-{
-	return (ft_strcmp(cmd_name, "cd") == 0 || ft_strcmp(cmd_name, "export") == 0
-		|| ft_strcmp(cmd_name, "unset") == 0 || ft_strcmp(cmd_name,
-			"exit") == 0);
-}
-
-int	execute_external_command(t_minishell *minishell, t_command *command,
-		t_token *tokens)
-{
-	char	*cmd;
-	int		pid;
-
-	cmd = get_full_cmd(tokens->value, minishell->env);
-	if (!cmd)
-		return (CMD_NOT_FOUND);
-	pid = execution(cmd, command, &minishell->env);
-	free(cmd);
-	return (pid);
-}
 
 int	execute_builtin_command(t_minishell *minishell, t_command *command,
 		t_token *tokens)
 {
 	char	*cmd;
 	int		pid;
-	int		status;
 
-	if (needs_parent_execution(tokens->value))
+	if (minishell->cmd_count == 1 && is_builtin(tokens->value))
 	{
-		status = exec_builtins(command, &minishell->env);
-		minishell->status = status;
-		return (0);
+		if (parent_redir(command, minishell) == -1)
+			return (1);
+		minishell->status = parent_builtins(command, minishell);
+		return (CMD_PARENT_BUILTINS);
 	}
-	else
-	{
-		cmd = ft_strdup(tokens->value);
-		if (!cmd)
-			return (CMD_NOT_FOUND);
-		pid = execution(cmd, command, &minishell->env);
-		free(cmd);
-		return (pid);
-	}
+	cmd = ft_strdup(tokens->value);
+	if (!cmd)
+		return (CMD_NOT_FOUND);
+	pid = execution(cmd, command, minishell);
+	free(cmd);
+	return (pid);
 }
 
 int	exec_cmd(t_minishell *minishell, t_command *command)
@@ -66,10 +42,60 @@ int	exec_cmd(t_minishell *minishell, t_command *command)
 	while (tokens && tokens->type != COMMAND)
 		tokens = tokens->next;
 	if (!tokens)
-		return (CMD_NOT_FOUND);
-	if (!command->is_builtin)
-		pid = execute_external_command(minishell, command, tokens);
+	{
+		if (command->redirections)
+			return (handle_no_cmd_redir(command, minishell));
+		else
+			return (0);
+	}
+	if (!is_builtin(tokens->value))
+		pid = execution(tokens->value, command, minishell);
 	else
 		pid = execute_builtin_command(minishell, command, tokens);
 	return (pid);
+}
+
+int	execution(char *cmd, t_command *command, t_minishell *minishell)
+{
+	pid_t	pid;
+	char	**argv;
+	int		argc;
+
+	argc = count_arguments(command);
+	argv = malloc(sizeof(char *) * (argc + 1));
+	if (!argv)
+		return (-1);
+	fill_arguments(argv, command);
+	pid = fork();
+	if (pid < 0)
+	{
+		ft_freesplit(argv);
+		return (-1);
+	}
+	else if (pid == 0)
+	{
+		(close(minishell->fds[STDIN_FILENO]),
+			close(minishell->fds[STDOUT_FILENO]));
+		set_signal_child();
+		execute_child(cmd, command, minishell, argv);
+	}
+	free(argv);
+	return (pid);
+}
+
+int	ft_cmd_count(t_command *commands)
+{
+	int			count;
+	t_command	*current;
+
+	if (!commands)
+		return (0);
+	count = 0;
+	current = commands;
+	while (current)
+	{
+		count++;
+		current = current->next;
+	}
+	return (count);
 }

@@ -6,63 +6,76 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 06:15:02 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/02/01 11:55:58 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_exit(char *line, t_minishell *minishell)
-{
-	ft_freesplit(minishell->env);
-	free(minishell);
-	free(line);
-	printf("exit\n");
-	return (0);
-}
+volatile sig_atomic_t	g_signal;
 
 char	*clean_readline(char *prompt)
 {
 	char	*cleared;
 	char	*line;
 
+	rl_catch_signals = 0;
 	if (!prompt)
-		line = readline("no_prompt :( → ");
+		line = readline(DEFAULT_PROMPT);
 	else
 	{
 		line = readline(prompt);
 		free(prompt);
 	}
-	if (line)
+	if (!line)
+		return (NULL);
+	cleared = ft_strtrim(line, " \t\n");
+	free(line);
+	if (!cleared)
+		return (ft_dprintf(2, ERR_MALLOC), NULL);
+	return (cleared);
+}
+
+void	main_loop(t_minishell *minishell)
+{
+	while (1)
 	{
-		cleared = ft_strtrim(line, " 	");
-		free(line);
-		if (cleared)
-			return (cleared);
+		ft_signal();
+		minishell->line = clean_readline(nice_prompt(minishell->env));
+		if (g_signal != 0)
+		{
+			free(minishell->line);
+			minishell->status = g_signal;
+			g_signal = 0;
+			continue ;
+		}
+		if (!minishell->line)
+			exit_parent("exit\n", minishell, false);
+		if (*minishell->line)
+		{
+			add_history(minishell->line);
+			minishell->commands = get_commands(minishell->line, minishell);
+			if (minishell->commands)
+				execute_commands(minishell);
+			minishell->commands = NULL;
+		}
+		free(minishell->line);
 	}
-	return (NULL);
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_minishell	*minishell;
-	char		*line;
 
 	(void)ac;
 	(void)av;
+	if (!isatty(STDIN_FILENO))
+		return (ft_dprintf(2, ERR_NOT_A_TTY), 1);
+	if (DEBUG_MODE)
+		ft_dprintf(2, DEBUG_MSG);
 	minishell = init_minishell(env);
-	while (1)
-	{
-		line = clean_readline(nice_prompt(minishell->env));
-		if (line && *line)
-		{
-			if (ft_strncmp(line, "exit ", 4) == 0)
-				return (ft_exit(line, minishell));
-			minishell->commands = get_commands(line, minishell);
-			execute_commands(minishell);
-			free_commands(minishell->commands);
-			free(line);
-		}
-	}
+	if (!minishell)
+		return (1);
+	main_loop(minishell);
 	return (0);
 }

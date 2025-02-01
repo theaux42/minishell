@@ -6,59 +6,66 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 03:42:54 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/14 06:05:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/27 16:58:55 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_pipes(t_command *commands)
+void	init_pipes(t_command *commands, t_minishell *minishell)
 {
-	t_command	*current;
-
-	current = commands;
-	while (current)
+	if (commands->next)
 	{
-		if (current->next)
-		{
-			if (pipe(current->pipes) == -1)
-				exit_error("pipe");
-		}
-		else
-		{
-			current->pipes[0] = -1;
-			current->pipes[1] = -1;
-		}
-		current = current->next;
+		if (pipe(commands->pipes) == -1)
+			exit_parent(ERR_PIPE_FAIL, minishell, true);
+	}
+	else
+	{
+		commands->pipes[0] = -1;
+		commands->pipes[1] = -1;
+	}
+}
+
+void	cmd_error_status(int pid, t_minishell *minishell)
+{
+	if (pid == CMD_NOT_FOUND)
+	{
+		ft_dprintf(2, ERR_CMD_NOT_FOUND, minishell->commands->tokens->value);
+		minishell->status = 127;
+	}
+	else if (pid == CMD_NO_RIGHT)
+	{
+		ft_dprintf(2, ERR_NO_RIGHT, minishell->commands->tokens->value);
+		minishell->status = 126;
+	}
+	else if (pid == CMD_IS_FOLDER)
+	{
+		ft_dprintf(2, ERR_IS_FOLDER, minishell->commands->tokens->value);
+		minishell->status = 126;
 	}
 }
 
 void	wait_for_children(t_minishell *minishell)
 {
-	t_command	*current;
-	int			status;
+	t_command	*cmd;
 
-	current = minishell->commands;
-	while (current)
+	cmd = minishell->commands;
+	while (cmd)
 	{
-		if (waitpid(current->pid, &status, 0) == -1)
-			;
-		else if (WIFEXITED(status))
-			minishell->status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
+		if (cmd->pid == CMD_NO_RIGHT || cmd->pid == CMD_NOT_FOUND
+			|| cmd->pid == CMD_IS_FOLDER)
+			cmd_error_status(cmd->pid, minishell);
+		else if (cmd->pid > 0 && cmd->pid != CMD_PARENT_BUILTINS)
 		{
-			if (WTERMSIG(status) == SIGINT)
-			{
-				ft_printf("Core dumped (Ctrl + C)\n");
-				minishell->status = WTERMSIG(status);
-			}
-			else
-				minishell->status = WTERMSIG(status);
+			waitpid(cmd->pid, &minishell->status, 0);
+			if (WIFEXITED(minishell->status))
+				minishell->status = WEXITSTATUS(minishell->status) % 256;
+			else if (WIFSIGNALED(minishell->status))
+				minishell->status = 128 + WTERMSIG(minishell->status) % 256;
+			else if (WIFSTOPPED(minishell->status))
+				minishell->status = 128 + WSTOPSIG(minishell->status) % 256;
 		}
-		else
-			ft_printf("[%d][%s] did not exit normally\n", current->pid,
-				current->tokens->value);
-		current = current->next;
+		cmd = cmd->next;
 	}
 }
 
@@ -71,6 +78,14 @@ int	count_arguments(t_command *command)
 	token = command->tokens;
 	while (token)
 	{
+		if (token->type == REDIR_APPEND || token->type == REDIR_HEREDOC
+			|| token->type == REDIR_INPUT || token->type == REDIR_OUTPUT)
+		{
+			token = token->next;
+			if (token)
+				token = token->next;
+			continue ;
+		}
 		if (token->type == COMMAND || token->type == ARGUMENT)
 			argc++;
 		token = token->next;
@@ -88,25 +103,12 @@ int	fill_arguments(char **argv, t_command *command)
 	while (token)
 	{
 		if (token->type == COMMAND || token->type == ARGUMENT)
-		{
-			argv[i] = token->value;
-			i++;
-		}
+			argv[i++] = token->value;
+		if (token->type == REDIR_APPEND || token->type == REDIR_INPUT
+			|| token->type == REDIR_OUTPUT)
+			break ;
 		token = token->next;
 	}
 	argv[i] = NULL;
 	return (0);
-}
-
-void	no_cmd_handler(t_command *current)
-{
-	t_token	*tok;
-
-	tok = current->tokens;
-	while (tok && tok->type != COMMAND)
-		tok = tok->next;
-	if (tok)
-		printf("Command not found: %s\n", tok->value);
-	else
-		printf("Command not found\n");
 }

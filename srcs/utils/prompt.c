@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 04:13:50 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 06:16:11 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:33:59 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,23 +85,17 @@ char	*nice_pwd(char **env)
 char	*build_prompt(char **env, char *pwd)
 {
 	char	*final_prompt;
-	char	*prompt[8];
+	char	*prompt[4];
 	char	*user;
 
 	user = get_env("USER", env);
 	if (!user)
-	{
 		user = "user";
-	}
-	prompt[0] = AMBER500;
-	prompt[1] = user;
-	prompt[2] = RESET;
-	prompt[3] = "@";
-	prompt[4] = VIOLET500;
-	prompt[5] = pwd;
-	prompt[6] = RESET;
-	prompt[7] = " → ";
-	final_prompt = ft_strjoins(prompt, 8);
+	prompt[0] = user;
+	prompt[1] = " @ ";
+	prompt[2] = pwd;
+	prompt[3] = " → ";
+	final_prompt = ft_strjoins(prompt, 4);
 	return (final_prompt);
 }
 
@@ -112,10 +106,10 @@ char	*nice_prompt(char **env)
 
 	new_pwd = nice_pwd(env);
 	if (!new_pwd)
-		return (ft_strdup("Error building prompt"));
+		return (ft_strdup(DEFAULT_PROMPT));
 	final_prompt = build_prompt(env, new_pwd);
 	free(new_pwd);
 	if (!final_prompt)
-		return (ft_strdup("Error building prompt"));
+		return (ft_strdup(DEFAULT_PROMPT));
 	return (final_prompt);
 }

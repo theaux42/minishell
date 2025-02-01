@@ -1,37 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*   ft_safecmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/07 20:09:06 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 13:56:43 by tbabou           ###   ########.fr       */
+/*   Created: 2025/01/30 06:25:33 by tbabou            #+#    #+#             */
+/*   Updated: 2025/01/30 06:26:12 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	ft_unset(t_token *tokens, char ***env)
+int	ft_safecmp(char *s1, char *s2)
 {
-	int	ret;
+	int	i;
 
-	ret = 0;
-	if (!tokens || !tokens->value)
+	if (!s1 && !s2)
+		return (-4242);
+	if (!s1)
+		return (-4242);
+	if (!s2)
+		return (-4242);
+	i = 0;
+	if (s1[0] == '\0' && s2[0] == '\0')
 		return (0);
-	while (tokens)
-	{
-		if (tokens->value)
-		{
-			if (is_valid_key(tokens->value))
-				del_env(tokens->value, env);
-			else
-			{
-				ft_dprintf(2, ERR_UNSET_INVALID_ID, tokens->value);
-				ret = 1;
-			}
-		}
-		tokens = tokens->next;
-	}
-	return (ret);
+	while (s1[i] && s1[i] == s2[i])
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }

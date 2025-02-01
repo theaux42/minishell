@@ -6,33 +6,99 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 16:10:48 by tbabou            #+#    #+#             */
-/*   Updated: 2024/12/15 00:02:28 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/30 13:15:55 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static bool	is_only_equal(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] == '=')
+		i++;
+	if (str[i] == '\0')
+		return (true);
+	return (false);
+}
+
+static char	*get_key(char *str)
+{
+	int		i;
+	char	*key;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	key = ft_substr(str, 0, i);
+	return (key);
+}
+
+static char	*get_value(char *str)
+{
+	int		i;
+	char	*value;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	if (!str[i])
+		return (ft_strdup(""));
+	value = ft_strdup(str + i + 1);
+	return (value);
+}
+
+static int	handle_single_export(char *str, char ***env)
+{
+	char	*key;
+	char	*value;
+	int		has_equals;
+
+	if (!str || str[0] == '=' || is_only_equal(str))
+		return (ft_dprintf(2, ERR_EXPORT_INVALID, str), 1);
+	has_equals = ft_strchr(str, '=') != NULL;
+	key = get_key(str);
+	if (!key)
+		return (ft_dprintf(2, ERR_MALLOC), 1);
+	if (!is_valid_key(key))
+		return ((ft_dprintf(2, ERR_EXPORT_INVALID_ID, key), free(key)), 1);
+	if (!has_equals)
+		return ((set_env(key, "", env), free(key)), 0);
+	value = get_value(str);
+	if (!value)
+		return ((ft_dprintf(2, ERR_MALLOC), free(key)), 1);
+	set_env(key, value, env);
+	free(key);
+	free(value);
+	return (0);
+}
+
 int	ft_export(t_token *tokens, char ***env)
 {
-	char	**split;
+	t_token	*cur;
+	int		ret;
+	int		token_count;
 
-	if (!tokens || !tokens->value)
-		return (0);
-	split = ft_split(tokens->value, '=');
-	if (!split || !split[0] || !split[1])
+	token_count = 0;
+	cur = tokens;
+	ret = 0;
+	if (!tokens && *env)
+		return (ft_env(*env, true));
+	while (cur)
 	{
-		ft_freesplit(split);
-		return (fprintf(stderr, "export: Invalid syntax\n"), 1);
+		token_count++;
+		cur = cur->next;
 	}
-	split[1] = process_quote(split[1]);
-	if (is_valid_key(split[0]))
-		set_env(split[0], split[1], env);
-	else
+	cur = tokens;
+	if (token_count == 1 && cur && (!cur->value))
+		return (ft_env(*env, true));
+	while (cur)
 	{
-		fprintf(stderr, "export: '%s': not a valid identifier\n", split[0]);
-		ft_freesplit(split);
-		return (1);
+		if (handle_single_export(cur->value, env))
+			ret = 1;
+		cur = cur->next;
 	}
-	ft_freesplit(split);
-	return (0);
+	return (ret);
 }
