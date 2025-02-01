@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/31 21:38:33 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/02/01 00:23:11 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static bool	manage_redir(t_redirection *redirection)
 
 int	exec_redirections(t_redirection *redirs, t_minishell *minishell)
 {
-	if (redirs->type != REDIR_HEREDOC && access(redirs->file, F_OK) == -1)
+	if (redirs->type == REDIR_INPUT && access(redirs->file, F_OK) == -1)
 	{
 		minishell->status = 1;
 		return (ft_dprintf(2, ERR_NO_FILE, redirs->file), 1);
