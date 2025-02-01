@@ -6,24 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 17:37:04 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/31 11:47:50 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 21:38:33 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	has_redirections(t_redirection *redirections, t_token_type types)
-{
-	while (redirections)
-	{
-		if (redirections->type & types)
-			return (true);
-		redirections = redirections->next;
-	}
-	return (false);
-}
-
-static int	handle_heredoc(char *content, t_minishell *minishell)
+bool	handle_heredoc_exec(char *content, t_minishell *minishell)
 {
 	int	pipe_fd[2];
 
@@ -31,69 +20,67 @@ static int	handle_heredoc(char *content, t_minishell *minishell)
 		exit_parent(ERR_PIPE_FAIL, minishell, true);
 	ft_dprintf(pipe_fd[1], "%s", content);
 	close(pipe_fd[1]);
-	return (pipe_fd[0]);
+	if (pipe_fd[0] == -1)
+		return (false);
+	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+		return (close(pipe_fd[0]), false);
+	close(pipe_fd[0]);
+	return (true);
+}
+
+static bool	manage_redir(t_redirection *redirection)
+{
+	int	fd;
+	int	target_fd;
+
+	if (redirection->type == REDIR_INPUT)
+		fd = open(redirection->file, O_RDONLY);
+	else if (redirection->type == REDIR_OUTPUT)
+		fd = open(redirection->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (redirection->type == REDIR_APPEND)
+		fd = open(redirection->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd == -1)
+		return (ft_dprintf(2, ERR_NO_RIGHT, redirection->file), false);
+	if (redirection->type == REDIR_INPUT)
+		target_fd = STDIN_FILENO;
+	else
+		target_fd = STDOUT_FILENO;
+	if (dup2(fd, target_fd) == -1)
+		return (close(fd), false);
+	close(fd);
+	return (true);
 }
 
 int	exec_redirections(t_redirection *redirs, t_minishell *minishell)
 {
-	int	fd;
-
-	// if (access(redirs->file, F_OK) == -1)
-	// if (redirs->type != REDIR_HEREDOC && access(redirs->file, F_OK) == -1)
-	// 	return (ft_dprintf(2, ERR_NO_FILE, redirs->file), 1);
-	// if (redirs->type != REDIR_HEREDOC && access(redirs->file, W_OK | R_OK) == -1)
-	// 	return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
-	// if (redirs->type != REDIR_HEREDOC && ft_isfolder(redirs->file))
-	// 	return (ft_dprintf(2, ERR_IS_FOLDER, redirs->file), 1);
+	if (redirs->type != REDIR_HEREDOC && access(redirs->file, F_OK) == -1)
+	{
+		minishell->status = 1;
+		return (ft_dprintf(2, ERR_NO_FILE, redirs->file), 1);
+	}
 	while (redirs)
 	{
-		if (redirs->type == REDIR_INPUT)
+		if (redirs->type >= REDIR_INPUT && redirs->type <= REDIR_APPEND)
 		{
-			fd = open(redirs->file, O_RDONLY);
-			if (fd == -1)
-				return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
-			if (dup2(fd, STDIN_FILENO) == -1)
-				return (close(fd), 1);
-			close(fd);
-		}
-		else if (redirs->type == REDIR_OUTPUT)
-		{
-			fd = open(redirs->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (fd == -1)
-				return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
-			if (dup2(fd, STDOUT_FILENO) == -1)
-				return (close(fd), 1);
-			close(fd);
-		}
-		else if (redirs->type == REDIR_APPEND)
-		{
-			fd = open(redirs->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (fd == -1)
-				return (ft_dprintf(2, ERR_NO_RIGHT, redirs->file), 1);
-			if (dup2(fd, STDOUT_FILENO) == -1)
-				return (close(fd), 1);
-			close(fd);
+			if (!manage_redir(redirs))
+				return (1);
 		}
 		else if (redirs->type == REDIR_HEREDOC)
 		{
-			fd = handle_heredoc(redirs->file, minishell);
-			if (fd == -1)
+			if (!handle_heredoc_exec(redirs->file, minishell))
 				return (1);
-			if (dup2(fd, STDIN_FILENO) == -1)
-				return (close(fd), 1);
-			close(fd);
 		}
 		redirs = redirs->next;
 	}
 	return (0);
 }
 
-int	parent_apply_redir(t_command *command, t_minishell *minishell)
+int	parent_redir(t_command *command, t_minishell *minishell)
 {
 	if (command->prev_pipe != -1)
 	{
 		if (dup2(command->prev_pipe, STDIN_FILENO) == -1)
-			return(-1);
+			return (-1);
 		close(command->prev_pipe);
 	}
 	if (command->pipes[1] != -1)

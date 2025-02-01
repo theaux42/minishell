@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/31 10:10:18 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 21:16:20 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,6 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 		execve(cmd, argv, minishell->env);
 		exit_child(ERR_EXECVE, minishell, cmd, argv);
 	}
-}
-
-static void	close_fds(int *prev_fd, t_command *current)
-{
-	if (*prev_fd != -1)
-		close(*prev_fd);
-	if (current->pipes[1] != -1)
-		close(current->pipes[1]);
-	*prev_fd = current->pipes[0];
 }
 
 static void	execute_single_command(t_minishell *minishell, t_command *current,

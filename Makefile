@@ -14,8 +14,9 @@ ENV_SRCS =  srcs/exec/env/del_env.c srcs/exec/env/dup_env.c \
        srcs/exec/env/get_env.c srcs/exec/env/set_env.c \
 
 PARSER_SRCS = srcs/parsing/parser.c srcs/parsing/split.c \
-	   srcs/parsing/expand.c srcs/parsing/expand_utils.c srcs/parsing/quotes.c \
-	   srcs/parsing/parse_redir.c srcs/parsing/check.c
+	   srcs/parsing/expand.c srcs/parsing/expand_2.c srcs/parsing/expand_utils.c \
+	    srcs/parsing/quotes.c srcs/parsing/parse_redir.c srcs/parsing/parse_redir_2.c \
+		srcs/parsing/check.c
 
 UTILS_SRCS = srcs/utils/free.c srcs/utils/split_utils.c srcs/utils/parser.c \
 	   srcs/utils/utils.c srcs/utils/init.c srcs/utils/prompt.c \
@@ -30,14 +31,14 @@ BUILTINS_SRCS = srcs/builtins/ft_cd.c srcs/builtins/ft_pwd.c \
 		srcs/builtins/builtins.c srcs/builtins/ft_echo.c srcs/builtins/ft_env.c \
 		srcs/builtins/ft_export.c srcs/builtins/ft_unset.c  srcs/builtins/ft_exit.c \
 		
-REDIRECTION_SRCS = srcs/exec/redirection/exec_redir.c
+REDIRECTION_SRCS = srcs/exec/redirection/exec_redir.c srcs/exec/redirection/exec_redir_utils.c 
 
 SRCS = $(PARSER_SRCS) $(UTILS_SRCS) $(ENV_SRCS) $(EXEC_SRCS) \
 	$(BUILTINS_SRCS) $(REDIRECTION_SRCS) $(SIGNALS_SRCS) srcs/debug/debug.c
 
 MAIN = main.c
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
-VALGRIND_CMD = valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-fds=yes --track-origins=yes -q --suppressions=readline.supp
+VALGRIND_CMD = valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-fds=yes --track-origins=yes -q --suppressions=/tmp/readline.supp --suppressions=/tmp/basic_leaks.supp
 
 all: $(NAME)
 
@@ -61,10 +62,10 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 leak:
-	@echo "{\n\t<ignore_basic_cmd_leaks>\n\tMemcheck:Leak\n\t...\n\tobj:/usr/bin/*\n}" > basic_leaks.supp
-	@echo "{\nignore_libreadline_leaks\n Memcheck:Leak\n ...\n obj:*/libreadline.so.*\n }" > readline.supp
-	@${VALGRIND_CMD} --suppressions=basic_leaks.supp ./${NAME}
-	@rm -f basic_leaks.supp readline.supp
+	@echo "{\n\t<ignore_basic_cmd_leaks>\n\tMemcheck:Leak\n\t...\n\tobj:/usr/bin/*\n}" > /tmp/basic_leaks.supp
+	@echo "{\nignore_libreadline_leaks\n Memcheck:Leak\n ...\n obj:*/libreadline.so.*\n }" > /tmp/readline.supp
+	@${VALGRIND_CMD} ./${NAME}
+	@rm -f /tmp/basic_leaks.supp /tmp/readline.supp
 clean:
 	@echo "🧹 Cleaning object files..."
 	@cd libft && make clean --no-print-directory

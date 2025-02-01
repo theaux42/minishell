@@ -6,20 +6,11 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 06:06:07 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 14:47:21 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 21:15:19 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	execute_external_command(t_minishell *minishell, t_command *command,
-		t_token *tokens)
-{
-	int	pid;
-
-	pid = execution(tokens->value, command, minishell);
-	return (pid);
-}
 
 int	execute_builtin_command(t_minishell *minishell, t_command *command,
 		t_token *tokens)
@@ -29,7 +20,7 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 
 	if (minishell->cmd_count == 1 && is_builtin(tokens->value))
 	{
-		if (parent_apply_redir(command, minishell) == -1)
+		if (parent_redir(command, minishell) == -1)
 			return (1);
 		minishell->status = parent_builtins(command, minishell);
 		return (CMD_PARENT_BUILTINS);
@@ -40,22 +31,6 @@ int	execute_builtin_command(t_minishell *minishell, t_command *command,
 	pid = execution(cmd, command, minishell);
 	free(cmd);
 	return (pid);
-}
-
-static int	handle_no_cmd_redir(t_command *command, t_minishell *minishell)
-{
-	parent_apply_redir(command, minishell);
-	if (command->pipes[1] != -1)
-		close(command->pipes[1]);
-	if (command->prev_pipe != -1)
-		close(command->prev_pipe);
-	if (command->pipes[0] != -1)
-	{
-		if (!command->next)
-			close(command->pipes[0]);
-	}
-	command->pipes[0] = -1;
-	return (CMD_PARENT_BUILTINS);
 }
 
 int	exec_cmd(t_minishell *minishell, t_command *command)

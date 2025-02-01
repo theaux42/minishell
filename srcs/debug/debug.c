@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 16:42:23 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/26 16:06:28 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 23:53:29 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,18 +88,4 @@ void	print_commands(t_command *commands)
 		i++;
 	}
 	printf("=== COMMANDS ===\n");
-}
-
-void	print_env(char **env)
-{
-	int	i;
-
-	i = 0;
-	if (!env)
-	{
-		printf("env: No environment variables found\n");
-		return ;
-	}
-	while (env[i])
-		i++;
 }

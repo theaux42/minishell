@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:40:40 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 15:51:48 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 23:54:22 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,34 @@ t_token_type	get_tokens_type(char *str, int pos)
 	return (ARGUMENT);
 }
 
-char	*ft_token_value(char *value)
+t_command	*init_new_command(void)
 {
-	if (ft_edgecmp(value, '"'))
-		return (ft_strtrim(value, "\""));
-	if (ft_edgecmp(value, '\''))
-		return (ft_strtrim(value, "'"));
-	return (ft_strdup(value));
+	t_command	*new_command;
+
+	new_command = malloc(sizeof(t_command));
+	if (!new_command)
+		return (NULL);
+	new_command->tokens = NULL;
+	new_command->redirections = NULL;
+	new_command->pipes[0] = -1;
+	new_command->pipes[1] = -1;
+	new_command->prev_pipe = -1;
+	new_command->is_absolute = 0;
+	new_command->is_last = 0;
+	new_command->pid = 0;
+	new_command->next = NULL;
+	return (new_command);
 }
+
+// static t_token	*init_new_token(void)
+// {
+// 	t_token	*new_token;
+
+// 	new_token = malloc(sizeof(t_token));
+// 	if (!new_token)
+// 		return (NULL);
+// 	new_token->value = NULL;
+// 	new_token->type = COMMAND;
+// 	new_token->next = NULL;
+// 	return (new_token);
+// }

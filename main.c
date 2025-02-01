@@ -6,11 +6,13 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:14:00 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 13:53:22 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 21:45:33 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile sig_atomic_t	g_signal;
 
 char	*clean_readline(char *prompt)
 {
@@ -34,8 +36,6 @@ char	*clean_readline(char *prompt)
 	return (cleared);
 }
 
-volatile sig_atomic_t	g_signal = 0;
-
 void	main_loop(t_minishell *minishell)
 {
 	while (1)
@@ -55,14 +55,8 @@ void	main_loop(t_minishell *minishell)
 		{
 			add_history(minishell->line);
 			minishell->commands = get_commands(minishell->line, minishell);
-			if (!minishell->commands)
-			{
-				free(minishell->line);
-				continue ;
-			}
-			if (DEBUG_MODE)
-				print_commands(minishell->commands);
-			execute_commands(minishell);
+			if (minishell->commands)
+				execute_commands(minishell);
 			minishell->commands = NULL;
 		}
 		free(minishell->line);

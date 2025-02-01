@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 02:52:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 06:34:53 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 17:55:32 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,6 @@ int	copy_arg(char **split, char *line, int j, int k)
 	if (!split || !line || j < 0 || k < 0)
 		return (-1);
 	split[k] = malloc(sizeof(char) * (j + 1));
-	// if (k == 2)
-	// {
-	// 	free(split[k]);
-	// 	split[k] = NULL;
-	// }
 	if (!split[k])
 	{
 		while (--k >= 0)

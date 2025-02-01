@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:40:59 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 15:08:58 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/01/31 23:53:33 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,6 @@ extern volatile sig_atomic_t	g_signal;
 
 // testings
 char							*get_full_cmd(char *bin, char **env);
-char							*ft_token_value(char *value);
 // === PARSING ===
 // Functions of parsing/expand.c
 bool							expand_commands(t_command *commands,
@@ -194,8 +193,6 @@ void							execute_child(char *cmd, t_command *command,
 									t_minishell *minishell, char **argv);
 
 // Functions of exec/exec/exec_2.c
-int								execute_external_command(t_minishell *minishell,
-									t_command *command, t_token *tokens);
 int								exec_cmd(t_minishell *minishell,
 									t_command *command);
 int								ft_cmd_count(t_command *commands);
@@ -218,10 +215,8 @@ char							*append_path_segment(char *current_path,
 // Functions of exec/redirection/redirection.c
 int								exec_redirections(t_redirection *redirections,
 									t_minishell *minishell);
-int								parent_apply_redir(t_command *command,
+int								parent_redir(t_command *command,
 									t_minishell *minishell);
-bool							has_redirections(t_redirection *redirections,
-									t_token_type types);
 
 // Fonction env
 char							*get_env(char *key, char **env);
@@ -260,8 +255,32 @@ void							exit_parent(char *msg, t_minishell *minishell,
 									bool is_error);
 void							exit_child(char *msg, t_minishell *minishell,
 									char *cmd, char **argv);
-void							error_message(char *title, char *message);
 bool							ft_isfolder(char *path);
+
+// Fonction de parsing
+t_command						*init_new_command(void);
+t_token							*create_arg_token(char *value, t_token *next);
+int								split_expanded_token(t_token *token,
+									char **split);
+
+// Fonction d'expansion
+char							*expand_line(char *line,
+									t_minishell *minishell);
+char							*expand_env_var(char *line, int *i,
+									char *new_line, t_minishell *minishell);
+
+// Fonction de redirection (parsing)
+bool							handle_heredoc_parsing(t_token *current,
+									char **value, t_minishell *minishell);
+bool							handle_simple_redir(t_token *current,
+									char **value, t_minishell *minishell);
+
+// fonctions de redirection (exec)
+void							close_fds(int *prev_fd, t_command *current);
+int								handle_no_cmd_redir(t_command *command,
+									t_minishell *minishell);
+bool							handle_heredoc_exec(char *content,
+									t_minishell *minishell);
 
 // Fonction de free
 void							free_commands(t_command *commands);
@@ -280,7 +299,6 @@ bool							validate_commands(t_command *commands,
 // Fonction de debug
 void							print_commands(t_command *commands);
 void							print_tokens(t_token *tokens);
-void							print_env(char **env);
 char							*type_str(t_token_type type);
 
 // Fonction de testing
