@@ -33,6 +33,8 @@ static bool	manage_redir(t_redirection *redirection)
 	int	fd;
 	int	target_fd;
 
+	fd = 0;
+	target_fd = 0;
 	if (redirection->type == REDIR_INPUT)
 		fd = open(redirection->file, O_RDONLY);
 	else if (redirection->type == REDIR_OUTPUT)
