@@ -2,9 +2,9 @@
 
 NAME = minishell
 
-CC = gcc
+CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I. -g3
+CFLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I.
 DEBUG_FLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I. -g3 
 P_DEBUG_FLAGS = -Wall -Wextra -Werror -I/opt/homebrew/opt/readline/include -I. -g3 -DDEBUG_MODE=1
 
