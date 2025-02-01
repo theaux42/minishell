@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 17:31:33 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/30 06:26:24 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/02/01 13:43:03 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ int					ft_fibonacci(int index);
 int					ft_sqrt(int nb);
 int					ft_is_prime(int nb);
 int					ft_intlen(int nbr);
+long long			ft_atoll(const char *str);
 
 // String functions
 char				*ft_strlowcase(char *str);

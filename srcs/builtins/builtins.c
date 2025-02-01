@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 06:54:09 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/29 13:56:23 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/02/01 13:32:39 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	is_builtin(char *str)
 static bool	is_valid_args(t_token *tokens, char *cmd)
 {
 	if (ft_strncmp(cmd, "cd", 2) == 0 && ft_cmdlen(tokens) > 2)
-		return (ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd));
+		return (ft_dprintf(2, ERR_TOO_MANY_ARGS, cmd), false);
 	return (true);
 }
 

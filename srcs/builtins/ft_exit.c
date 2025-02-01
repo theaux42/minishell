@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 20:19:28 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/28 13:42:55 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/02/01 13:45:51 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@ static bool	overflows(char *str)
 		sign = -1;
 		i++;
 	}
-	if (len > 10)
+	if (len > 19)
 		return (true);
-	if (len == 10 && sign == 1 && ft_strncmp(str, "2147483647", 10) > 0)
+	if (len == 19 && sign == 1 && ft_strncmp(str, "9223372036854775807",
+			19) > 0)
 		return (true);
-	if (len == 10 && sign == -1 && ft_strncmp(str, "2147483648", 10) > 0)
+	if (len == 19 && sign == -1 && ft_strncmp(str, "9223372036854775808",
+			19) > 0)
 		return (true);
 	return (false);
 }
@@ -49,7 +51,7 @@ static bool	init_exit(t_token *token, t_minishell *minishell)
 	}
 	if (ft_cmdlen(token) > 1)
 		return (ft_dprintf(2, ERR_TOO_MANY_ARGS, "exit"), false);
-	minishell->status = (unsigned int)ft_atoi(token->value);
+	minishell->status = (unsigned int)ft_atoll(token->value) % 256;
 	if (minishell->status == -1)
 		minishell->status = status;
 	return (true);

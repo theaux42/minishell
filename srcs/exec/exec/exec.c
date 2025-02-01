@@ -6,7 +6,7 @@
 /*   By: tbabou <tbabou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 14:27:21 by tbabou            #+#    #+#             */
-/*   Updated: 2025/01/31 21:16:20 by tbabou           ###   ########.fr       */
+/*   Updated: 2025/02/01 13:51:55 by tbabou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	execute_child(char *cmd, t_command *command, t_minishell *minishell,
 		if (exec_redirections(command->redirections, minishell))
 			exit_child(NULL, minishell, cmd, argv);
 	}
-	(close(minishell->fds[STDIN_FILENO]), close(minishell->fds[STDOUT_FILENO]));
 	if (is_builtin(cmd))
 		exit(child_builtins(argv, cmd, command, minishell) % 256);
 	else

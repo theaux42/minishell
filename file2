@@ -1,0 +1,16 @@
+Makefile
+basic_leaks.supp
+exit_test
+file
+file2
+libft
+main.c
+main.o
+minishell
+minishell.h
+no_right
+other
+readline.supp
+srcs
+tester.cfile
+
